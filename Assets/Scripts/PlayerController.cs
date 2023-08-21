@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Rendering.LookDev;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -11,72 +10,87 @@ public class PlayerController : MonoBehaviour
     private CharacterController _player;
     private Rigidbody _myRigid;
     private PlayerStatus _playerStat;
+    private GroundChecker _myGroundChecker;
 
-    private Vector3 _playerForward = Vector3.zero;
-    private Vector3 _playerRight = Vector3.zero;
     private Vector3 _playerDirection = Vector3.forward;
+    private Vector3 _playerVelocity = Vector3.zero;
 
-    public bool IsJumpPressed = false;
+    private Vector3 _prevPosition;
+    private Vector3 _nextPosition;
+
+    private float _horizontalInput;
+    private float _verticalInput;
+    private float _playerYAngleOffset = 0;
+    private bool _isJumping = false;
 
     void Start()
     {
         _player = this.GetComponent<CharacterController>();
         _myRigid = this.GetComponent<Rigidbody>();
         _playerStat = this.GetComponent<PlayerStatus>();
-
-        _playerForward = _myCamera.transform.forward;
-        _playerForward.y = 0;
-        _playerRight = _myCamera.transform.right;
-        _playerRight.y = 0;
+        _myGroundChecker = this.GetComponent<GroundChecker>();
+        _prevPosition = this.transform.position;
+        _nextPosition = this.transform.position;
+        _playerYAngleOffset = _myCamera.GetComponent<CameraController>().GetCameraOffsetAngles().y;
     }
 
     void Update()
     {
+        _horizontalInput = Input.GetAxis("Horizontal");
+        _verticalInput = Input.GetAxis("Vertical");
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            _isJumping = true;
+        }
+        float interpolationValue = (Time.time - Time.fixedTime) / Time.fixedDeltaTime;
+        _player.Move(Vector3.Lerp(_prevPosition,_nextPosition, interpolationValue) - transform.position);
+    }
+
+    private void FixedUpdate()
+    {
+        _prevPosition = _nextPosition;
         PlayerMove();
         PlayerRotate();
+        _nextPosition += _playerDirection * Time.fixedDeltaTime;
     }
 
     private void PlayerMove()
     {
-        if (_player.isGrounded)
+        Debug.Log(_myGroundChecker.IsGrounded());
+        if (_myGroundChecker.IsGrounded())
         {
-            if (Input.GetAxis("Vertical") != 0 || Input.GetAxis("Horizontal") != 0)
+            if (_verticalInput != 0 || _horizontalInput != 0)
             {
-                _playerDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+                _playerDirection = new Vector3(_horizontalInput, 0, _verticalInput);
+                _playerVelocity = _playerDirection;
+                _playerDirection = _playerDirection.normalized;  
             }
             else
             {
                 _playerDirection = new Vector3(0, 0, 0);
+                _playerVelocity = _playerDirection;
             }
             _playerDirection = Quaternion.Euler(0, 45, 0) * _playerDirection;
-            _playerDirection *= _playerStat.MyCurrentSpeed;
+            float currSpeed = Mathf.Min(_playerVelocity.magnitude, 1.0f) * _playerStat.MyCurrentSpeed;
+            _playerDirection *= currSpeed;
 
-            if (IsJumpPressed == false && Input.GetButton("Jump"))
+            if (_isJumping)
             {
-                IsJumpPressed = true;
-                _playerDirection.y = _playerStat.JumpPower;
+                _isJumping = false;
+                _playerDirection.y += _playerStat.JumpPower;
             }
         }
         else
         {
-            _playerDirection.y -= _gravityForce * Time.deltaTime;
+            _playerDirection.y -= _gravityForce * Time.fixedDeltaTime;
         }
-
-        if (!Input.GetButton("Jump"))
-        {
-            IsJumpPressed = false;
-        }
-
-        _player.Move(_playerDirection * Time.deltaTime);
     }
 
     private void PlayerRotate()
     {
-        if (_player.velocity.magnitude < 0.1f) return;
-
-        float v = Input.GetAxis("Vertical");
-        float h = Input.GetAxis("Horizontal");
-        Quaternion lookDir = Quaternion.Euler(0, 45f + Mathf.Atan2(h, v) * Mathf.Rad2Deg, 0);
-        this.transform.rotation = Quaternion.Euler(0, 45f + Mathf.Atan2(h, v) * Mathf.Rad2Deg, 0);
+        if (_playerVelocity.magnitude < 0.1f || (_verticalInput == 0 && _horizontalInput == 0)) return;
+        float v = _verticalInput;
+        float h = _horizontalInput;
+        this.transform.rotation = Quaternion.Euler(0, _playerYAngleOffset + Mathf.Atan2(h, v) * Mathf.Rad2Deg, 0);
     }
 }

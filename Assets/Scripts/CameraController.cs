@@ -12,7 +12,7 @@ public class CameraController : MonoBehaviour
     private Vector3 _targetPos;
     private Vector3 _velocity = Vector3.zero;
     
-    void Start()
+    void Awake()
     {
         RefTarget = GameObject.FindGameObjectWithTag("Player").gameObject.transform;
         RefTarget.GetComponent<PlayerController>()._myCamera = this.GetComponent<Camera>();
@@ -28,5 +28,10 @@ public class CameraController : MonoBehaviour
             _targetPos = RefTarget.transform.position + _cameraOffset;
             this.transform.position = Vector3.SmoothDamp(transform.position, _targetPos, ref _velocity, _smoothTime);
         }
+    }
+
+    public Vector3 GetCameraOffsetAngles()
+    {
+        return _cameraOffsetAngles;
     }
 }

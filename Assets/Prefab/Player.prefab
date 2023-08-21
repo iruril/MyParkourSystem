@@ -301,6 +301,7 @@ GameObject:
   - component: {fileID: 8831129136227510664}
   - component: {fileID: 1981040560090046735}
   - component: {fileID: 5334846614338448949}
+  - component: {fileID: 6514030380686118740}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -338,7 +339,7 @@ Animator:
   m_Controller: {fileID: 9100000, guid: 8cc72fc9ee2599a45a5cac400e9ebbb9, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
-  m_ApplyRootMotion: 1
+  m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_WarningMessage: 
@@ -363,7 +364,7 @@ CharacterController:
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 2.4, z: 0}
+  m_Center: {x: 0, y: 2.5, z: 0}
 --- !u!54 &3521277489380179491
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -388,12 +389,12 @@ CapsuleCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5334846614677445977}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
-  m_Radius: 0.6169955
-  m_Height: 5.022849
+  m_Radius: 1
+  m_Height: 5
   m_Direction: 1
-  m_Center: {x: 0, y: 2.4911065, z: 0.14039442}
+  m_Center: {x: 0, y: 2.5, z: 0}
 --- !u!114 &1981040560090046735
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -406,10 +407,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1910ca6f3d577432396177461ecad4ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Speed: 10
-  MyCurrentSpeed: 0
-  JumpPower: 10
-  RotationSpeed: 180
+  Speed: 5
+  JumpPower: 5
 --- !u!114 &5334846614338448949
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -423,7 +422,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _gravityForce: 9.8
-  IsJumpPressed: 0
+--- !u!114 &6514030380686118740
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5334846614677445977}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8432163cc1c049c49b4a3e9fabe43b19, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _boxScale: {x: 0.3, y: 0.1, z: 0.3}
+  _detectionMaxDist: 0
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 8
+  drawGizmo: 1
 --- !u!1 &5334846614677445979
 GameObject:
   m_ObjectHideFlags: 0
