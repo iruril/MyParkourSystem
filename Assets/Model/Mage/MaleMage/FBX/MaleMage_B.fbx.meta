@@ -1,0 +1,645 @@
+fileFormatVersion: 2
+guid: 6e838c728eaf6a8449ca185ef0a8afe5
+ModelImporter:
+  serializedVersion: 21300
+  internalIDToNameTable:
+  - first:
+      1: 100000
+    second: //RootNode
+  - first:
+      1: 100002
+    second: Euclid_Wizard
+  - first:
+      1: 100004
+    second: rig:GlobalSRT
+  - first:
+      1: 100006
+    second: rig:Head
+  - first:
+      1: 100008
+    second: rig:LBicep
+  - first:
+      1: 100010
+    second: rig:left_weapon
+  - first:
+      1: 100012
+    second: rig:LFootBone1
+  - first:
+      1: 100014
+    second: rig:LFootBone2
+  - first:
+      1: 100016
+    second: rig:LForearm
+  - first:
+      1: 100018
+    second: rig:LHand
+  - first:
+      1: 100020
+    second: rig:LShin
+  - first:
+      1: 100022
+    second: rig:LShoulder
+  - first:
+      1: 100024
+    second: rig:LThigh
+  - first:
+      1: 100026
+    second: rig:Lumbar1
+  - first:
+      1: 100028
+    second: rig:Lumbar2
+  - first:
+      1: 100030
+    second: rig:Neck
+  - first:
+      1: 100032
+    second: rig:RBicep
+  - first:
+      1: 100034
+    second: rig:RFootBone1
+  - first:
+      1: 100036
+    second: rig:RFootBone2
+  - first:
+      1: 100038
+    second: rig:RForearm
+  - first:
+      1: 100040
+    second: rig:RHand
+  - first:
+      1: 100042
+    second: rig:rig
+  - first:
+      1: 100044
+    second: rig:right_weapon
+  - first:
+      1: 100046
+    second: rig:RShin
+  - first:
+      1: 100048
+    second: rig:RShoulder
+  - first:
+      1: 100050
+    second: rig:RThigh
+  - first:
+      1: 100052
+    second: rig:UpperBody
+  - first:
+      1: 100054
+    second: shadow
+  - first:
+      1: 100056
+    second: weapon:left_weapon
+  - first:
+      1: 100058
+    second: weapon:right_weapon
+  - first:
+      1: 100060
+    second: weapon:weapon
+  - first:
+      4: 400000
+    second: //RootNode
+  - first:
+      4: 400002
+    second: Euclid_Wizard
+  - first:
+      4: 400004
+    second: rig:GlobalSRT
+  - first:
+      4: 400006
+    second: rig:Head
+  - first:
+      4: 400008
+    second: rig:LBicep
+  - first:
+      4: 400010
+    second: rig:left_weapon
+  - first:
+      4: 400012
+    second: rig:LFootBone1
+  - first:
+      4: 400014
+    second: rig:LFootBone2
+  - first:
+      4: 400016
+    second: rig:LForearm
+  - first:
+      4: 400018
+    second: rig:LHand
+  - first:
+      4: 400020
+    second: rig:LShin
+  - first:
+      4: 400022
+    second: rig:LShoulder
+  - first:
+      4: 400024
+    second: rig:LThigh
+  - first:
+      4: 400026
+    second: rig:Lumbar1
+  - first:
+      4: 400028
+    second: rig:Lumbar2
+  - first:
+      4: 400030
+    second: rig:Neck
+  - first:
+      4: 400032
+    second: rig:RBicep
+  - first:
+      4: 400034
+    second: rig:RFootBone1
+  - first:
+      4: 400036
+    second: rig:RFootBone2
+  - first:
+      4: 400038
+    second: rig:RForearm
+  - first:
+      4: 400040
+    second: rig:RHand
+  - first:
+      4: 400042
+    second: rig:rig
+  - first:
+      4: 400044
+    second: rig:right_weapon
+  - first:
+      4: 400046
+    second: rig:RShin
+  - first:
+      4: 400048
+    second: rig:RShoulder
+  - first:
+      4: 400050
+    second: rig:RThigh
+  - first:
+      4: 400052
+    second: rig:UpperBody
+  - first:
+      4: 400054
+    second: shadow
+  - first:
+      4: 400056
+    second: weapon:left_weapon
+  - first:
+      4: 400058
+    second: weapon:right_weapon
+  - first:
+      4: 400060
+    second: weapon:weapon
+  - first:
+      23: 2300000
+    second: shadow
+  - first:
+      33: 3300000
+    second: shadow
+  - first:
+      43: 4300000
+    second: shadow
+  - first:
+      43: 4300002
+    second: weapon:left_weapon
+  - first:
+      43: 4300004
+    second: weapon:right_weapon
+  - first:
+      43: 4300006
+    second: Euclid_Wizard
+  - first:
+      95: 9500000
+    second: //RootNode
+  - first:
+      137: 13700000
+    second: Euclid_Wizard
+  - first:
+      137: 13700002
+    second: weapon:left_weapon
+  - first:
+      137: 13700004
+    second: weapon:right_weapon
+  externalObjects: {}
+  materials:
+    materialImportMode: 0
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 0
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 3
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1.3
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importVisibility: 0
+    importBlendShapes: 1
+    importCameras: 0
+    importLights: 0
+    nodeNameCollisionStrategy: 0
+    fileIdsGeneration: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    keepQuads: 0
+    weldVertices: 1
+    bakeAxisConversion: 0
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    meshOptimizationFlags: -1
+    indexFormat: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 0
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
+    secondaryUVPackMargin: 4
+    useFileScale: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 4
+    normalCalculationMode: 0
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 1
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
+  importAnimation: 0
+  humanDescription:
+    serializedVersion: 3
+    human:
+    - boneName: rig:UpperBody
+      humanName: Hips
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: rig:LThigh
+      humanName: LeftUpperLeg
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: rig:RThigh
+      humanName: RightUpperLeg
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: rig:LShin
+      humanName: LeftLowerLeg
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: rig:RShin
+      humanName: RightLowerLeg
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: rig:LFootBone1
+      humanName: LeftFoot
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: rig:RFootBone1
+      humanName: RightFoot
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: rig:Lumbar1
+      humanName: Spine
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: rig:Lumbar2
+      humanName: Chest
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: rig:LShoulder
+      humanName: LeftShoulder
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: rig:RShoulder
+      humanName: RightShoulder
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: rig:LBicep
+      humanName: LeftUpperArm
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: rig:RBicep
+      humanName: RightUpperArm
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: rig:LForearm
+      humanName: LeftLowerArm
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: rig:RForearm
+      humanName: RightLowerArm
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: rig:LHand
+      humanName: LeftHand
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: rig:RHand
+      humanName: RightHand
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: rig:LFootBone2
+      humanName: LeftToes
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: rig:RFootBone2
+      humanName: RightToes
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: rig:Neck
+      humanName: Neck
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: rig:Head
+      humanName: Head
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    skeleton:
+    - name: Euclid_Wizard(Clone)
+      parentName: 
+      position: {x: 0, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Euclid_Wizard
+      parentName: 
+      position: {x: 0, y: 0, z: 0}
+      rotation: {x: 0, y: -0, z: 0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: rig:rig
+      parentName: 
+      position: {x: 0, y: 0, z: 0}
+      rotation: {x: 0, y: -0, z: 0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: rig:GlobalSRT
+      parentName: 
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: rig:UpperBody
+      parentName: 
+      position: {x: -0, y: 1.7101449, z: 0.009172533}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: rig:LThigh
+      parentName: 
+      position: {x: -0.41713202, y: -0.15382235, z: -0.0023468272}
+      rotation: {x: 0.5624927, y: 0.48231816, z: -0.49032417, w: -0.45886087}
+      scale: {x: 1, y: 1, z: 1}
+    - name: rig:LShin
+      parentName: 
+      position: {x: -0.6552879, y: 0, z: -7.2164494e-17}
+      rotation: {x: -5.551115e-17, y: -5.5511148e-17, z: -0.14918114, w: 0.9888099}
+      scale: {x: 1, y: 1, z: 1}
+    - name: rig:LFootBone1
+      parentName: 
+      position: {x: -0.7198944, y: 3.6082247e-17, z: 1.7319479e-15}
+      rotation: {x: 0.039297752, y: -0.036537092, z: 0.49740043, w: 0.86586}
+      scale: {x: 1, y: 1, z: 1}
+    - name: rig:LFootBone2
+      parentName: 
+      position: {x: -0.2780934, y: -3.6082247e-17, z: 0}
+      rotation: {x: -1.0269563e-15, y: 4.9960036e-14, z: 0.12773523, w: 0.9918083}
+      scale: {x: 1, y: 1, z: 1}
+    - name: rig:Lumbar1
+      parentName: 
+      position: {x: 3.6082247e-17, y: 0.102548234, z: 0.0015645516}
+      rotation: {x: 0.45144507, y: -0.5442402, z: -0.45144507, w: 0.5442402}
+      scale: {x: 1, y: 1, z: 1}
+    - name: rig:Lumbar2
+      parentName: 
+      position: {x: -0.49313062, y: 3.6082247e-17, z: 3.6082247e-17}
+      rotation: {x: -2.7755574e-17, y: -2.220446e-16, z: -0.10796365, w: 0.9941549}
+      scale: {x: 1, y: 1, z: 1}
+    - name: rig:LShoulder
+      parentName: 
+      position: {x: -0.56613165, y: -0.024858607, z: 0.093464985}
+      rotation: {x: 0.70976377, y: -0.014711518, z: -0.70334166, w: 0.036461692}
+      scale: {x: 1, y: 1, z: 1}
+    - name: rig:LBicep
+      parentName: 
+      position: {x: -0.31978452, y: 7.2164494e-17, z: -5.564559e-16}
+      rotation: {x: -0.0076142377, y: -0.012296615, z: -0.038755354, w: 0.9991441}
+      scale: {x: 1, y: 1, z: 1}
+    - name: rig:LForearm
+      parentName: 
+      position: {x: -0.6655113, y: 0, z: 2.8865798e-16}
+      rotation: {x: -2.073537e-18, y: -1.3010427e-18, z: 0.039840948, w: 0.99920607}
+      scale: {x: 1, y: 1, z: 1}
+    - name: rig:LHand
+      parentName: 
+      position: {x: -0.60043234, y: -5.0515144e-16, z: 0}
+      rotation: {x: 0.7124738, y: -0.009070963, z: -0.01669709, w: 0.70144147}
+      scale: {x: 1, y: 1, z: 1}
+    - name: rig:left_weapon
+      parentName: 
+      position: {x: -0.3255044, y: 2.7435968e-17, z: -1.3530843e-17}
+      rotation: {x: -0.03661574, y: -0.000004708272, z: 0.9993257, w: 0.0027413908}
+      scale: {x: 1, y: 1, z: 1}
+    - name: rig:Neck
+      parentName: 
+      position: {x: -0.58882034, y: -3.6082247e-17, z: 0}
+      rotation: {x: 0.7060326, y: -0.038961705, z: -0.038961705, w: 0.7060326}
+      scale: {x: 1, y: 1, z: 1}
+    - name: rig:Head
+      parentName: 
+      position: {x: -0.23885417, y: -3.6082247e-17, z: 1.0824674e-16}
+      rotation: {x: 6.938894e-18, y: 0.07251418, z: -5.551115e-17, w: 0.9973674}
+      scale: {x: 1, y: 1, z: 1}
+    - name: rig:RShoulder
+      parentName: 
+      position: {x: -0.56613165, y: -0.024858607, z: -0.093464985}
+      rotation: {x: 0.014711518, y: 0.70976377, z: 0.036461692, w: 0.70334166}
+      scale: {x: -1, y: -1, z: -1}
+    - name: rig:RBicep
+      parentName: 
+      position: {x: -0.31978452, y: 1.3305329e-16, z: -1.1954535e-15}
+      rotation: {x: -0.0076170033, y: -0.012332547, z: -0.03862741, w: 0.99914855}
+      scale: {x: 1, y: 1, z: 1}
+    - name: rig:RForearm
+      parentName: 
+      position: {x: -0.6655113, y: -3.6082247e-17, z: -9.47159e-17}
+      rotation: {x: 7.627363e-17, y: -1.6960809e-25, z: 0.039840948, w: 0.99920607}
+      scale: {x: 1, y: 1, z: 1}
+    - name: rig:RHand
+      parentName: 
+      position: {x: -0.60043234, y: -3.6082248e-16, z: 1.8041124e-16}
+      rotation: {x: 0.7124738, y: -0.009070963, z: -0.01669709, w: 0.70144147}
+      scale: {x: 1, y: 1, z: 1}
+    - name: rig:right_weapon
+      parentName: 
+      position: {x: -0.3255044, y: 6.955222e-19, z: -1.8041123e-17}
+      rotation: {x: 0.99999446, y: -0.002774479, z: 0.0018457625, w: -0.000103447215}
+      scale: {x: -1, y: -1, z: -1}
+    - name: rig:RThigh
+      parentName: 
+      position: {x: 0.41713202, y: -0.15382235, z: -0.0023468272}
+      rotation: {x: -0.49032417, y: -0.45886087, z: 0.5624927, w: 0.48231816}
+      scale: {x: 1, y: 1, z: 1}
+    - name: rig:RShin
+      parentName: 
+      position: {x: -0.6552879, y: -2.1649348e-16, z: -9.020562e-18}
+      rotation: {x: 5.551115e-17, y: -4.7543365e-25, z: -0.14918114, w: 0.9888099}
+      scale: {x: 1, y: 1, z: 1}
+    - name: rig:RFootBone1
+      parentName: 
+      position: {x: -0.7198944, y: 2.8865798e-16, z: -3.969047e-16}
+      rotation: {x: -0.039297752, y: 0.036537092, z: 0.49740043, w: 0.86586}
+      scale: {x: 1, y: 1, z: 1}
+    - name: rig:RFootBone2
+      parentName: 
+      position: {x: -0.2780934, y: 0, z: 0}
+      rotation: {x: 4.7947753e-14, y: -8.726353e-14, z: 0.12773523, w: 0.9918083}
+      scale: {x: 1, y: 1, z: 1}
+    - name: shadow
+      parentName: 
+      position: {x: 0, y: 0, z: 0}
+      rotation: {x: 0, y: -0, z: 0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: weapon:weapon
+      parentName: 
+      position: {x: 0, y: 0, z: 0}
+      rotation: {x: 0, y: -0, z: 0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: weapon:left_weapon
+      parentName: 
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: weapon:right_weapon
+      parentName: 
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    globalScale: 1.3
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
+  animationType: 3
+  humanoidOversampling: 1
+  avatarSetup: 1
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 0
+  remapMaterialsIfMaterialImportModeIsNone: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
