@@ -814,6 +814,7 @@ GameObject:
   - component: {fileID: 330585545}
   - component: {fileID: 330585544}
   - component: {fileID: 330585547}
+  - component: {fileID: 330585548}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -880,7 +881,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   m_LocalRotation: {x: 0.46193978, y: 0.33141357, z: -0.19134171, w: 0.8001032}
-  m_LocalPosition: {x: -12, y: 24, z: -12}
+  m_LocalPosition: {x: -16.47, y: 5.74, z: 3.94}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -920,6 +921,21 @@ MonoBehaviour:
   m_RequiresDepthTexture: 0
   m_RequiresColorTexture: 0
   m_Version: 2
+--- !u!114 &330585548
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 330585543}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd2c058c033024d6c974915ad5431927, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _cameraOffset: {x: -3.5, y: 8, z: -3.5}
+  _cameraOffsetAngles: {x: 60, y: 45, z: 0}
+  _smoothTime: 0.1
 --- !u!1 &382034192
 GameObject:
   m_ObjectHideFlags: 0
@@ -3186,6 +3202,26 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1981040560090046735, guid: a8e3cd3a1b08d4a83b8962265ac1533f,
+        type: 3}
+      propertyPath: Speed
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1981040560090046735, guid: a8e3cd3a1b08d4a83b8962265ac1533f,
+        type: 3}
+      propertyPath: JumpPower
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1981040560090046735, guid: a8e3cd3a1b08d4a83b8962265ac1533f,
+        type: 3}
+      propertyPath: RotationTime
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1981040560090046735, guid: a8e3cd3a1b08d4a83b8962265ac1533f,
+        type: 3}
+      propertyPath: RatateSpeedMultiply
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 5334846614677445977, guid: a8e3cd3a1b08d4a83b8962265ac1533f,
         type: 3}
       propertyPath: m_Name
@@ -3204,7 +3240,7 @@ PrefabInstance:
     - target: {fileID: 5334846614677680569, guid: a8e3cd3a1b08d4a83b8962265ac1533f,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 2.16
       objectReference: {fileID: 0}
     - target: {fileID: 5334846614677680569, guid: a8e3cd3a1b08d4a83b8962265ac1533f,
         type: 3}
@@ -3245,6 +3281,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5334846614686912093, guid: a8e3cd3a1b08d4a83b8962265ac1533f,
+        type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8831129136227510664, guid: a8e3cd3a1b08d4a83b8962265ac1533f,
+        type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a8e3cd3a1b08d4a83b8962265ac1533f, type: 3}
