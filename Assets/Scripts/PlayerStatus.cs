@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerStatus : MonoBehaviour
@@ -7,7 +5,8 @@ public class PlayerStatus : MonoBehaviour
     public float Speed = 5f;
     public float MyCurrentSpeed { get; set; } = 0;
     public float JumpPower = 5f;
-    public float _gravityForce = 9.8f;
+    public float GravityForce = 9.8f;
+    public float RotateSpeed = 300.0f;
 
     void Start()
     {

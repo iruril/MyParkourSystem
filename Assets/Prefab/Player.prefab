@@ -1,5 +1,67 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &53059014381535876
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3622697302873051244}
+  m_Layer: 0
+  m_Name: JumpBottomRay
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3622697302873051244
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 53059014381535876}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5334846614677680569}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2105316577789367389
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1310392949644766531}
+  m_Layer: 0
+  m_Name: MaxHeightRay
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1310392949644766531
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2105316577789367389}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 7.5, z: -1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5334846614677680569}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5334846614677445889
 GameObject:
   m_ObjectHideFlags: 0
@@ -300,6 +362,7 @@ GameObject:
   - component: {fileID: 7620308913396044995}
   - component: {fileID: 1981040560090046735}
   - component: {fileID: 5334846614338448949}
+  - component: {fileID: 5343945871120968039}
   - component: {fileID: 6514030380686118740}
   m_Layer: 0
   m_Name: Player
@@ -322,6 +385,10 @@ Transform:
   m_Children:
   - {fileID: 5334846614677680571}
   - {fileID: 5334846614677680565}
+  - {fileID: 3622697302873051244}
+  - {fileID: 730969002326134027}
+  - {fileID: 7117341666393209218}
+  - {fileID: 1310392949644766531}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -393,8 +460,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Speed: 5
-  JumpPower: 5
-  _gravityForce: 9.8
+  JumpPower: 3
+  GravityForce: 9.8
+  RotateSpeed: 600
 --- !u!114 &5334846614338448949
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -407,6 +475,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27ca55ca4c0694927ab551a5ef248523, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &5343945871120968039
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5334846614677445977}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4f9bd41e34504a50b6c84f1d5d37000, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _jumpBottomRay: {fileID: 3622697302873051244}
+  _jumpMiddleRay: {fileID: 730969002326134027}
+  _jumpTopRay: {fileID: 7117341666393209218}
+  _MaxHeightRay: {fileID: 1310392949644766531}
+  _boxScale: {x: 0.6, y: 0.2, z: 0.1}
+  _layerMask:
+    serializedVersion: 2
+    m_Bits: 64
+  _rayDistance: 2.5
 --- !u!114 &6514030380686118740
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -423,7 +512,7 @@ MonoBehaviour:
   _detectionMaxDist: 0.1
   groundLayer:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 72
   drawGizmo: 1
 --- !u!1 &5334846614677445979
 GameObject:
@@ -1044,3 +1133,65 @@ Transform:
   m_Father: {fileID: 5334846614677680479}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: -12.4184, y: -6.6998, z: 47.4217}
+--- !u!1 &5737706548267942782
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 730969002326134027}
+  m_Layer: 0
+  m_Name: JumpMiddleRay
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &730969002326134027
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5737706548267942782}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 2.5, z: -1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5334846614677680569}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &8881144363503634428
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7117341666393209218}
+  m_Layer: 0
+  m_Name: JumpTopRay
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7117341666393209218
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8881144363503634428}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 5, z: -1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5334846614677680569}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

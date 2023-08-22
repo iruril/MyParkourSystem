@@ -15,9 +15,13 @@ public class PlayerController : MonoBehaviour
 
     private float _horizontalInput;
     private float _verticalInput;
+    private float _rotationHorizontalInput;
+    private float _rotationVerticalInput;
     private float _playerYAngleOffset = 0;
     private Vector3 _playerMoveOrientedForward;
     private Vector3 _playerMoveOrientedRight;
+    private Quaternion _playerRotation;
+    private bool _isRotating;
     private bool _isJumping = false;
 
     void Start()
@@ -35,19 +39,30 @@ public class PlayerController : MonoBehaviour
     {
         _horizontalInput = Input.GetAxis("Horizontal");
         _verticalInput = Input.GetAxis("Vertical");
+        _rotationHorizontalInput = Input.GetAxisRaw("Horizontal");
+        _rotationVerticalInput = Input.GetAxisRaw("Vertical");
         if (Input.GetKeyDown(KeyCode.Space))
         {
             _isJumping = true;
+        }
+        if (_rotationHorizontalInput != 0 || _rotationVerticalInput != 0)
+        {
+            _playerRotation = Quaternion.Euler(0, CalculateRotationAngle(_rotationHorizontalInput, _rotationVerticalInput), 0);
+            _isRotating = true;
         }
         _player.Move(_playerVelocity * Time.deltaTime);
     }
 
     private void FixedUpdate()
     {
-        PlayerRotate();
+        if (_isRotating)
+        {
+            PlayerRotate();
+        }
         PlayerMove();
     }
 
+    #region Player Default Move And Rotation
     private void PlayerMove()
     {
         Vector3 xzPlaneVel = PlayerXZPlaneVelocity();
@@ -69,7 +84,7 @@ public class PlayerController : MonoBehaviour
     {
         if (!_myGroundChecker.IsGrounded())
         {
-            return _playerVelocity.y - _playerStat._gravityForce * Time.fixedDeltaTime;
+            return _playerVelocity.y - _playerStat.GravityForce * Time.fixedDeltaTime;
         }
 
         if (_isJumping)
@@ -83,11 +98,21 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private float CalculateRotationAngle(float h, float v)
+    {
+        return _playerYAngleOffset + Mathf.Atan2(h, v) * Mathf.Rad2Deg;
+    }
+
     private void PlayerRotate()
     {
-        if (_playerVelocity.magnitude < 0.1f || (_verticalInput == 0 && _horizontalInput == 0)) return;
-        float v = _verticalInput;
-        float h = _horizontalInput;
-        this.transform.rotation = Quaternion.Euler(0, _playerYAngleOffset + Mathf.Atan2(h, v) * Mathf.Rad2Deg, 0);
+        if (_playerVelocity.magnitude < 0.1f || (_rotationVerticalInput == 0 && _rotationHorizontalInput == 0))
+        {
+            _isRotating = false;
+            return;
+        }
+
+        float step = Time.fixedDeltaTime * _playerStat.RotateSpeed;
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, _playerRotation, step);
     }
+    #endregion
 }
