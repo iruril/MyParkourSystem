@@ -117,7 +117,7 @@ public class PlayerController : MonoBehaviour
         }
 
         float step = Time.fixedDeltaTime * _playerStat.RotateSpeed;
-        transform.rotation = Quaternion.RotateTowards(transform.rotation, _playerRotation, step);
+        transform.rotation = Quaternion.Slerp(transform.rotation, _playerRotation, step);
     }
     #endregion
 }

@@ -462,7 +462,7 @@ MonoBehaviour:
   Speed: 5
   JumpPower: 3
   GravityForce: 9.8
-  RotateSpeed: 600
+  RotateSpeed: 15
 --- !u!114 &5334846614338448949
 MonoBehaviour:
   m_ObjectHideFlags: 0
