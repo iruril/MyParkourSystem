@@ -475,6 +475,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27ca55ca4c0694927ab551a5ef248523, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  JumpMode: 0
 --- !u!114 &5343945871120968039
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -491,11 +492,12 @@ MonoBehaviour:
   _jumpMiddleRay: {fileID: 730969002326134027}
   _jumpTopRay: {fileID: 7117341666393209218}
   _MaxHeightRay: {fileID: 1310392949644766531}
-  _boxScale: {x: 0.6, y: 0.2, z: 0.1}
   _layerMask:
     serializedVersion: 2
     m_Bits: 64
-  _rayDistance: 2.5
+  _rayDistance: 3
+  _jumpOverLimit: 5
+  JumpMode: 0
 --- !u!114 &6514030380686118740
 MonoBehaviour:
   m_ObjectHideFlags: 0

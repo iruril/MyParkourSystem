@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static PlayerParkour;
 
 public class PlayerController : MonoBehaviour
 {
@@ -9,6 +10,7 @@ public class PlayerController : MonoBehaviour
     private CharacterController _player;
     private Rigidbody _myRigid;
     private PlayerStatus _playerStat;
+    private PlayerParkour _playerParkour;
     private GroundChecker _myGroundChecker;
 
     private Vector3 _playerVelocity = Vector3.zero;
@@ -23,12 +25,14 @@ public class PlayerController : MonoBehaviour
     private Quaternion _playerRotation;
     private bool _isRotating;
     private bool _isJumping = false;
+    public JumpState JumpMode = JumpState.None;
 
     void Start()
     {
         _player = this.GetComponent<CharacterController>();
         _myRigid = this.GetComponent<Rigidbody>();
         _playerStat = this.GetComponent<PlayerStatus>();
+        _playerParkour = this.GetComponent<PlayerParkour>();
         _myGroundChecker = this.GetComponent<GroundChecker>();
         _playerYAngleOffset = _myCamera.GetComponent<CameraController>().GetCameraOffsetAngles().y;
         _playerMoveOrientedForward = Quaternion.Euler(0, _playerYAngleOffset, 0) * this.transform.forward;
@@ -90,6 +94,7 @@ public class PlayerController : MonoBehaviour
         if (_isJumping)
         {
             _isJumping = false;
+            JumpMode = _playerParkour.CheckRay();
             return _playerVelocity.y + _playerStat.JumpPower;
         }
         else

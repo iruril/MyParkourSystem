@@ -1,6 +1,6 @@
 using System.Collections;
+using System.Linq;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 
 public class PlayerParkour : MonoBehaviour
@@ -10,44 +10,84 @@ public class PlayerParkour : MonoBehaviour
     [SerializeField] private Transform _jumpTopRay;
     [SerializeField] private Transform _MaxHeightRay;
 
-    [SerializeField] private Vector3 _boxScale = new Vector3(0.6f, 0.2f, 0.1f);
     [SerializeField] private LayerMask _layerMask;
-    [SerializeField] private float _rayDistance = 1.5f;
+    [SerializeField] private float _rayDistance = 2.5f;
+    [SerializeField] private float _jumpOverLimit = 2.0f;
+
+    public enum JumpState
+    {
+        None,
+        DefaultJump,
+        JumpOver,
+        JumpClimb,
+        Climb
+    }
+    public JumpState JumpMode = JumpState.None;
 
     private void OnDrawGizmos()
     {
-        Gizmos.color = Color.cyan;
-        Gizmos.DrawWireSphere(_jumpBottomRay.position + transform.forward * _rayDistance, _boxScale.x / 2);
-        Gizmos.DrawWireSphere(_jumpMiddleRay.position + transform.forward * _rayDistance, _boxScale.x / 2);
-        Gizmos.DrawWireSphere(_jumpTopRay.position + transform.forward * _rayDistance, _boxScale.x / 2);
-        Gizmos.DrawWireSphere(_MaxHeightRay.position + transform.forward * _rayDistance, _boxScale.x / 2);
+        Debug.DrawRay(_jumpBottomRay.position, this.transform.forward, Color.cyan);
+        Debug.DrawRay(_jumpMiddleRay.position, this.transform.forward, Color.cyan);
+        Debug.DrawRay(_jumpTopRay.position, this.transform.forward, Color.cyan);
+        Debug.DrawRay(_MaxHeightRay.position, this.transform.forward, Color.cyan);
     }
 
     void FixedUpdate()
     {
-        Debug.Log(CheckRay());
     }
 
-    private int CheckRay()
+    private float RayCasting(Transform ray, float range)
     {
-        int rayCount = 0;
+        RaycastHit hit;
+        if (Physics.Raycast(ray.position, this.transform.forward, out hit, range, _layerMask))
+        {
+            float temp = hit.distance * 100;
+            temp = Mathf.Floor(temp);
+            return temp / 100;
+        }
+        return 0;
+    }
 
-        if(Physics.BoxCast(_jumpBottomRay.position, _boxScale, this.transform.forward, this.transform.rotation, _rayDistance, _layerMask))
+    private JumpState ShouldClimbAfterJumpOver(Transform ray)
+    {
+        float step = RayCasting(ray, _jumpOverLimit);
+        if (step < _jumpOverLimit && step != 0)
         {
-            rayCount++;
+            return JumpState.JumpClimb;
         }
-        if (Physics.BoxCast(_jumpMiddleRay.position, _boxScale, this.transform.forward, this.transform.rotation, _rayDistance, _layerMask))
+        return JumpState.JumpOver;
+    }
+
+    public JumpState CheckRay()
+    {
+        Dictionary<JumpState, float> temp = new();
+        float dist = 0;
+        dist = RayCasting(_jumpBottomRay, _rayDistance);
+        if (dist != 0) temp.Add(JumpState.DefaultJump, dist);
+
+        dist = RayCasting(_jumpMiddleRay, _rayDistance);
+        if (dist != 0) temp.Add(JumpState.JumpOver, dist);
+
+        dist = RayCasting(_jumpTopRay, _rayDistance);
+        if (dist != 0) temp.Add(JumpState.JumpClimb, dist);
+
+        dist = RayCasting(_MaxHeightRay, _rayDistance);
+        if (dist != 0) temp.Add(JumpState.Climb, dist);
+
+        if (temp.Count > 0)
         {
-            rayCount++;
+            JumpMode = temp.Aggregate((x, y) => x.Value < y.Value ? x : y).Key;
+            temp.Remove(JumpMode);
         }
-        if (Physics.BoxCast(_jumpTopRay.position, _boxScale, this.transform.forward, this.transform.rotation, _rayDistance, _layerMask))
+        else
         {
-            rayCount++;
+            JumpMode = JumpState.DefaultJump;
         }
-        if (Physics.BoxCast(_MaxHeightRay.position, _boxScale, this.transform.forward, this.transform.rotation, _rayDistance, _layerMask))
+
+        if(JumpMode == JumpState.JumpOver)
         {
-            rayCount++;
+            JumpMode = ShouldClimbAfterJumpOver(_jumpTopRay);
         }
-        return rayCount;
+        return JumpMode;
     }
 }
