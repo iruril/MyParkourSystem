@@ -21,7 +21,7 @@ public class CameraController : MonoBehaviour
         this.transform.rotation = Quaternion.Euler(_cameraOffsetAngles);
     }
 
-    void Update()
+    void LateUpdate()
     {
         if(this.transform.position != RefTarget.transform.position + _cameraOffset)
         {

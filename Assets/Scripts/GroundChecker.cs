@@ -15,7 +15,7 @@ public class GroundChecker : MonoBehaviour
         if (!drawGizmo) return;
 
         Gizmos.color = Color.red;
-        Gizmos.DrawCube(transform.position, _boxScale);
+        Gizmos.DrawCube(transform.position - transform.up * _detectionMaxDist, _boxScale);
     }
 
     public bool IsGrounded()

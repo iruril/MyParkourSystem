@@ -5,22 +5,19 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public Camera _myCamera { get; set; } = null;
-    [SerializeField] private float _gravityForce = 9.8f;
 
     private CharacterController _player;
     private Rigidbody _myRigid;
     private PlayerStatus _playerStat;
     private GroundChecker _myGroundChecker;
 
-    private Vector3 _playerDirection = Vector3.forward;
     private Vector3 _playerVelocity = Vector3.zero;
-
-    private Vector3 _prevPosition;
-    private Vector3 _nextPosition;
 
     private float _horizontalInput;
     private float _verticalInput;
     private float _playerYAngleOffset = 0;
+    private Vector3 _playerMoveOrientedForward;
+    private Vector3 _playerMoveOrientedRight;
     private bool _isJumping = false;
 
     void Start()
@@ -29,9 +26,9 @@ public class PlayerController : MonoBehaviour
         _myRigid = this.GetComponent<Rigidbody>();
         _playerStat = this.GetComponent<PlayerStatus>();
         _myGroundChecker = this.GetComponent<GroundChecker>();
-        _prevPosition = this.transform.position;
-        _nextPosition = this.transform.position;
         _playerYAngleOffset = _myCamera.GetComponent<CameraController>().GetCameraOffsetAngles().y;
+        _playerMoveOrientedForward = Quaternion.Euler(0, _playerYAngleOffset, 0) * this.transform.forward;
+        _playerMoveOrientedRight = Quaternion.Euler(0, _playerYAngleOffset, 0) * this.transform.right;
     }
 
     void Update()
@@ -42,47 +39,47 @@ public class PlayerController : MonoBehaviour
         {
             _isJumping = true;
         }
-        float interpolationValue = (Time.time - Time.fixedTime) / Time.fixedDeltaTime;
-        _player.Move(Vector3.Lerp(_prevPosition,_nextPosition, interpolationValue) - transform.position);
+        _player.Move(_playerVelocity * Time.deltaTime);
     }
 
     private void FixedUpdate()
     {
-        _prevPosition = _nextPosition;
-        PlayerMove();
         PlayerRotate();
-        _nextPosition += _playerDirection * Time.fixedDeltaTime;
+        PlayerMove();
     }
 
     private void PlayerMove()
     {
-        Debug.Log(_myGroundChecker.IsGrounded());
-        if (_myGroundChecker.IsGrounded())
-        {
-            if (_verticalInput != 0 || _horizontalInput != 0)
-            {
-                _playerDirection = new Vector3(_horizontalInput, 0, _verticalInput);
-                _playerVelocity = _playerDirection;
-                _playerDirection = _playerDirection.normalized;  
-            }
-            else
-            {
-                _playerDirection = new Vector3(0, 0, 0);
-                _playerVelocity = _playerDirection;
-            }
-            _playerDirection = Quaternion.Euler(0, 45, 0) * _playerDirection;
-            float currSpeed = Mathf.Min(_playerVelocity.magnitude, 1.0f) * _playerStat.MyCurrentSpeed;
-            _playerDirection *= currSpeed;
+        Vector3 xzPlaneVel = PlayerXZPlaneVelocity();
+        float yAxisVel = PlayerYAxisVelocity();
+        _playerVelocity = new Vector3(xzPlaneVel.x, yAxisVel, xzPlaneVel.z);
+    }
 
-            if (_isJumping)
-            {
-                _isJumping = false;
-                _playerDirection.y += _playerStat.JumpPower;
-            }
+    private Vector3 PlayerXZPlaneVelocity()
+    {
+        Vector3 moveVel = _playerMoveOrientedForward * _verticalInput + _playerMoveOrientedRight * _horizontalInput;
+        Vector3 moveDir = moveVel.normalized;
+
+        float moveSpeed = Mathf.Min(moveVel.magnitude, 1.0f) * _playerStat.MyCurrentSpeed;
+
+        return moveDir * moveSpeed;
+    }
+
+    private float PlayerYAxisVelocity()
+    {
+        if (!_myGroundChecker.IsGrounded())
+        {
+            return _playerVelocity.y - _playerStat._gravityForce * Time.fixedDeltaTime;
+        }
+
+        if (_isJumping)
+        {
+            _isJumping = false;
+            return _playerVelocity.y + _playerStat.JumpPower;
         }
         else
         {
-            _playerDirection.y -= _gravityForce * Time.fixedDeltaTime;
+            return Mathf.Max(0.0f, _playerVelocity.y);
         }
     }
 

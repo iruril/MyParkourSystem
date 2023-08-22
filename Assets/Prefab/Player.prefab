@@ -297,8 +297,7 @@ GameObject:
   - component: {fileID: 5334846614677680569}
   - component: {fileID: 5334846614686912093}
   - component: {fileID: 126287711670932942}
-  - component: {fileID: 3521277489380179491}
-  - component: {fileID: 8831129136227510664}
+  - component: {fileID: 7620308913396044995}
   - component: {fileID: 1981040560090046735}
   - component: {fileID: 5334846614338448949}
   - component: {fileID: 6514030380686118740}
@@ -365,7 +364,7 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 2.5, z: 0}
---- !u!54 &3521277489380179491
+--- !u!54 &7620308913396044995
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -375,26 +374,12 @@ Rigidbody:
   serializedVersion: 2
   m_Mass: 1
   m_Drag: 0
-  m_AngularDrag: 0
+  m_AngularDrag: 0.05
   m_UseGravity: 0
   m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!136 &8831129136227510664
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5334846614677445977}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  m_Radius: 1
-  m_Height: 5
-  m_Direction: 1
-  m_Center: {x: 0, y: 2.5, z: 0}
 --- !u!114 &1981040560090046735
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -409,6 +394,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Speed: 5
   JumpPower: 5
+  _gravityForce: 9.8
 --- !u!114 &5334846614338448949
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -421,7 +407,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27ca55ca4c0694927ab551a5ef248523, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _gravityForce: 9.8
 --- !u!114 &6514030380686118740
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -434,8 +419,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8432163cc1c049c49b4a3e9fabe43b19, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _boxScale: {x: 0.3, y: 0.1, z: 0.3}
-  _detectionMaxDist: 0
+  _boxScale: {x: 0.3, y: 0.05, z: 0.3}
+  _detectionMaxDist: 0.1
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
