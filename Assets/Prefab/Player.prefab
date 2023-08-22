@@ -495,7 +495,7 @@ MonoBehaviour:
   _layerMask:
     serializedVersion: 2
     m_Bits: 64
-  _rayDistance: 3
+  _rayDistance: 4
   _jumpOverLimit: 5
   JumpMode: 0
 --- !u!114 &6514030380686118740

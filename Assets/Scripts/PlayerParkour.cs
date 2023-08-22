@@ -14,6 +14,9 @@ public class PlayerParkour : MonoBehaviour
     [SerializeField] private float _rayDistance = 2.5f;
     [SerializeField] private float _jumpOverLimit = 2.0f;
 
+    private float _stepHeight = 0.0f;
+    private Vector3 _stepPoint;
+
     public enum JumpState
     {
         None,
@@ -26,14 +29,16 @@ public class PlayerParkour : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        Debug.DrawRay(_jumpBottomRay.position, this.transform.forward, Color.cyan);
-        Debug.DrawRay(_jumpMiddleRay.position, this.transform.forward, Color.cyan);
-        Debug.DrawRay(_jumpTopRay.position, this.transform.forward, Color.cyan);
-        Debug.DrawRay(_MaxHeightRay.position, this.transform.forward, Color.cyan);
-    }
+        Debug.DrawRay(_jumpBottomRay.position, this.transform.forward * _rayDistance, Color.cyan);
+        Debug.DrawRay(_jumpMiddleRay.position, this.transform.forward * _rayDistance, Color.cyan);
+        Debug.DrawRay(_jumpTopRay.position, this.transform.forward * _rayDistance, Color.cyan);
+        Debug.DrawRay(_MaxHeightRay.position, this.transform.forward * _rayDistance, Color.cyan);
 
-    void FixedUpdate()
-    {
+        if(_stepPoint != null)
+        {
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawSphere(_stepPoint, 0.1f);
+        }
     }
 
     private float RayCasting(Transform ray, float range)
@@ -77,6 +82,7 @@ public class PlayerParkour : MonoBehaviour
         if (temp.Count > 0)
         {
             JumpMode = temp.Aggregate((x, y) => x.Value < y.Value ? x : y).Key;
+            CalculateStepHeight(temp[JumpMode]);
             temp.Remove(JumpMode);
         }
         else
@@ -89,5 +95,16 @@ public class PlayerParkour : MonoBehaviour
             JumpMode = ShouldClimbAfterJumpOver(_jumpTopRay);
         }
         return JumpMode;
+    }
+
+    private void CalculateStepHeight(float rayDist)
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(_MaxHeightRay.position + _MaxHeightRay.forward * (rayDist + 0.1f),
+            Vector3.down, out hit, 7.5f, _layerMask))
+        {
+            _stepPoint = hit.point;
+            _stepHeight = _stepPoint.y - this.transform.position.y;
+        }
     }
 }
