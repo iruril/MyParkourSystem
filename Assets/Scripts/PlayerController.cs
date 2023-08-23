@@ -1,19 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static PlayerParkour;
 
 public class PlayerController : MonoBehaviour
 {
     public Camera _myCamera { get; set; } = null;
 
     private CharacterController _player;
-    private Rigidbody _myRigid;
     private PlayerStatus _playerStat;
     private PlayerParkour _playerParkour;
     private GroundChecker _myGroundChecker;
 
-    private Vector3 _playerVelocity = Vector3.zero;
+    public Vector3 PlayerVelocity { get; set; } = Vector3.zero;
 
     private float _horizontalInput;
     private float _verticalInput;
@@ -24,13 +22,12 @@ public class PlayerController : MonoBehaviour
     private Vector3 _playerMoveOrientedRight;
     private Quaternion _playerRotation;
     private bool _isRotating;
-    private bool _isJumping = false;
-    public JumpState JumpMode = JumpState.None;
+    public bool IsJumping { get; set; } = false;
+    public PlayerParkour.JumpState JumpMode = PlayerParkour.JumpState.None;
 
     void Start()
     {
         _player = this.GetComponent<CharacterController>();
-        _myRigid = this.GetComponent<Rigidbody>();
         _playerStat = this.GetComponent<PlayerStatus>();
         _playerParkour = this.GetComponent<PlayerParkour>();
         _myGroundChecker = this.GetComponent<GroundChecker>();
@@ -47,14 +44,14 @@ public class PlayerController : MonoBehaviour
         _rotationVerticalInput = Input.GetAxisRaw("Vertical");
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            _isJumping = true;
+            IsJumping = true;
         }
         if (_rotationHorizontalInput != 0 || _rotationVerticalInput != 0)
         {
             _playerRotation = Quaternion.Euler(0, CalculateRotationAngle(_rotationHorizontalInput, _rotationVerticalInput), 0);
             _isRotating = true;
         }
-        _player.Move(_playerVelocity * Time.deltaTime);
+        _player.Move(PlayerVelocity * Time.deltaTime);
     }
 
     private void FixedUpdate()
@@ -71,7 +68,7 @@ public class PlayerController : MonoBehaviour
     {
         Vector3 xzPlaneVel = PlayerXZPlaneVelocity();
         float yAxisVel = PlayerYAxisVelocity();
-        _playerVelocity = new Vector3(xzPlaneVel.x, yAxisVel, xzPlaneVel.z);
+        PlayerVelocity = new Vector3(xzPlaneVel.x, yAxisVel, xzPlaneVel.z);
     }
 
     private Vector3 PlayerXZPlaneVelocity()
@@ -88,18 +85,18 @@ public class PlayerController : MonoBehaviour
     {
         if (!_myGroundChecker.IsGrounded())
         {
-            return _playerVelocity.y - _playerStat.GravityForce * Time.fixedDeltaTime;
+            return PlayerVelocity.y - _playerStat.GravityForce * Time.fixedDeltaTime;
         }
 
-        if (_isJumping)
+        if (IsJumping)
         {
-            _isJumping = false;
+            IsJumping = false;
             JumpMode = _playerParkour.CheckRay();
-            return _playerVelocity.y + _playerStat.JumpPower;
+            return PlayerVelocity.y + _playerStat.JumpPower;
         }
         else
         {
-            return Mathf.Max(0.0f, _playerVelocity.y);
+            return Mathf.Max(0.0f, PlayerVelocity.y);
         }
     }
 
@@ -110,7 +107,7 @@ public class PlayerController : MonoBehaviour
 
     private void PlayerRotate()
     {
-        if (_playerVelocity.magnitude < 0.1f || (_rotationVerticalInput == 0 && _rotationHorizontalInput == 0))
+        if (PlayerVelocity.magnitude < 0.1f || (_rotationVerticalInput == 0 && _rotationHorizontalInput == 0))
         {
             _isRotating = false;
             return;

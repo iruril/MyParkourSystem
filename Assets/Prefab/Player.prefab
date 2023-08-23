@@ -360,6 +360,7 @@ GameObject:
   - component: {fileID: 5334846614686912093}
   - component: {fileID: 126287711670932942}
   - component: {fileID: 7620308913396044995}
+  - component: {fileID: 1290016053}
   - component: {fileID: 1981040560090046735}
   - component: {fileID: 5334846614338448949}
   - component: {fileID: 5343945871120968039}
@@ -402,7 +403,7 @@ Animator:
   m_GameObject: {fileID: 5334846614677445977}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 6c8bd974b9d75394dbe398ce2e3b6cac, type: 3}
-  m_Controller: {fileID: 9100000, guid: 8cc72fc9ee2599a45a5cac400e9ebbb9, type: 2}
+  m_Controller: {fileID: 9100000, guid: 715dad9cc34bcbe4580f3c1aaa82899e, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -447,6 +448,22 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &1290016053
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5334846614677445977}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5986b18568ae49d788668a185818572, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PrevState: 0
+  CurrentState: 0
+  NextState: 0
+  StateTimer: 0
 --- !u!114 &1981040560090046735
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -495,7 +512,7 @@ MonoBehaviour:
   _layerMask:
     serializedVersion: 2
     m_Bits: 64
-  _rayDistance: 4
+  _rayDistance: 5
   _jumpOverLimit: 5
   JumpMode: 0
 --- !u!114 &6514030380686118740

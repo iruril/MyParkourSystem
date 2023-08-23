@@ -14,8 +14,8 @@ public class PlayerParkour : MonoBehaviour
     [SerializeField] private float _rayDistance = 2.5f;
     [SerializeField] private float _jumpOverLimit = 2.0f;
 
-    private float _stepHeight = 0.0f;
-    private Vector3 _stepPoint;
+    public float StepHeight { get; set; } = 0.0f;
+    public Vector3 StepPoint { get; set; }
 
     public enum JumpState
     {
@@ -34,10 +34,10 @@ public class PlayerParkour : MonoBehaviour
         Debug.DrawRay(_jumpTopRay.position, this.transform.forward * _rayDistance, Color.cyan);
         Debug.DrawRay(_MaxHeightRay.position, this.transform.forward * _rayDistance, Color.cyan);
 
-        if(_stepPoint != null)
+        if(StepPoint != null)
         {
             Gizmos.color = Color.cyan;
-            Gizmos.DrawSphere(_stepPoint, 0.1f);
+            Gizmos.DrawSphere(StepPoint, 0.1f);
         }
     }
 
@@ -103,8 +103,8 @@ public class PlayerParkour : MonoBehaviour
         if (Physics.Raycast(_MaxHeightRay.position + _MaxHeightRay.forward * (rayDist + 0.1f),
             Vector3.down, out hit, 7.5f, _layerMask))
         {
-            _stepPoint = hit.point;
-            _stepHeight = _stepPoint.y - this.transform.position.y;
+            StepPoint = hit.point;
+            StepHeight = StepPoint.y - this.transform.position.y;
         }
     }
 }
