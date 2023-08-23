@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.40440086, g: 0.2276755, b: 0.096609086, a: 1}
+  m_IndirectSpecularColor: {r: 0.4045151, g: 0.2276314, b: 0.09670438, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -935,7 +935,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cameraOffset: {x: -3.5, y: 8, z: -3.5}
   _cameraOffsetAngles: {x: 60, y: 45, z: 0}
-  _smoothTime: 0.1
+  _smoothTime: 0.3
 --- !u!1 &382034192
 GameObject:
   m_ObjectHideFlags: 0
@@ -3211,6 +3211,11 @@ PrefabInstance:
         type: 3}
       propertyPath: JumpPower
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1981040560090046735, guid: a8e3cd3a1b08d4a83b8962265ac1533f,
+        type: 3}
+      propertyPath: RotateSpeed
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 5334846614677445977, guid: a8e3cd3a1b08d4a83b8962265ac1533f,
         type: 3}
