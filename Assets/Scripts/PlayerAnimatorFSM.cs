@@ -10,8 +10,8 @@ public class PlayerAnimatorFSM : MonoBehaviour
     private GroundChecker _myGroundChecker;
 
     private Vector3 _myPlayerXZVelocity;
-    private float _myPlayerVelocity;
-    private float _myPlayerYMove;
+    private float _myPlayerScalar;
+    private float _myPlayerYVelocity;
 
     public enum STATE
     {
@@ -44,8 +44,8 @@ public class PlayerAnimatorFSM : MonoBehaviour
     void Update()
     {
         _myPlayerXZVelocity = new Vector3(_playerControl.PlayerVelocity.x, 0, _playerControl.PlayerVelocity.z);
-        _myPlayerYMove = _playerControl.PlayerVelocity.y;
-        _myPlayerVelocity = _myPlayerXZVelocity.magnitude;
+        _myPlayerYVelocity = _playerControl.PlayerVelocity.y;
+        _myPlayerScalar = _myPlayerXZVelocity.magnitude;
 
         this.StateTimer += Time.deltaTime;
         if (this.NextState == STATE.NONE)
@@ -53,68 +53,68 @@ public class PlayerAnimatorFSM : MonoBehaviour
             switch (this.CurrentState)
             {
                 case STATE.IDLE:
-                    if(_myPlayerVelocity > 0.1f && !_playerControl.IsJumping)
+                    if(_myPlayerScalar > 0.1f && !_playerControl.IsJumping)
                     {
                         this.PrevState = this.CurrentState;
                         this.NextState = STATE.SPRINT_START;
                     }
-                    if (_myPlayerVelocity > 0.1f && (_playerControl.IsJumping || _myPlayerYMove > 0.2))
+                    if (_myPlayerScalar > 0.1f && (_playerControl.IsJumping || _myPlayerYVelocity > 0.2))
                     {
                         this.PrevState = this.CurrentState;
                         this.NextState = STATE.SPRINT_JUMP;
                     }
-                    if (_playerControl.IsJumping || _myPlayerYMove > 0.2)
+                    if (_playerControl.IsJumping || _myPlayerYVelocity > 0.2)
                     {
                         this.PrevState = this.CurrentState;
                         this.NextState = STATE.JUMP_START;
                     }
                     break;
                 case STATE.SPRINT_START:
-                    if (_playerControl.IsJumping || _myPlayerYMove > 0.2)
+                    if (_playerControl.IsJumping || _myPlayerYVelocity > 0.2)
                     {
                         this.PrevState = this.CurrentState;
                         this.NextState = STATE.SPRINT_JUMP;
                     }
-                    if (_myPlayerVelocity > 1 && !_playerControl.IsJumping)
+                    if (_myPlayerScalar > 1 && !_playerControl.IsJumping)
                     {
                         this.PrevState = this.CurrentState;
                         this.NextState = STATE.SPRINT;
                     }
-                    if (_myPlayerVelocity <= 0.1 && !_playerControl.IsJumping)
+                    if (_myPlayerScalar <= 0.1 && !_playerControl.IsJumping)
                     {
                         this.PrevState = this.CurrentState;
                         this.NextState = STATE.IDLE;
                     }
                     break;
                 case STATE.SPRINT:
-                    if (_playerControl.IsJumping || _myPlayerYMove > 0.2)
+                    if (_playerControl.IsJumping || _myPlayerYVelocity > 0.2)
                     {
                         this.PrevState = this.CurrentState;
                         this.NextState = STATE.SPRINT_JUMP;
                     }
-                    if (_myPlayerVelocity <= 1 && !_playerControl.IsJumping)
+                    if (_myPlayerScalar <= 1 && !_playerControl.IsJumping)
                     {
                         this.PrevState = this.CurrentState;
                         this.NextState = STATE.SPRINT_END;
                     }
-                    if (_myPlayerVelocity < 0.1f && !_playerControl.IsJumping)
+                    if (_myPlayerScalar < 0.1f && !_playerControl.IsJumping)
                     {
                         this.PrevState = this.CurrentState;
                         this.NextState = STATE.IDLE;
                     }
                     break;
                 case STATE.SPRINT_END:
-                    if (_playerControl.IsJumping || _myPlayerYMove > 0.2)
+                    if (_playerControl.IsJumping || _myPlayerYVelocity > 0.2)
                     {
                         this.PrevState = this.CurrentState;
                         this.NextState = STATE.SPRINT_JUMP;
                     }
-                    if (_myPlayerVelocity > 1 && !_playerControl.IsJumping)
+                    if (_myPlayerScalar > 1 && !_playerControl.IsJumping)
                     {
                         this.PrevState = this.CurrentState;
                         this.NextState = STATE.SPRINT;
                     }
-                    if (_myPlayerVelocity <= 0.1 && !_playerControl.IsJumping)
+                    if (_myPlayerScalar <= 0.1 && !_playerControl.IsJumping)
                     {
                         this.PrevState = this.CurrentState;
                         this.NextState = STATE.IDLE;
@@ -123,21 +123,8 @@ public class PlayerAnimatorFSM : MonoBehaviour
                 case STATE.SPRINT_JUMP:
                     if (_myAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.9f && _myGroundChecker.IsGrounded())
                     {
-                        if (PrevState == STATE.SPRINT)
-                        {
-                            this.PrevState = this.CurrentState;
-                            this.NextState = STATE.SPRINT;
-                        }
-                        else if (PrevState == STATE.SPRINT_START)
-                        {
-                            this.PrevState = this.CurrentState;
-                            this.NextState = STATE.SPRINT_START;
-                        }
-                        else
-                        {
-                            this.PrevState = this.CurrentState;
-                            this.NextState = STATE.SPRINT_END;
-                        }
+                        this.PrevState = this.CurrentState;
+                        this.NextState = STATE.SPRINT;
                     }
                     break;
                 case STATE.JUMP_START:
@@ -148,7 +135,7 @@ public class PlayerAnimatorFSM : MonoBehaviour
                     }
                     break;
                 case STATE.JUMP_END:
-                    if (_playerControl.IsJumping || _myPlayerYMove > 0.2)
+                    if (_playerControl.IsJumping || _myPlayerYVelocity > 0.2)
                     {
                         this.PrevState = this.CurrentState;
                         this.NextState = STATE.JUMP_START;
@@ -226,32 +213,16 @@ public class PlayerAnimatorFSM : MonoBehaviour
 
                 break;
             case STATE.SPRINT_START:
-                if (_playerControl.IsJumping || _myPlayerYMove > 0.2)
-                {
-                    this.PrevState = this.CurrentState;
-                    this.NextState = STATE.SPRINT_JUMP;
-                }
+
                 break;
             case STATE.SPRINT:
-                if (_playerControl.IsJumping || _myPlayerYMove > 0.2)
-                {
-                    this.PrevState = this.CurrentState;
-                    this.NextState = STATE.SPRINT_JUMP;
-                }
+
                 break;
             case STATE.SPRINT_END:
-                if (_playerControl.IsJumping || _myPlayerYMove > 0.2)
-                {
-                    this.PrevState = this.CurrentState;
-                    this.NextState = STATE.SPRINT_JUMP;
-                }
+
                 break;
             case STATE.JUMP_START:
-                if (_myGroundChecker.IsGrounded())
-                {
-                    this.PrevState = this.CurrentState;
-                    this.NextState = STATE.JUMP_END;
-                }
+
                 break;
             case STATE.JUMP_END:
 
