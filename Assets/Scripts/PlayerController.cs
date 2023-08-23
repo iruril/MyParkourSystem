@@ -92,6 +92,17 @@ public class PlayerController : MonoBehaviour
         {
             IsJumping = false;
             JumpMode = _playerParkour.CheckRay();
+            switch (JumpMode)
+            {
+                case PlayerParkour.JumpState.DefaultJump:
+                    return PlayerVelocity.y + _playerStat.JumpPower; // on default jump
+                case PlayerParkour.JumpState.JumpOver:
+                    return PlayerVelocity.y + _playerStat.JumpPower + _playerParkour.StepHeight; // temp
+                case PlayerParkour.JumpState.JumpClimb:
+                    return PlayerVelocity.y + _playerStat.JumpPower; // temp
+                case PlayerParkour.JumpState.Climb:
+                    return PlayerVelocity.y + _playerStat.JumpPower; // temp
+            }
             return PlayerVelocity.y + _playerStat.JumpPower;
         }
         else
