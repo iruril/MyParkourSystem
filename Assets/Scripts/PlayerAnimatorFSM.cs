@@ -71,12 +71,20 @@ public class PlayerAnimatorFSM : MonoBehaviour
                         this.NextState = STATE.JUMP_START;
                     }
 
-                    if (_playerControl.JumpMode == PlayerParkour.JumpState.JumpOver && _playerControl.IsJumping)
+                    if (_playerControl.IsJumping)
                     {
-                        this.PrevState = this.CurrentState;
-                        this.NextState = STATE.PARKOUR_JUMP_OVER;
+                        if (_playerControl.JumpMode == PlayerParkour.JumpState.JumpOver)
+                        {
+                            this.PrevState = this.CurrentState;
+                            this.NextState = STATE.PARKOUR_JUMP_OVER;
+                        }
+                        if (_playerControl.JumpMode == PlayerParkour.JumpState.JumpClimb)
+                        {
+                            this.PrevState = this.CurrentState;
+                            this.NextState = STATE.PARKOUR_JUMP_CLIMB;
+                        }
                     }
-                        break;
+                    break;
                 case STATE.SPRINT_START:
                     if (_playerControl.IsJumping || _myPlayerYVelocity > 0.2)
                     {
@@ -94,10 +102,18 @@ public class PlayerAnimatorFSM : MonoBehaviour
                         this.NextState = STATE.IDLE;
                     }
 
-                    if (_playerControl.JumpMode == PlayerParkour.JumpState.JumpOver && _playerControl.IsJumping)
+                    if (_playerControl.IsJumping)
                     {
-                        this.PrevState = this.CurrentState;
-                        this.NextState = STATE.PARKOUR_JUMP_OVER;
+                        if (_playerControl.JumpMode == PlayerParkour.JumpState.JumpOver)
+                        {
+                            this.PrevState = this.CurrentState;
+                            this.NextState = STATE.PARKOUR_JUMP_OVER;
+                        }
+                        if (_playerControl.JumpMode == PlayerParkour.JumpState.JumpClimb)
+                        {
+                            this.PrevState = this.CurrentState;
+                            this.NextState = STATE.PARKOUR_JUMP_CLIMB;
+                        }
                     }
                     break;
                 case STATE.SPRINT:
@@ -118,10 +134,18 @@ public class PlayerAnimatorFSM : MonoBehaviour
                         this.NextState = STATE.IDLE;
                     }
 
-                    if (_playerControl.JumpMode == PlayerParkour.JumpState.JumpOver && _playerControl.IsJumping)
+                    if (_playerControl.IsJumping)
                     {
-                        this.PrevState = this.CurrentState;
-                        this.NextState = STATE.PARKOUR_JUMP_OVER;
+                        if (_playerControl.JumpMode == PlayerParkour.JumpState.JumpOver)
+                        {
+                            this.PrevState = this.CurrentState;
+                            this.NextState = STATE.PARKOUR_JUMP_OVER;
+                        }
+                        if (_playerControl.JumpMode == PlayerParkour.JumpState.JumpClimb)
+                        {
+                            this.PrevState = this.CurrentState;
+                            this.NextState = STATE.PARKOUR_JUMP_CLIMB;
+                        }
                     }
                     break;
                 case STATE.SPRINT_END:
@@ -142,10 +166,18 @@ public class PlayerAnimatorFSM : MonoBehaviour
                         this.NextState = STATE.IDLE;
                     }
 
-                    if (_playerControl.JumpMode == PlayerParkour.JumpState.JumpOver && _playerControl.IsJumping)
+                    if (_playerControl.IsJumping)
                     {
-                        this.PrevState = this.CurrentState;
-                        this.NextState = STATE.PARKOUR_JUMP_OVER;
+                        if (_playerControl.JumpMode == PlayerParkour.JumpState.JumpOver)
+                        {
+                            this.PrevState = this.CurrentState;
+                            this.NextState = STATE.PARKOUR_JUMP_OVER;
+                        }
+                        if (_playerControl.JumpMode == PlayerParkour.JumpState.JumpClimb)
+                        {
+                            this.PrevState = this.CurrentState;
+                            this.NextState = STATE.PARKOUR_JUMP_CLIMB;
+                        }
                     }
                     break;
                 case STATE.SPRINT_JUMP:
@@ -179,6 +211,11 @@ public class PlayerAnimatorFSM : MonoBehaviour
                         this.PrevState = this.CurrentState;
                         this.NextState = STATE.PARKOUR_JUMP_OVER;
                     }
+                    else if (_playerControl.JumpMode == PlayerParkour.JumpState.JumpClimb && _playerControl.IsJumping)
+                    {
+                        this.PrevState = this.CurrentState;
+                        this.NextState = STATE.PARKOUR_JUMP_CLIMB;
+                    }
                     else
                     {
                         this.PrevState = this.CurrentState;
@@ -194,7 +231,11 @@ public class PlayerAnimatorFSM : MonoBehaviour
                     }
                     break;
                 case STATE.PARKOUR_JUMP_CLIMB:
-
+                    if (_myAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.9f)
+                    {
+                        this.PrevState = this.CurrentState;
+                        this.NextState = STATE.IDLE;
+                    }
                     break;
                 case STATE.PARKOUR_CLIMB:
 

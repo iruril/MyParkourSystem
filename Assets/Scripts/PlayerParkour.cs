@@ -16,7 +16,9 @@ public class PlayerParkour : MonoBehaviour
 
     public float ParkourMoveSpeed= 8.0f;
     public float ParkourJumpTime= 0.3f;
-    public float ParkourTime= 1.0f;
+    public float ParkourClimbTime = 0.5f;
+    public float ParkourVaultTime= 1.0f;
+    public float ParkourJumpClimbTime = 1.5f;
     public float StepHeight { get; set; } = 0.0f;
     public Vector3 StepPoint { get; set; }
 

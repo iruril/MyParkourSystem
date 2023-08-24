@@ -57,7 +57,10 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        JumpMode = _playerParkour.CheckRay();
+        if (_myGroundChecker.IsGrounded())
+        {
+            JumpMode = _playerParkour.CheckRay();
+        }
         if (!_isOnDynamicMove)
         {
             if (_isRotating)
@@ -107,7 +110,11 @@ public class PlayerController : MonoBehaviour
                     }
                     return Mathf.Max(0.0f, PlayerVelocity.y);
                 case PlayerParkour.JumpState.JumpClimb:
-                    return PlayerVelocity.y + _playerStat.JumpPower; // temp
+                    if (!_isOnDynamicMove)
+                    {
+                        StartCoroutine(DoHopClimb());
+                    }
+                    return Mathf.Max(0.0f, PlayerVelocity.y);
                 case PlayerParkour.JumpState.Climb:
                     return PlayerVelocity.y + _playerStat.JumpPower; // temp
             }
@@ -152,7 +159,7 @@ public class PlayerController : MonoBehaviour
 
         Vector3 VaultDir = this.transform.forward;
        
-        while (currentTime <= _playerParkour.ParkourTime)
+        while (currentTime <= _playerParkour.ParkourVaultTime)
         {
             currentTime += Time.deltaTime;
             float yAxisVel = PlayerYAxisVelocity();
@@ -162,6 +169,36 @@ public class PlayerController : MonoBehaviour
             yield return null;
         }
         
+        _isOnDynamicMove = false;
+        yield break;
+    }
+
+    IEnumerator DoHopClimb()
+    {
+        _isOnDynamicMove = true;
+        Vector3 startPoint = this.transform.position;
+        Vector3 endPoint = _playerParkour.StepPoint;
+        Vector3 t1 = new Vector3(endPoint.x, 0, endPoint.z);
+        Vector3 t2 = new Vector3(startPoint.x, 0, startPoint.z);
+        Vector3 climbPoint = _playerParkour.StepPoint - (t1 - t2).normalized * 0.3f;
+
+        climbPoint.y = climbPoint.y - 0.5f;
+        float currentTime = 0;
+
+        while (currentTime <= _playerParkour.ParkourJumpTime)
+        {
+            currentTime += Time.deltaTime;
+            this.transform.position = Vector3.Lerp(startPoint, climbPoint, currentTime / _playerParkour.ParkourClimbTime);
+            yield return null;
+        }
+        startPoint = this.transform.position;
+        while (currentTime <= _playerParkour.ParkourJumpClimbTime)
+        {
+            currentTime += Time.deltaTime;
+            this.transform.position = Vector3.Lerp(startPoint, endPoint, (currentTime - _playerParkour.ParkourClimbTime) / _playerParkour.ParkourJumpClimbTime);
+            yield return null;
+        }
+
         _isOnDynamicMove = false;
         yield break;
     }
