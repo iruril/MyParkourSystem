@@ -11,14 +11,14 @@ public class PlayerParkour : MonoBehaviour
     [SerializeField] private Transform _MaxHeightRay;
 
     [SerializeField] private LayerMask _layerMask;
-    [SerializeField] private float _rayDistance = 2.5f;
-    [SerializeField] private float _jumpOverLimit = 2.0f;
+    [SerializeField] private float _rayDistance = 3.0f;
+    [SerializeField] private float _jumpOverLimit = 5.0f;
 
-    public float ParkourMoveSpeed= 8.0f;
+    public float ParkourMoveSpeed= 5.0f;
     public float ParkourJumpTime= 0.3f;
-    public float ParkourClimbTime = 0.5f;
+    public float ParkourClimbTime = 0.4f;
     public float ParkourVaultTime= 1.0f;
-    public float ParkourJumpClimbTime = 1.5f;
+    public float ParkourJumpClimbTime = 1.3f;
     public float StepHeight { get; set; } = 0.0f;
     public Vector3 StepPoint { get; set; }
 

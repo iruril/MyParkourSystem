@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
     private PlayerStatus _playerStat;
     private PlayerParkour _playerParkour;
     private GroundChecker _myGroundChecker;
+    private PlayerAnimatorFSM _myAnimFSM;
 
     public Vector3 PlayerVelocity { get; set; } = Vector3.zero;
 
@@ -22,7 +23,7 @@ public class PlayerController : MonoBehaviour
     private Vector3 _playerMoveOrientedRight;
     private Quaternion _playerRotation;
     private bool _isRotating;
-    private bool _isOnDynamicMove = false;
+    public bool IsOnDynamicMove { get; set; } = false;
     public bool IsJumping { get; set; } = false;
     public PlayerParkour.JumpState JumpMode = PlayerParkour.JumpState.None;
 
@@ -32,6 +33,7 @@ public class PlayerController : MonoBehaviour
         _playerStat = this.GetComponent<PlayerStatus>();
         _playerParkour = this.GetComponent<PlayerParkour>();
         _myGroundChecker = this.GetComponent<GroundChecker>();
+        _myAnimFSM = this.GetComponent<PlayerAnimatorFSM>();
         _playerYAngleOffset = _myCamera.GetComponent<CameraController>().GetCameraOffsetAngles().y;
         _playerMoveOrientedForward = Quaternion.Euler(0, _playerYAngleOffset, 0) * this.transform.forward;
         _playerMoveOrientedRight = Quaternion.Euler(0, _playerYAngleOffset, 0) * this.transform.right;
@@ -61,7 +63,7 @@ public class PlayerController : MonoBehaviour
         {
             JumpMode = _playerParkour.CheckRay();
         }
-        if (!_isOnDynamicMove)
+        if (!IsOnDynamicMove)
         {
             if (_isRotating)
             {
@@ -104,13 +106,13 @@ public class PlayerController : MonoBehaviour
                 case PlayerParkour.JumpState.DefaultJump:
                     return PlayerVelocity.y + _playerStat.JumpPower; // on default jump
                 case PlayerParkour.JumpState.JumpOver:
-                    if (!_isOnDynamicMove)
+                    if (!IsOnDynamicMove)
                     {
                         StartCoroutine(DoVault());
                     }
                     return Mathf.Max(0.0f, PlayerVelocity.y);
                 case PlayerParkour.JumpState.JumpClimb:
-                    if (!_isOnDynamicMove)
+                    if (!IsOnDynamicMove)
                     {
                         StartCoroutine(DoHopClimb());
                     }
@@ -142,64 +144,85 @@ public class PlayerController : MonoBehaviour
         float step = Time.fixedDeltaTime * _playerStat.RotateSpeed;
         this.transform.rotation = Quaternion.Slerp(transform.rotation, _playerRotation, step);
     }
+    #endregion
 
+    #region Parkour Actions
     IEnumerator DoVault()
     {
-        _isOnDynamicMove = true;
+        _myAnimFSM.PrevState = _myAnimFSM.CurrentState;
+        _myAnimFSM.NextState = PlayerAnimatorFSM.STATE.PARKOUR_JUMP_OVER;
+        Animator anim = _myAnimFSM.MyAnimator;
+        anim.Play(anim.GetCurrentAnimatorStateInfo(0).fullPathHash, 0, 0);
+        IsOnDynamicMove = true;
         Vector3 startPoint = this.transform.position;
         Vector3 endPoint = _playerParkour.StepPoint;
         float currentTime = 0;
 
-        while (currentTime <= _playerParkour.ParkourJumpTime)
+        while (currentTime < _playerParkour.ParkourJumpTime)
         {
             currentTime += Time.deltaTime;
-            this.transform.position = Vector3.Lerp(startPoint, endPoint, currentTime / _playerParkour.ParkourJumpTime);
+            this.transform.position = Vector3.Slerp(startPoint, endPoint, currentTime / _playerParkour.ParkourJumpTime);
+            
             yield return null;
         }
-
         Vector3 VaultDir = this.transform.forward;
        
-        while (currentTime <= _playerParkour.ParkourVaultTime)
+        while (currentTime < _playerParkour.ParkourVaultTime)
         {
             currentTime += Time.deltaTime;
             float yAxisVel = PlayerYAxisVelocity();
             PlayerVelocity = new Vector3(VaultDir.x *_playerParkour.ParkourMoveSpeed,
                                          yAxisVel,
                                          VaultDir.z *_playerParkour.ParkourMoveSpeed);
+            
             yield return null;
         }
         
-        _isOnDynamicMove = false;
+        IsOnDynamicMove = false;
         yield break;
     }
 
     IEnumerator DoHopClimb()
     {
-        _isOnDynamicMove = true;
+        _myAnimFSM.PrevState = _myAnimFSM.CurrentState;
+        _myAnimFSM.NextState = PlayerAnimatorFSM.STATE.PARKOUR_JUMP_CLIMB;
+        Animator anim = _myAnimFSM.MyAnimator;
+        anim.Play(anim.GetCurrentAnimatorStateInfo(0).fullPathHash, 0, 0);
+        IsOnDynamicMove = true;
         Vector3 startPoint = this.transform.position;
         Vector3 endPoint = _playerParkour.StepPoint;
         Vector3 t1 = new Vector3(endPoint.x, 0, endPoint.z);
         Vector3 t2 = new Vector3(startPoint.x, 0, startPoint.z);
         Vector3 climbPoint = _playerParkour.StepPoint - (t1 - t2).normalized * 0.3f;
+        if (climbPoint.y >= 1.5f)
+        {
+            climbPoint.y = climbPoint.y - 1.0f;
+        }
+        else
+        {
+            climbPoint.y = climbPoint.y - 0.5f;
+        }
 
-        climbPoint.y = climbPoint.y - 0.5f;
         float currentTime = 0;
-
-        while (currentTime <= _playerParkour.ParkourJumpTime)
+        while (currentTime < _playerParkour.ParkourClimbTime)
         {
             currentTime += Time.deltaTime;
-            this.transform.position = Vector3.Lerp(startPoint, climbPoint, currentTime / _playerParkour.ParkourClimbTime);
-            yield return null;
-        }
-        startPoint = this.transform.position;
-        while (currentTime <= _playerParkour.ParkourJumpClimbTime)
-        {
-            currentTime += Time.deltaTime;
-            this.transform.position = Vector3.Lerp(startPoint, endPoint, (currentTime - _playerParkour.ParkourClimbTime) / _playerParkour.ParkourJumpClimbTime);
+            this.transform.position = Vector3.Slerp(startPoint, climbPoint, currentTime / _playerParkour.ParkourClimbTime);
+            
             yield return null;
         }
 
-        _isOnDynamicMove = false;
+        float lerpTime = _playerParkour.ParkourJumpClimbTime - _playerParkour.ParkourClimbTime;
+        currentTime = 0;
+        while (currentTime < lerpTime)
+        {
+            currentTime += Time.deltaTime;
+            this.transform.position = Vector3.Slerp(climbPoint, endPoint, currentTime / lerpTime);
+            
+            yield return null;
+        }
+
+        IsOnDynamicMove = false;
         yield break;
     }
     #endregion

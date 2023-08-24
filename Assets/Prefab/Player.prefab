@@ -499,9 +499,9 @@ MonoBehaviour:
   _jumpOverLimit: 5
   ParkourMoveSpeed: 5
   ParkourJumpTime: 0.3
-  ParkourClimbTime: 0.5
+  ParkourClimbTime: 0.3
   ParkourVaultTime: 1
-  ParkourJumpClimbTime: 1.2
+  ParkourJumpClimbTime: 1.3
   JumpMode: 0
 --- !u!114 &6514030380686118740
 MonoBehaviour:
