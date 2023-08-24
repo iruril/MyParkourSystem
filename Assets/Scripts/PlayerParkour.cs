@@ -14,6 +14,9 @@ public class PlayerParkour : MonoBehaviour
     [SerializeField] private float _rayDistance = 2.5f;
     [SerializeField] private float _jumpOverLimit = 2.0f;
 
+    public float ParkourMoveSpeed= 8.0f;
+    public float ParkourJumpTime= 0.3f;
+    public float ParkourTime= 1.0f;
     public float StepHeight { get; set; } = 0.0f;
     public Vector3 StepPoint { get; set; }
 

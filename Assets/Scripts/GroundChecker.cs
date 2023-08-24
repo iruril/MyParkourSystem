@@ -9,7 +9,7 @@ public class GroundChecker : MonoBehaviour
     [SerializeField] private LayerMask groundLayer;
 
     [SerializeField] private bool drawGizmo;
-    
+
     private void OnDrawGizmos()
     {
         if (!drawGizmo) return;

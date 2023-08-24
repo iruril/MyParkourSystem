@@ -22,6 +22,7 @@ public class PlayerController : MonoBehaviour
     private Vector3 _playerMoveOrientedRight;
     private Quaternion _playerRotation;
     private bool _isRotating;
+    private bool _isOnDynamicMove = false;
     public bool IsJumping { get; set; } = false;
     public PlayerParkour.JumpState JumpMode = PlayerParkour.JumpState.None;
 
@@ -56,11 +57,15 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (_isRotating)
+        JumpMode = _playerParkour.CheckRay();
+        if (!_isOnDynamicMove)
         {
-            PlayerRotate();
+            if (_isRotating)
+            {
+                PlayerRotate();
+            }
+            PlayerMove();
         }
-        PlayerMove();
     }
 
     #region Player Default Move And Rotation
@@ -91,13 +96,16 @@ public class PlayerController : MonoBehaviour
         if (IsJumping)
         {
             IsJumping = false;
-            JumpMode = _playerParkour.CheckRay();
             switch (JumpMode)
             {
                 case PlayerParkour.JumpState.DefaultJump:
                     return PlayerVelocity.y + _playerStat.JumpPower; // on default jump
                 case PlayerParkour.JumpState.JumpOver:
-                    return PlayerVelocity.y + _playerStat.JumpPower + _playerParkour.StepHeight; // temp
+                    if (!_isOnDynamicMove)
+                    {
+                        StartCoroutine(DoVault());
+                    }
+                    return Mathf.Max(0.0f, PlayerVelocity.y);
                 case PlayerParkour.JumpState.JumpClimb:
                     return PlayerVelocity.y + _playerStat.JumpPower; // temp
                 case PlayerParkour.JumpState.Climb:
@@ -125,7 +133,37 @@ public class PlayerController : MonoBehaviour
         }
 
         float step = Time.fixedDeltaTime * _playerStat.RotateSpeed;
-        transform.rotation = Quaternion.Slerp(transform.rotation, _playerRotation, step);
+        this.transform.rotation = Quaternion.Slerp(transform.rotation, _playerRotation, step);
+    }
+
+    IEnumerator DoVault()
+    {
+        _isOnDynamicMove = true;
+        Vector3 startPoint = this.transform.position;
+        Vector3 endPoint = _playerParkour.StepPoint;
+        float currentTime = 0;
+
+        while (currentTime <= _playerParkour.ParkourJumpTime)
+        {
+            currentTime += Time.deltaTime;
+            this.transform.position = Vector3.Lerp(startPoint, endPoint, currentTime / _playerParkour.ParkourJumpTime);
+            yield return null;
+        }
+
+        Vector3 VaultDir = this.transform.forward;
+       
+        while (currentTime <= _playerParkour.ParkourTime)
+        {
+            currentTime += Time.deltaTime;
+            float yAxisVel = PlayerYAxisVelocity();
+            PlayerVelocity = new Vector3(VaultDir.x *_playerParkour.ParkourMoveSpeed,
+                                         yAxisVel,
+                                         VaultDir.z *_playerParkour.ParkourMoveSpeed);
+            yield return null;
+        }
+        
+        _isOnDynamicMove = false;
+        yield break;
     }
     #endregion
 }

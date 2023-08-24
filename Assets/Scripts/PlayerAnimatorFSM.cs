@@ -149,6 +149,11 @@ public class PlayerAnimatorFSM : MonoBehaviour
                     }
                     break;
                 case STATE.SPRINT_JUMP:
+                    if (_playerControl.JumpMode == PlayerParkour.JumpState.JumpOver && _playerControl.IsJumping)
+                    {
+                        this.PrevState = this.CurrentState;
+                        this.NextState = STATE.PARKOUR_JUMP_OVER;
+                    }
                     if (_myAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.9f && _myGroundChecker.IsGrounded())
                     {
                         this.PrevState = this.CurrentState;
@@ -168,6 +173,11 @@ public class PlayerAnimatorFSM : MonoBehaviour
                     {
                         this.PrevState = this.CurrentState;
                         this.NextState = STATE.JUMP_START;
+                    }
+                    else if (_playerControl.JumpMode == PlayerParkour.JumpState.JumpOver && _playerControl.IsJumping)
+                    {
+                        this.PrevState = this.CurrentState;
+                        this.NextState = STATE.PARKOUR_JUMP_OVER;
                     }
                     else
                     {
@@ -227,7 +237,7 @@ public class PlayerAnimatorFSM : MonoBehaviour
                     _myAnimator.SetInteger("State", StateEnumToInt(CurrentState));
                     break;
                 case STATE.PARKOUR_JUMP_OVER:
-                    _myAnimator.applyRootMotion = true;
+                    _myAnimator.applyRootMotion = false;
                     _myAnimator.SetInteger("State", StateEnumToInt(CurrentState));
                     break;
                 case STATE.PARKOUR_JUMP_CLIMB:
