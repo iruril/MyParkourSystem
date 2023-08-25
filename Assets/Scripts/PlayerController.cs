@@ -47,10 +47,6 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate() //For Velocity Calculations
     {
-        if (_myGroundChecker.IsGrounded())
-        {
-            JumpMode = _playerParkour.CheckRay(); //Predicts Next JumpMode
-        }
         if (!IsOnDynamicMove) //While Isn't on Parkour Action
         {
             if (_isRotating)
@@ -77,6 +73,11 @@ public class PlayerController : MonoBehaviour
 
     private void CalculatePlayerTransformByInput()
     {
+        if (_myGroundChecker.IsGrounded())
+        {
+            JumpMode = _playerParkour.CheckRay(); //Predicts Next JumpMode
+        }
+
         if (_rotationHorizontalInput != 0 || _rotationVerticalInput != 0)
         {
             _playerRotation = Quaternion.Euler(0, CalculateRotationAngle(_rotationHorizontalInput, _rotationVerticalInput), 0);
@@ -183,9 +184,9 @@ public class PlayerController : MonoBehaviour
         float step = Time.fixedDeltaTime * _playerStat.RotateSpeed; //Smooth Step for Prevent Ragging
         this.transform.rotation = Quaternion.Slerp(transform.rotation, _playerRotation, step);
     }
-    #endregion
+#endregion
 
-    #region Parkour Actions Fields
+#region Parkour Actions Fields
     private IEnumerator DoVault()
     {
         if (JumpMode != PlayerParkour.JumpState.Vault && !_myGroundChecker.IsGrounded())
@@ -300,5 +301,5 @@ public class PlayerController : MonoBehaviour
         JumpMode = PlayerParkour.JumpState.None;
         yield break;
     }
-    #endregion
+#endregion
 }
