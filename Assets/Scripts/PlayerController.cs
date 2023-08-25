@@ -82,8 +82,11 @@ public class PlayerController : MonoBehaviour
             _playerRotation = Quaternion.Euler(0, CalculateRotationAngle(_rotationHorizontalInput, _rotationVerticalInput), 0);
             _isRotating = true;
         }
-
         _player.Move(PlayerVelocity * Time.deltaTime);
+        if (!(Vector3.Distance(PlayerVelocity, _player.velocity) <= 0.1f))
+        {
+            Debug.Log(IsOnDynamicMove + "Vel Value" + PlayerVelocity + "Vel Real" + _player.velocity);
+        }
     }
     #endregion
 
@@ -109,6 +112,15 @@ public class PlayerController : MonoBehaviour
     {
         if (!_myGroundChecker.IsGrounded()) // If isn't on ground, then apply Gravity force
         {
+            if (IsJumping) //while get input 'Jump'
+            {
+                switch (JumpMode)
+                {
+                    default:
+                        IsJumping = false;
+                        break;
+                }
+            }
             return PlayerVelocity.y - _playerStat.GravityForce * Time.fixedDeltaTime;
         }
 
@@ -124,18 +136,30 @@ public class PlayerController : MonoBehaviour
                     {
                         StartCoroutine(DoVault());
                     }
+                    else
+                    {
+                        JumpMode = PlayerParkour.JumpState.None;
+                        IsJumping = false;
+                    }
                     return Mathf.Max(0.0f, PlayerVelocity.y);
                 case PlayerParkour.JumpState.JumpClimb: //Do JumpClimb Action
                     if (!IsOnDynamicMove)
                     {
                         StartCoroutine(DoHopClimb());
                     }
+                    else
+                    {
+                        JumpMode = PlayerParkour.JumpState.None;
+                        IsJumping = false;
+                    }
                     return Mathf.Max(0.0f, PlayerVelocity.y); //Do Climb Action
                 case PlayerParkour.JumpState.Climb:
                     IsJumping = false;
                     return PlayerVelocity.y + _playerStat.JumpPower;
+                default:
+                    IsJumping = false;
+                    return Mathf.Max(0.0f, PlayerVelocity.y); //If There's no condition
             }
-            return PlayerVelocity.y + _playerStat.JumpPower; //If There's no condition, just do default jump.
         }
         else
         {
@@ -164,6 +188,12 @@ public class PlayerController : MonoBehaviour
     #region Parkour Actions Fields
     private IEnumerator DoVault()
     {
+        if (JumpMode != PlayerParkour.JumpState.Vault && !_myGroundChecker.IsGrounded())
+        {
+            IsJumping = false;
+            yield break;
+        }
+
         //Animation Set
         _myAnimFSM.PrevState = _myAnimFSM.CurrentState;
         _myAnimFSM.NextState = PlayerAnimatorFSM.STATE.PARKOUR_VAULT;
@@ -171,6 +201,7 @@ public class PlayerController : MonoBehaviour
         anim.Play(anim.GetCurrentAnimatorStateInfo(0).fullPathHash, 0, 0);
 
         //Default Value Set
+        PlayerVelocity = Vector3.zero;
         IsOnDynamicMove = true;
         Vector3 startPoint = this.transform.position;
         Vector3 endPoint = _playerParkour.StepPoint;
@@ -205,14 +236,20 @@ public class PlayerController : MonoBehaviour
             
             yield return null;
         }
-
         IsJumping = false;
         IsOnDynamicMove = false;
+        JumpMode = PlayerParkour.JumpState.None;
         yield break;
     }
 
     private IEnumerator DoHopClimb()
     {
+        if (JumpMode != PlayerParkour.JumpState.JumpClimb && !_myGroundChecker.IsGrounded())
+        {
+            IsJumping = false;
+            yield break;
+        }
+
         //Animation Set
         _myAnimFSM.PrevState = _myAnimFSM.CurrentState;
         _myAnimFSM.NextState = PlayerAnimatorFSM.STATE.PARKOUR_JUMP_CLIMB;
@@ -220,6 +257,7 @@ public class PlayerController : MonoBehaviour
         anim.Play(anim.GetCurrentAnimatorStateInfo(0).fullPathHash, 0, 0);
 
         //Default Value Set
+        PlayerVelocity = Vector3.zero;
         IsOnDynamicMove = true;
         Vector3 startPoint = this.transform.position;
         Vector3 endPoint = _playerParkour.StepPoint;
@@ -259,6 +297,7 @@ public class PlayerController : MonoBehaviour
 
         IsJumping = false;
         IsOnDynamicMove = false;
+        JumpMode = PlayerParkour.JumpState.None;
         yield break;
     }
     #endregion

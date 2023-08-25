@@ -46,18 +46,18 @@ public class PlayerAnimatorFSM : MonoBehaviour
         _myPlayerScalar = _myPlayerXZVelocity.magnitude;
 
         this.StateTimer += Time.deltaTime;
-        if (this.NextState == STATE.NONE && !_playerControl.IsOnDynamicMove)
+        if (this.NextState == STATE.NONE)
         {
             switch (this.CurrentState)
             {
                 case STATE.IDLE:
-                    if (_playerControl.JumpMode == PlayerParkour.JumpState.Vault && _playerControl.IsJumping)
+                    if (_playerControl.JumpMode == PlayerParkour.JumpState.Vault && _playerControl.IsOnDynamicMove)
                     {
                         this.PrevState = this.CurrentState;
                         this.NextState = STATE.PARKOUR_VAULT;
                     }
 
-                    if (_playerControl.JumpMode == PlayerParkour.JumpState.JumpClimb && _playerControl.IsJumping)
+                    if (_playerControl.JumpMode == PlayerParkour.JumpState.JumpClimb && _playerControl.IsOnDynamicMove)
                     {
                         this.PrevState = this.CurrentState;
                         this.NextState = STATE.PARKOUR_JUMP_CLIMB;
@@ -82,13 +82,13 @@ public class PlayerAnimatorFSM : MonoBehaviour
                     }
                     break;
                 case STATE.SPRINT_START:
-                    if (_playerControl.JumpMode == PlayerParkour.JumpState.Vault && _playerControl.IsJumping)
+                    if (_playerControl.JumpMode == PlayerParkour.JumpState.Vault && _playerControl.IsOnDynamicMove)
                     {
                         this.PrevState = this.CurrentState;
                         this.NextState = STATE.PARKOUR_VAULT;
                     }
 
-                    if (_playerControl.JumpMode == PlayerParkour.JumpState.JumpClimb && _playerControl.IsJumping)
+                    if (_playerControl.JumpMode == PlayerParkour.JumpState.JumpClimb && _playerControl.IsOnDynamicMove)
                     {
                         this.PrevState = this.CurrentState;
                         this.NextState = STATE.PARKOUR_JUMP_CLIMB;
@@ -111,13 +111,13 @@ public class PlayerAnimatorFSM : MonoBehaviour
                     }
                     break;
                 case STATE.SPRINT:
-                    if (_playerControl.JumpMode == PlayerParkour.JumpState.Vault && _playerControl.IsJumping)
+                    if (_playerControl.JumpMode == PlayerParkour.JumpState.Vault && _playerControl.IsOnDynamicMove)
                     {
                         this.PrevState = this.CurrentState;
                         this.NextState = STATE.PARKOUR_VAULT;
                     }
 
-                    if (_playerControl.JumpMode == PlayerParkour.JumpState.JumpClimb && _playerControl.IsJumping)
+                    if (_playerControl.JumpMode == PlayerParkour.JumpState.JumpClimb && _playerControl.IsOnDynamicMove)
                     {
                         this.PrevState = this.CurrentState;
                         this.NextState = STATE.PARKOUR_JUMP_CLIMB;
@@ -141,13 +141,13 @@ public class PlayerAnimatorFSM : MonoBehaviour
                     }
                     break;
                 case STATE.SPRINT_END:
-                    if (_playerControl.JumpMode == PlayerParkour.JumpState.Vault && _playerControl.IsJumping)
+                    if (_playerControl.JumpMode == PlayerParkour.JumpState.Vault && _playerControl.IsOnDynamicMove)
                     {
                         this.PrevState = this.CurrentState;
                         this.NextState = STATE.PARKOUR_VAULT;
                     }
 
-                    if (_playerControl.JumpMode == PlayerParkour.JumpState.JumpClimb && _playerControl.IsJumping)
+                    if (_playerControl.JumpMode == PlayerParkour.JumpState.JumpClimb && _playerControl.IsOnDynamicMove)
                     {
                         this.PrevState = this.CurrentState;
                         this.NextState = STATE.PARKOUR_JUMP_CLIMB;
@@ -170,12 +170,12 @@ public class PlayerAnimatorFSM : MonoBehaviour
                     }
                     break;
                 case STATE.SPRINT_JUMP:
-                    if (_playerControl.JumpMode == PlayerParkour.JumpState.Vault && _playerControl.IsJumping)
+                    if (_playerControl.JumpMode == PlayerParkour.JumpState.Vault && _playerControl.IsOnDynamicMove)
                     {
                         this.PrevState = this.CurrentState;
                         this.NextState = STATE.PARKOUR_VAULT;
                     }
-                    if (_playerControl.JumpMode == PlayerParkour.JumpState.JumpClimb && _playerControl.IsJumping)
+                    if (_playerControl.JumpMode == PlayerParkour.JumpState.JumpClimb && _playerControl.IsOnDynamicMove)
                     {
                         this.PrevState = this.CurrentState;
                         this.NextState = STATE.PARKOUR_JUMP_CLIMB;
@@ -200,12 +200,12 @@ public class PlayerAnimatorFSM : MonoBehaviour
                         this.PrevState = this.CurrentState;
                         this.NextState = STATE.JUMP_START;
                     }
-                    else if (_playerControl.JumpMode == PlayerParkour.JumpState.Vault && _playerControl.IsJumping)
+                    else if (_playerControl.JumpMode == PlayerParkour.JumpState.Vault && _playerControl.IsOnDynamicMove)
                     {
                         this.PrevState = this.CurrentState;
                         this.NextState = STATE.PARKOUR_VAULT;
                     }
-                    else if (_playerControl.JumpMode == PlayerParkour.JumpState.JumpClimb && _playerControl.IsJumping)
+                    else if (_playerControl.JumpMode == PlayerParkour.JumpState.JumpClimb && _playerControl.IsOnDynamicMove)
                     {
                         this.PrevState = this.CurrentState;
                         this.NextState = STATE.PARKOUR_JUMP_CLIMB;
@@ -217,15 +217,16 @@ public class PlayerAnimatorFSM : MonoBehaviour
                     }
                     break;
                 case STATE.PARKOUR_VAULT:
-                    if (MyAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.9f ||
-                        (MyAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.5f && _myGroundChecker.IsGrounded()))
+                    if ((MyAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.9f && _myGroundChecker.IsGrounded()) ||(
+                        MyAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.9f && !_playerControl.IsOnDynamicMove))
                     {
                         this.PrevState = this.CurrentState;
                         this.NextState = STATE.SPRINT;
                     }
                     break;
                 case STATE.PARKOUR_JUMP_CLIMB:
-                    if (MyAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.5f)
+                    if ((MyAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.9f && _myGroundChecker.IsGrounded()) || (
+                        MyAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.9f && !_playerControl.IsOnDynamicMove))
                     {
                         if (_myPlayerScalar > 0.1f)
                         {
