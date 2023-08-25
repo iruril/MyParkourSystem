@@ -41,29 +41,17 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        _horizontalInput = Input.GetAxis("Horizontal");
-        _verticalInput = Input.GetAxis("Vertical");
-        _rotationHorizontalInput = Input.GetAxisRaw("Horizontal");
-        _rotationVerticalInput = Input.GetAxisRaw("Vertical");
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            IsJumping = true;
-        }
-        if (_rotationHorizontalInput != 0 || _rotationVerticalInput != 0)
-        {
-            _playerRotation = Quaternion.Euler(0, CalculateRotationAngle(_rotationHorizontalInput, _rotationVerticalInput), 0);
-            _isRotating = true;
-        }
-        _player.Move(PlayerVelocity * Time.deltaTime);
+        GetInput();
+        CalculatePlayerTransformByInput(); //Calculated PlayerVelocity is based on 'FixedTime', so we smooth this with 'Time'.
     }
 
-    private void FixedUpdate()
+    private void FixedUpdate() //For Velocity Calculations
     {
         if (_myGroundChecker.IsGrounded())
         {
-            JumpMode = _playerParkour.CheckRay();
+            JumpMode = _playerParkour.CheckRay(); //Predicts Next JumpMode
         }
-        if (!IsOnDynamicMove)
+        if (!IsOnDynamicMove) //While Isn't on Parkour Action
         {
             if (_isRotating)
             {
@@ -73,67 +61,94 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    #region Player Default Move And Rotation
-    private void PlayerMove()
+    #region Player Input Fields
+    private void GetInput()
     {
-        Vector3 xzPlaneVel = PlayerXZPlaneVelocity();
-        float yAxisVel = PlayerYAxisVelocity();
-        PlayerVelocity = new Vector3(xzPlaneVel.x, yAxisVel, xzPlaneVel.z);
+        _horizontalInput = Input.GetAxis("Horizontal");
+        _verticalInput = Input.GetAxis("Vertical");
+        _rotationHorizontalInput = Input.GetAxisRaw("Horizontal");
+        _rotationVerticalInput = Input.GetAxisRaw("Vertical");
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            IsJumping = true;
+        }
     }
 
-    private Vector3 PlayerXZPlaneVelocity()
+    private void CalculatePlayerTransformByInput()
+    {
+        if (_rotationHorizontalInput != 0 || _rotationVerticalInput != 0)
+        {
+            _playerRotation = Quaternion.Euler(0, CalculateRotationAngle(_rotationHorizontalInput, _rotationVerticalInput), 0);
+            _isRotating = true;
+        }
+
+        _player.Move(PlayerVelocity * Time.deltaTime);
+    }
+    #endregion
+
+    #region Player Default Move And Rotation Fields
+    private void PlayerMove() //Combine XZ-Plane Velocity and Y-Axis Velocity. 
+    {
+        Vector3 xzPlaneVel = PlayerXZPlaneVelocity(); //Calculates XZ-Plane Velocity
+        float yAxisVel = PlayerYAxisVelocity(); //Calculates Y-Axis Velocity
+        PlayerVelocity = new Vector3(xzPlaneVel.x, yAxisVel, xzPlaneVel.z); //Combine
+    }
+
+    private Vector3 PlayerXZPlaneVelocity() //Calculates XZ-Plane Velocity By Player's Input
     {
         Vector3 moveVel = _playerMoveOrientedForward * _verticalInput + _playerMoveOrientedRight * _horizontalInput;
-        Vector3 moveDir = moveVel.normalized;
+        Vector3 moveDir = moveVel.normalized; //Direction
 
         float moveSpeed = Mathf.Min(moveVel.magnitude, 1.0f) * _playerStat.MyCurrentSpeed;
 
         return moveDir * moveSpeed;
     }
 
-    private float PlayerYAxisVelocity()
+    private float PlayerYAxisVelocity() //Calculates Y-Axis Velocity By Player's Input
     {
-        if (!_myGroundChecker.IsGrounded())
+        if (!_myGroundChecker.IsGrounded()) // If isn't on ground, then apply Gravity force
         {
             return PlayerVelocity.y - _playerStat.GravityForce * Time.fixedDeltaTime;
         }
 
-        if (IsJumping)
+        if (IsJumping) //while get input 'Jump'
         {
-            IsJumping = false;
             switch (JumpMode)
             {
-                case PlayerParkour.JumpState.DefaultJump:
-                    return PlayerVelocity.y + _playerStat.JumpPower; // on default jump
-                case PlayerParkour.JumpState.JumpOver:
+                case PlayerParkour.JumpState.DefaultJump: //Do Default Jump
+                    IsJumping = false;
+                    return PlayerVelocity.y + _playerStat.JumpPower;
+                case PlayerParkour.JumpState.Vault: //Do Vault Action
                     if (!IsOnDynamicMove)
                     {
                         StartCoroutine(DoVault());
                     }
                     return Mathf.Max(0.0f, PlayerVelocity.y);
-                case PlayerParkour.JumpState.JumpClimb:
+                case PlayerParkour.JumpState.JumpClimb: //Do JumpClimb Action
                     if (!IsOnDynamicMove)
                     {
                         StartCoroutine(DoHopClimb());
                     }
-                    return Mathf.Max(0.0f, PlayerVelocity.y);
+                    return Mathf.Max(0.0f, PlayerVelocity.y); //Do Climb Action
                 case PlayerParkour.JumpState.Climb:
-                    return PlayerVelocity.y + _playerStat.JumpPower; // temp
+                    IsJumping = false;
+                    return PlayerVelocity.y + _playerStat.JumpPower;
             }
-            return PlayerVelocity.y + _playerStat.JumpPower;
+            return PlayerVelocity.y + _playerStat.JumpPower; //If There's no condition, just do default jump.
         }
         else
         {
-            return Mathf.Max(0.0f, PlayerVelocity.y);
+            return Mathf.Max(0.0f, PlayerVelocity.y); //Default Y-Axis Velocity
         }
     }
 
-    private float CalculateRotationAngle(float h, float v)
+    private float CalculateRotationAngle(float h, float v) //Calculates Radian-Angle By Vector2(h,v)
     {
         return _playerYAngleOffset + Mathf.Atan2(h, v) * Mathf.Rad2Deg;
     }
 
-    private void PlayerRotate()
+    private void PlayerRotate() //Do Character Rotation By Player's Input
     {
         if (PlayerVelocity.magnitude < 0.1f || (_rotationVerticalInput == 0 && _rotationHorizontalInput == 0))
         {
@@ -141,53 +156,70 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
-        float step = Time.fixedDeltaTime * _playerStat.RotateSpeed;
+        float step = Time.fixedDeltaTime * _playerStat.RotateSpeed; //Smooth Step for Prevent Ragging
         this.transform.rotation = Quaternion.Slerp(transform.rotation, _playerRotation, step);
     }
     #endregion
 
-    #region Parkour Actions
-    IEnumerator DoVault()
+    #region Parkour Actions Fields
+    private IEnumerator DoVault()
     {
+        //Animation Set
         _myAnimFSM.PrevState = _myAnimFSM.CurrentState;
-        _myAnimFSM.NextState = PlayerAnimatorFSM.STATE.PARKOUR_JUMP_OVER;
+        _myAnimFSM.NextState = PlayerAnimatorFSM.STATE.PARKOUR_VAULT;
         Animator anim = _myAnimFSM.MyAnimator;
         anim.Play(anim.GetCurrentAnimatorStateInfo(0).fullPathHash, 0, 0);
+
+        //Default Value Set
         IsOnDynamicMove = true;
         Vector3 startPoint = this.transform.position;
         Vector3 endPoint = _playerParkour.StepPoint;
-        float currentTime = 0;
 
+        //First Step Action (Move to Step Point)
+        float lerpTime = _playerParkour.ParkourJumpTime;
+        float currentTime = 0;
         while (currentTime < _playerParkour.ParkourJumpTime)
         {
             currentTime += Time.deltaTime;
-            this.transform.position = Vector3.Slerp(startPoint, endPoint, currentTime / _playerParkour.ParkourJumpTime);
-            
+            this.transform.position = Vector3.Slerp(startPoint, endPoint, currentTime / lerpTime);
             yield return null;
         }
+
+        //Second Step Action
         Vector3 VaultDir = this.transform.forward;
-       
+        float yAxisVel = Mathf.Max(0.0f, PlayerVelocity.y);
         while (currentTime < _playerParkour.ParkourVaultTime)
         {
             currentTime += Time.deltaTime;
-            float yAxisVel = PlayerYAxisVelocity();
+            if (!_myGroundChecker.IsGrounded()) // If isn't on ground, then apply Gravity force
+            {
+                yAxisVel = PlayerVelocity.y - _playerStat.GravityForce * Time.fixedDeltaTime;
+            }
+            else
+            {
+                Mathf.Max(0.0f, PlayerVelocity.y);
+            }
             PlayerVelocity = new Vector3(VaultDir.x *_playerParkour.ParkourMoveSpeed,
                                          yAxisVel,
                                          VaultDir.z *_playerParkour.ParkourMoveSpeed);
             
             yield return null;
         }
-        
+
+        IsJumping = false;
         IsOnDynamicMove = false;
         yield break;
     }
 
-    IEnumerator DoHopClimb()
+    private IEnumerator DoHopClimb()
     {
+        //Animation Set
         _myAnimFSM.PrevState = _myAnimFSM.CurrentState;
         _myAnimFSM.NextState = PlayerAnimatorFSM.STATE.PARKOUR_JUMP_CLIMB;
         Animator anim = _myAnimFSM.MyAnimator;
         anim.Play(anim.GetCurrentAnimatorStateInfo(0).fullPathHash, 0, 0);
+
+        //Default Value Set
         IsOnDynamicMove = true;
         Vector3 startPoint = this.transform.position;
         Vector3 endPoint = _playerParkour.StepPoint;
@@ -203,16 +235,19 @@ public class PlayerController : MonoBehaviour
             climbPoint.y = climbPoint.y - 0.5f;
         }
 
+        //First Step Action (Move to Step Point)
+        float lerpTime = _playerParkour.ParkourClimbTime;
         float currentTime = 0;
         while (currentTime < _playerParkour.ParkourClimbTime)
         {
             currentTime += Time.deltaTime;
-            this.transform.position = Vector3.Slerp(startPoint, climbPoint, currentTime / _playerParkour.ParkourClimbTime);
+            this.transform.position = Vector3.Slerp(startPoint, climbPoint, currentTime / lerpTime);
             
             yield return null;
         }
 
-        float lerpTime = _playerParkour.ParkourJumpClimbTime - _playerParkour.ParkourClimbTime;
+        //Second Step Action
+        lerpTime = _playerParkour.ParkourJumpClimbTime - _playerParkour.ParkourClimbTime;
         currentTime = 0;
         while (currentTime < lerpTime)
         {
@@ -222,6 +257,7 @@ public class PlayerController : MonoBehaviour
             yield return null;
         }
 
+        IsJumping = false;
         IsOnDynamicMove = false;
         yield break;
     }

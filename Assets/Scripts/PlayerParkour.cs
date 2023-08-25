@@ -26,7 +26,7 @@ public class PlayerParkour : MonoBehaviour
     {
         None,
         DefaultJump,
-        JumpOver,
+        Vault,
         JumpClimb,
         Climb
     }
@@ -65,7 +65,7 @@ public class PlayerParkour : MonoBehaviour
         {
             return JumpState.JumpClimb;
         }
-        return JumpState.JumpOver;
+        return JumpState.Vault;
     }
 
     public JumpState CheckRay()
@@ -76,7 +76,7 @@ public class PlayerParkour : MonoBehaviour
         if (dist != 0) temp.Add(JumpState.DefaultJump, dist);
 
         dist = RayCasting(_jumpMiddleRay, _rayDistance);
-        if (dist != 0) temp.Add(JumpState.JumpOver, dist);
+        if (dist != 0) temp.Add(JumpState.Vault, dist);
 
         dist = RayCasting(_jumpTopRay, _rayDistance);
         if (dist != 0) temp.Add(JumpState.JumpClimb, dist);
@@ -95,7 +95,7 @@ public class PlayerParkour : MonoBehaviour
             JumpMode = JumpState.DefaultJump;
         }
 
-        if(JumpMode == JumpState.JumpOver)
+        if(JumpMode == JumpState.Vault)
         {
             JumpMode = ShouldClimbAfterJumpOver(_jumpTopRay);
         }
