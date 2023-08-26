@@ -84,10 +84,10 @@ public class PlayerController : MonoBehaviour
             _isRotating = true;
         }
         _player.Move(PlayerVelocity * Time.deltaTime);
-        if (!(Vector3.Distance(PlayerVelocity, _player.velocity) <= 0.1f))
-        {
-            Debug.Log(IsOnDynamicMove + "Vel Value" + PlayerVelocity + "Vel Real" + _player.velocity);
-        }
+        //if (!(Vector3.Distance(PlayerVelocity, _player.velocity) <= 0.1f))
+        //{
+        //    Debug.Log(IsOnDynamicMove + "Vel Value" + PlayerVelocity + "Vel Real" + _player.velocity);
+        //}
     }
     #endregion
 
