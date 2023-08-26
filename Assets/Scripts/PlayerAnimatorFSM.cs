@@ -253,7 +253,7 @@ public class PlayerAnimatorFSM : MonoBehaviour
             switch (this.CurrentState)
             {
                 case STATE.IDLE:
-                    MyAnimator.applyRootMotion = false;
+                    MyAnimator.applyRootMotion = true;
                     MyAnimator.SetInteger("State", StateEnumToInt(CurrentState));
                     break;
                 case STATE.SPRINT_START:
