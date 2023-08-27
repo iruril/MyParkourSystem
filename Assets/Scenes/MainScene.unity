@@ -2271,44 +2271,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 837832966038624224, guid: ab767081d6392d4408ea66b53acf9c4a,
-        type: 3}
-      propertyPath: m_Height
-      value: 1.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 837832966038624224, guid: ab767081d6392d4408ea66b53acf9c4a,
-        type: 3}
-      propertyPath: m_Radius
-      value: 0.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 837832966038624224, guid: ab767081d6392d4408ea66b53acf9c4a,
-        type: 3}
-      propertyPath: m_Center.y
-      value: 0.9
-      objectReference: {fileID: 0}
     - target: {fileID: 4289582053426445286, guid: ab767081d6392d4408ea66b53acf9c4a,
         type: 3}
       propertyPath: m_Name
       value: Player 1
       objectReference: {fileID: 0}
-    - target: {fileID: 6077000277488273435, guid: ab767081d6392d4408ea66b53acf9c4a,
+    - target: {fileID: 5052790907036598467, guid: ab767081d6392d4408ea66b53acf9c4a,
         type: 3}
-      propertyPath: _jumpOverLimit
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 6077000277488273435, guid: ab767081d6392d4408ea66b53acf9c4a,
-        type: 3}
-      propertyPath: ParkourMoveSpeed
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 6077000277488273435, guid: ab767081d6392d4408ea66b53acf9c4a,
-        type: 3}
-      propertyPath: ParkourVaultTime
-      value: 0.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 6077000277488273435, guid: ab767081d6392d4408ea66b53acf9c4a,
-        type: 3}
-      propertyPath: ParkourJumpClimbTime
+      propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6623151625495519376, guid: ab767081d6392d4408ea66b53acf9c4a,

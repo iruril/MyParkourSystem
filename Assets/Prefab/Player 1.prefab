@@ -169,7 +169,7 @@ CharacterController:
   m_Enabled: 1
   serializedVersion: 2
   m_Height: 1.8
-  m_Radius: 0.3
+  m_Radius: 0.2
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
@@ -240,12 +240,12 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   _rayDistance: 3
-  _jumpOverLimit: 5
-  ParkourMoveSpeed: 3
+  _jumpOverLimit: 4
+  ParkourMoveSpeed: 4
   ParkourJumpTime: 0.3
   ParkourClimbTime: 0.3
   ParkourVaultTime: 1
-  ParkourJumpClimbTime: 1.3
+  ParkourJumpClimbTime: 1
   JumpMode: 0
 --- !u!114 &1766416253153275548
 MonoBehaviour:
