@@ -7,10 +7,15 @@ public class PlayerAnimatorFSM : MonoBehaviour
     public Animator MyAnimator { get; set; }
     private PlayerController _playerControl;
     private GroundChecker _myGroundChecker;
+    private PlayerParkour _myParkour;
 
     private Vector3 _myPlayerXZVelocity;
     private float _myPlayerScalar;
     private float _myPlayerYVelocity;
+
+    private float _animIKWeight = 1.0f;
+    private float _animIKWeightLerpTime = 0.5f;
+    private bool _ikWeightSet = false;
 
     public enum STATE
     {
@@ -31,12 +36,58 @@ public class PlayerAnimatorFSM : MonoBehaviour
     public STATE NextState = STATE.NONE;
     public float StateTimer = 0f;
 
+    private void Awake()
+    {
+        MyAnimator = this.GetComponent<Animator>();
+        _myParkour = this.GetComponent<PlayerParkour>();
+    }
+
     void Start()
     {
         _playerControl = this.GetComponent<PlayerController>();
-        MyAnimator = this.GetComponent<Animator>();
         _myGroundChecker = this.GetComponent<GroundChecker>();
         this.NextState = STATE.IDLE;
+    }
+
+    private void OnAnimatorIK(int layerIndex)
+    {
+        if (_playerControl.IsOnDynamicMove)
+        {
+            if (!_ikWeightSet)
+            {
+                StartCoroutine(WeightDecreaser());
+            }
+            if (this.CurrentState == STATE.PARKOUR_VAULT)
+            {
+                MyAnimator.SetIKPositionWeight(AvatarIKGoal.LeftHand, _animIKWeight);
+
+                MyAnimator.SetIKPosition(AvatarIKGoal.LeftHand, _myParkour.LeftStepPoint);
+            }
+            else if (this.CurrentState == STATE.PARKOUR_JUMP_CLIMB)
+            {
+                MyAnimator.SetIKPositionWeight(AvatarIKGoal.LeftHand, _animIKWeight);
+                MyAnimator.SetIKPositionWeight(AvatarIKGoal.RightHand, _animIKWeight);
+
+                MyAnimator.SetIKPosition(AvatarIKGoal.LeftHand, _myParkour.LeftStepPoint);
+                MyAnimator.SetIKPosition(AvatarIKGoal.RightHand, _myParkour.RightStepPoint);
+            }
+        }
+        else
+        {
+            _ikWeightSet = false;
+        }
+    }
+
+    private IEnumerator WeightDecreaser()
+    {
+        _ikWeightSet = true;
+        float time = 0;
+        while (time <= _animIKWeightLerpTime) {
+            _animIKWeight = Mathf.Lerp(1.0f, 0.3f, time / _animIKWeightLerpTime);
+            time += Time.deltaTime;
+            yield return null;
+        }
+        yield break;
     }
 
     void Update()
@@ -228,16 +279,8 @@ public class PlayerAnimatorFSM : MonoBehaviour
                     if ((MyAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.9f && _myGroundChecker.IsGrounded()) || (
                         MyAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.9f && !_playerControl.IsOnDynamicMove))
                     {
-                        if (_myPlayerScalar > 0.1f)
-                        {
-                            this.PrevState = this.CurrentState;
-                            this.NextState = STATE.SPRINT;
-                        }
-                        else
-                        {
-                            this.PrevState = this.CurrentState;
-                            this.NextState = STATE.IDLE;
-                        }
+                        this.PrevState = this.CurrentState;
+                        this.NextState = STATE.SPRINT;
                     }
                     break;
                 case STATE.PARKOUR_CLIMB:
@@ -253,7 +296,7 @@ public class PlayerAnimatorFSM : MonoBehaviour
             switch (this.CurrentState)
             {
                 case STATE.IDLE:
-                    MyAnimator.applyRootMotion = true;
+                    MyAnimator.applyRootMotion = false;
                     MyAnimator.SetInteger("State", StateEnumToInt(CurrentState));
                     break;
                 case STATE.SPRINT_START:

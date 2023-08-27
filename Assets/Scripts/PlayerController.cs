@@ -12,6 +12,11 @@ public class PlayerController : MonoBehaviour
     private GroundChecker _myGroundChecker;
     private PlayerAnimatorFSM _myAnimFSM;
 
+    private Vector3 originCenter = new Vector3(0f, 0.9f, 0f);
+    private float originHeight = 1.8f; 
+    private Vector3 newCenter = new Vector3(0f, 1.4f, 0f);
+    private float newHeight = 0.8f;
+
     public Vector3 PlayerVelocity { get; set; } = Vector3.zero;
 
     private float _horizontalInput;
@@ -206,6 +211,9 @@ public class PlayerController : MonoBehaviour
         IsOnDynamicMove = true;
         Vector3 startPoint = this.transform.position;
         Vector3 endPoint = _playerParkour.StepPoint;
+        endPoint.y = endPoint.y - 0.7f;
+        _player.height = newHeight;
+        _player.center = newCenter;
 
         //First Step Action (Move to Step Point)
         float lerpTime = _playerParkour.ParkourJumpTime;
@@ -216,25 +224,20 @@ public class PlayerController : MonoBehaviour
             this.transform.position = Vector3.Slerp(startPoint, endPoint, currentTime / lerpTime);
             yield return null;
         }
-
         //Second Step Action
+
         Vector3 VaultDir = this.transform.forward;
         float yAxisVel = Mathf.Max(0.0f, PlayerVelocity.y);
-        while (currentTime < _playerParkour.ParkourVaultTime)
+        lerpTime = _playerParkour.ParkourVaultTime - _playerParkour.ParkourJumpTime;
+        currentTime = 0;
+        while (currentTime < lerpTime)
         {
             currentTime += Time.deltaTime;
-            if (!_myGroundChecker.IsGrounded()) // If isn't on ground, then apply Gravity force
-            {
-                yAxisVel = PlayerVelocity.y - _playerStat.GravityForce * Time.fixedDeltaTime;
-            }
-            else
-            {
-                Mathf.Max(0.0f, PlayerVelocity.y);
-            }
             PlayerVelocity = new Vector3(VaultDir.x *_playerParkour.ParkourMoveSpeed,
-                                         yAxisVel,
+                                         Mathf.Max(0.0f, PlayerVelocity.y),
                                          VaultDir.z *_playerParkour.ParkourMoveSpeed);
-            
+            _player.height = Mathf.Lerp(newHeight, originHeight, currentTime / lerpTime);
+            _player.center = Vector3.Lerp(newCenter, originCenter, currentTime / lerpTime);
             yield return null;
         }
         IsJumping = false;
@@ -265,14 +268,9 @@ public class PlayerController : MonoBehaviour
         Vector3 t1 = new Vector3(endPoint.x, 0, endPoint.z);
         Vector3 t2 = new Vector3(startPoint.x, 0, startPoint.z);
         Vector3 climbPoint = _playerParkour.StepPoint - (t1 - t2).normalized * 0.3f;
-        if (climbPoint.y >= 1.5f)
-        {
-            climbPoint.y = climbPoint.y - 1.0f;
-        }
-        else
-        {
-            climbPoint.y = climbPoint.y - 0.5f;
-        }
+        climbPoint.y = climbPoint.y - 0.9f;
+        _player.height = newHeight;
+        _player.center = newCenter;
 
         //First Step Action (Move to Step Point)
         float lerpTime = _playerParkour.ParkourClimbTime;
@@ -295,7 +293,8 @@ public class PlayerController : MonoBehaviour
             
             yield return null;
         }
-
+        _player.height = originHeight;
+        _player.center = originCenter;
         IsJumping = false;
         IsOnDynamicMove = false;
         JumpMode = PlayerParkour.JumpState.None;

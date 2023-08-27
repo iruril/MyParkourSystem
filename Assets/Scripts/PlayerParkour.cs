@@ -14,13 +14,17 @@ public class PlayerParkour : MonoBehaviour
     [SerializeField] private float _rayDistance = 3.0f;
     [SerializeField] private float _jumpOverLimit = 5.0f;
 
+    private Animator _anim;
+
     public float ParkourMoveSpeed= 5.0f;
     public float ParkourJumpTime= 0.3f;
     public float ParkourClimbTime = 0.4f;
     public float ParkourVaultTime= 1.0f;
     public float ParkourJumpClimbTime = 1.3f;
     public float StepHeight { get; set; } = 0.0f;
-    public Vector3 StepPoint { get; set; }
+    public Vector3 StepPoint { get; set; } = Vector3.zero;
+    public Vector3 LeftStepPoint { get; set; } = Vector3.zero;
+    public Vector3 RightStepPoint { get; set; } = Vector3.zero;
 
     public enum JumpState
     {
@@ -108,11 +112,13 @@ public class PlayerParkour : MonoBehaviour
     private void CalculateStepHeight(float rayDist) //Calculates StepHight, and StepPosition
     {
         RaycastHit hit;
-        if (Physics.Raycast(_MaxHeightRay.position + _MaxHeightRay.forward * (rayDist + 0.1f),
+        if (Physics.Raycast(_MaxHeightRay.position + _MaxHeightRay.forward * (rayDist + 0.01f),
             Vector3.down, out hit, 7.5f, _layerMask))
         {
             StepPoint = hit.point;
             StepHeight = StepPoint.y - this.transform.position.y;
+            RightStepPoint = StepPoint + this.transform.right * 0.25f;
+            LeftStepPoint = StepPoint - this.transform.right * 0.25f;
         }
     }
 }
