@@ -12,8 +12,8 @@ public class PlayerController : MonoBehaviour
     private GroundChecker _myGroundChecker;
     private PlayerAnimatorFSM _myAnimFSM;
 
-    private Vector3 originCenter = new Vector3(0f, 1f, 0f);
-    private float originHeight = 1.6f; 
+    private Vector3 originCenter = new Vector3(0f, 0.975f, 0f);
+    private float originHeight = 1.7f; 
     private Vector3 newCenter = new Vector3(0f, 1.4f, 0f);
     private float newHeight = 0.8f;
 
@@ -162,12 +162,12 @@ public class PlayerController : MonoBehaviour
                     return PlayerVelocity.y + _playerStat.JumpPower;
                 default:
                     IsJumping = false;
-                    return Mathf.Max(0.0f, PlayerVelocity.y); //If There's no condition
+                    return 0; //Mathf.Max(0.0f, PlayerVelocity.y); //If There's no condition
             }
         }
         else
         {
-            return Mathf.Max(0.0f, PlayerVelocity.y); //Default Y-Axis Velocity
+            return 0; //Mathf.Max(0.0f, PlayerVelocity.y); //Default Y-Axis Velocity
         }
     }
 
@@ -202,14 +202,17 @@ public class PlayerController : MonoBehaviour
         _myAnimFSM.PrevState = _myAnimFSM.CurrentState;
         _myAnimFSM.NextState = PlayerAnimatorFSM.STATE.PARKOUR_VAULT;
         Animator anim = _myAnimFSM.MyAnimator;
-        anim.Play(anim.GetCurrentAnimatorStateInfo(0).fullPathHash, 0, 0);
+        if (anim.GetCurrentAnimatorStateInfo(0).IsName("JumpOver"))
+        {
+            anim.Play(anim.GetCurrentAnimatorStateInfo(0).fullPathHash, 0, 0);
+        }
 
         //Default Value Set
         PlayerVelocity = Vector3.zero;
         IsOnDynamicMove = true;
         Vector3 startPoint = this.transform.position;
-        Vector3 endPoint = _playerParkour.StepPoint;
-        endPoint.y = endPoint.y - 0.7f;
+        Vector3 vaultPoint = _playerParkour.StepPoint;
+        vaultPoint.y = vaultPoint.y - originCenter.y;
         _player.height = newHeight;
         _player.center = newCenter;
 
@@ -219,21 +222,20 @@ public class PlayerController : MonoBehaviour
         while (currentTime < _playerParkour.ParkourJumpTime)
         {
             currentTime += Time.deltaTime;
-            this.transform.position = Vector3.Slerp(startPoint, endPoint, currentTime / lerpTime);
+            this.transform.position = Vector3.Slerp(startPoint, vaultPoint, currentTime / lerpTime);
             yield return null;
         }
         //Second Step Action
 
-        Vector3 VaultDir = this.transform.forward;
-        float yAxisVel = Mathf.Max(0.0f, this.transform.position.y);
+        Vector3 vaultDir = this.transform.forward;
         lerpTime = _playerParkour.ParkourVaultTime - _playerParkour.ParkourJumpTime;
         currentTime = 0;
         while (currentTime < lerpTime)
         {
             currentTime += Time.deltaTime;
-            PlayerVelocity = new Vector3(VaultDir.x *_playerParkour.ParkourMoveSpeed,
+            PlayerVelocity = new Vector3(vaultDir.x *_playerParkour.ParkourMoveSpeed,
                                          Mathf.Max(0.0f, PlayerVelocity.y),
-                                         VaultDir.z *_playerParkour.ParkourMoveSpeed);
+                                         vaultDir.z *_playerParkour.ParkourMoveSpeed); 
             _player.height = Mathf.Lerp(newHeight, originHeight, currentTime / lerpTime);
             _player.center = Vector3.Lerp(newCenter, originCenter, currentTime / lerpTime);
             yield return null;
@@ -256,7 +258,10 @@ public class PlayerController : MonoBehaviour
         _myAnimFSM.PrevState = _myAnimFSM.CurrentState;
         _myAnimFSM.NextState = PlayerAnimatorFSM.STATE.PARKOUR_JUMP_CLIMB;
         Animator anim = _myAnimFSM.MyAnimator;
-        anim.Play(anim.GetCurrentAnimatorStateInfo(0).fullPathHash, 0, 0);
+        if (anim.GetCurrentAnimatorStateInfo(0).IsName("JumpClimb"))
+        {
+            anim.Play(anim.GetCurrentAnimatorStateInfo(0).fullPathHash, 0, 0);
+        }
 
         //Default Value Set
         PlayerVelocity = Vector3.zero;

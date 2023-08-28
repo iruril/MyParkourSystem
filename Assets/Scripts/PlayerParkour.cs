@@ -8,7 +8,7 @@ public class PlayerParkour : MonoBehaviour
     [SerializeField] private Transform _jumpBottomRay;
     [SerializeField] private Transform _jumpMiddleRay;
     [SerializeField] private Transform _jumpTopRay;
-    [SerializeField] private Transform _MaxHeightRay;
+    [SerializeField] private Transform _maxHeightRay;
 
     [SerializeField] private LayerMask _layerMask;
     [SerializeField] private float _rayDistance = 3.0f;
@@ -41,7 +41,7 @@ public class PlayerParkour : MonoBehaviour
         Debug.DrawRay(_jumpBottomRay.position, this.transform.forward * _rayDistance, Color.cyan);
         Debug.DrawRay(_jumpMiddleRay.position, this.transform.forward * _rayDistance, Color.cyan);
         Debug.DrawRay(_jumpTopRay.position, this.transform.forward * _rayDistance, Color.cyan);
-        Debug.DrawRay(_MaxHeightRay.position, this.transform.forward * _rayDistance, Color.cyan);
+        Debug.DrawRay(_maxHeightRay.position, this.transform.forward * _rayDistance, Color.cyan);
 
         if(StepPoint != null)
         {
@@ -55,18 +55,13 @@ public class PlayerParkour : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(ray.position, this.transform.forward, out hit, range, _layerMask))
         {
-            Vector3 normVector = hit.normal;
-            float hitpointYRot = normVector.y;
-            float playerYRot = this.transform.rotation.eulerAngles.y;
-
-            Debug.Log(hitpointYRot + "  " + playerYRot);
-            //if (Vector3.Angle(normVector, -transform.forward) >= 45f)
-            //{
-            //    return 0;
-            //}
-            float distance = hit.distance * 100;
-            distance = Mathf.Floor(distance);
-            return distance / 100;
+            float surfaceAngle = Vector3.Angle(hit.normal, transform.up);
+            if (surfaceAngle > 45f)
+            {
+                float distance = hit.distance * 100;
+                distance = Mathf.Floor(distance);
+                return distance / 100;
+            }
         }
         return 0;
     }
@@ -95,7 +90,7 @@ public class PlayerParkour : MonoBehaviour
         dist = RayCasting(_jumpTopRay, _rayDistance);
         if (dist != 0) temp.Add(JumpState.JumpClimb, dist);
 
-        dist = RayCasting(_MaxHeightRay, _rayDistance);
+        dist = RayCasting(_maxHeightRay, _rayDistance);
         if (dist != 0) temp.Add(JumpState.Climb, dist);
 
         //if there's data in Dictionary, get HashKey(JumpState) which has 'Closeast Distance' Data
@@ -121,7 +116,7 @@ public class PlayerParkour : MonoBehaviour
     private void CalculateStepHeight(float rayDist) //Calculates StepHight, and StepPosition
     {
         RaycastHit hit;
-        if (Physics.Raycast(_MaxHeightRay.position + _MaxHeightRay.forward * (rayDist + 0.01f),
+        if (Physics.Raycast(_maxHeightRay.position + _maxHeightRay.forward * (rayDist + 0.01f),
             Vector3.down, out hit, 7.5f, _layerMask))
         {
             StepPoint = hit.point;

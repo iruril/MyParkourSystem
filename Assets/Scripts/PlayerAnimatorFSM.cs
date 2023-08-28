@@ -87,9 +87,9 @@ public class PlayerAnimatorFSM : MonoBehaviour
         MyAnimator.SetIKPositionWeight(AvatarIKGoal.LeftFoot, 1);
         MyAnimator.SetIKRotationWeight(AvatarIKGoal.LeftFoot, 1);
 
-        Ray leftRay = new Ray(MyAnimator.GetIKPosition(AvatarIKGoal.LeftFoot) + Vector3.up, Vector3.down);
-        Debug.DrawRay(MyAnimator.GetIKPosition(AvatarIKGoal.LeftFoot) + Vector3.up, Vector3.down * (1 + DistanceGround), Color.red);
-        if (Physics.Raycast(leftRay, out RaycastHit leftHitinfo, DistanceGround + 1f, _layerMask))
+        Ray leftRay = new Ray(MyAnimator.GetIKPosition(AvatarIKGoal.LeftFoot) + Vector3.up * 0.5f, Vector3.down);
+        Debug.DrawRay(MyAnimator.GetIKPosition(AvatarIKGoal.LeftFoot) + Vector3.up * 0.5f, Vector3.down * (0.5f + DistanceGround), Color.red);
+        if (Physics.Raycast(leftRay, out RaycastHit leftHitinfo, DistanceGround + 0.5f, _layerMask))
         {
             if (leftHitinfo.transform.tag == "Walkable")
             {
@@ -103,9 +103,9 @@ public class PlayerAnimatorFSM : MonoBehaviour
         MyAnimator.SetIKPositionWeight(AvatarIKGoal.RightFoot, 1);
         MyAnimator.SetIKRotationWeight(AvatarIKGoal.RightFoot, 1);
 
-        Ray rightRay = new Ray(MyAnimator.GetIKPosition(AvatarIKGoal.RightFoot) + Vector3.up, Vector3.down);
-        Debug.DrawRay(MyAnimator.GetIKPosition(AvatarIKGoal.RightFoot) + Vector3.up, Vector3.down * (1 + DistanceGround), Color.red);
-        if (Physics.Raycast(rightRay, out RaycastHit rightHitinfo, DistanceGround + 1f, _layerMask))
+        Ray rightRay = new Ray(MyAnimator.GetIKPosition(AvatarIKGoal.RightFoot) + Vector3.up * 0.5f, Vector3.down);
+        Debug.DrawRay(MyAnimator.GetIKPosition(AvatarIKGoal.RightFoot) + Vector3.up * 0.5f, Vector3.down * (0.5f + DistanceGround), Color.red);
+        if (Physics.Raycast(rightRay, out RaycastHit rightHitinfo, DistanceGround + 0.5f, _layerMask))
         {
             if (rightHitinfo.transform.tag == "Walkable")
             {
