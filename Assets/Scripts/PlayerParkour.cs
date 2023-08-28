@@ -12,7 +12,8 @@ public class PlayerParkour : MonoBehaviour
 
     [SerializeField] private LayerMask _layerMask;
     [SerializeField] private float _rayDistance = 3.0f;
-    [SerializeField] private float _jumpOverLimit = 5.0f;
+    [SerializeField] private float _vaultLimit = 4.0f;
+    [SerializeField] private float _vaultMaxLength = 1.5f;
 
     private Animator _anim;
 
@@ -68,10 +69,20 @@ public class PlayerParkour : MonoBehaviour
 
     private JumpState ShouldClimbAfterJumpOver(Transform ray)// Check if there's sufficient space for 'Vaulting-Run'
     {
-        float step = RayCasting(ray, _jumpOverLimit);
-        if (step < _jumpOverLimit && step != 0)
+        float step = RayCasting(ray, _vaultLimit);
+        if (step < _vaultLimit && step != 0)
         {
             return JumpState.JumpClimb; // if it's not, returns JumpState.JumpClimb
+        }
+
+        RaycastHit hit;
+        Vector3 rayPos = new Vector3(StepPoint.x, _jumpTopRay.position.y, StepPoint.z) + transform.forward * _vaultMaxLength;
+        if (Physics.Raycast(rayPos, Vector3.down, out hit, 100f, _layerMask))
+        {
+            if(hit.point.y >= StepPoint.y)
+            {
+                return JumpState.JumpClimb; // if it's not, returns JumpState.JumpClimb
+            }
         }
         return JumpState.Vault; // if it is, returns JumpState.Vault
     }

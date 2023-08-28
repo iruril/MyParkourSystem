@@ -242,7 +242,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   _rayDistance: 3
-  _jumpOverLimit: 4
+  _vaultLimit: 4
+  _vaultMaxLength: 1.5
   ParkourMoveSpeed: 5
   ParkourJumpTime: 0.3
   ParkourClimbTime: 0.3
