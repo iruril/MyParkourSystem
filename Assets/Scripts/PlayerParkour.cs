@@ -55,10 +55,15 @@ public class PlayerParkour : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(ray.position, this.transform.forward, out hit, range, _layerMask))
         {
-            if(Vector3.Angle(hit.normal, -transform.forward) >= 45f)
-            {
-                return 0;
-            }
+            Vector3 normVector = hit.normal;
+            float hitpointYRot = normVector.y;
+            float playerYRot = this.transform.rotation.eulerAngles.y;
+
+            Debug.Log(hitpointYRot + "  " + playerYRot);
+            //if (Vector3.Angle(normVector, -transform.forward) >= 45f)
+            //{
+            //    return 0;
+            //}
             float distance = hit.distance * 100;
             distance = Mathf.Floor(distance);
             return distance / 100;

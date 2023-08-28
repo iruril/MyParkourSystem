@@ -97,7 +97,6 @@ public class PlayerAnimatorFSM : MonoBehaviour
                 footPos.y += DistanceGround;
 
                 MyAnimator.SetIKPosition(AvatarIKGoal.LeftFoot, footPos);
-                //MyAnimator.SetIKRotation(AvatarIKGoal.LeftFoot, Quaternion.LookRotation(transform.forward, leftHitinfo.normal));
             }
         }
 
@@ -114,7 +113,6 @@ public class PlayerAnimatorFSM : MonoBehaviour
                 footPos.y += DistanceGround;
 
                 MyAnimator.SetIKPosition(AvatarIKGoal.RightFoot, footPos);
-                //MyAnimator.SetIKRotation(AvatarIKGoal.RightFoot, Quaternion.LookRotation(transform.forward, rightHitinfo.normal));
             }
         }
     }
