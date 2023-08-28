@@ -168,13 +168,13 @@ CharacterController:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Height: 1.8
+  m_Height: 1.6
   m_Radius: 0.2
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0.9, z: 0}
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!114 &1110791184128592105
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -187,6 +187,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5986b18568ae49d788668a185818572, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  DistanceGround: 0.05
   PrevState: 0
   CurrentState: 0
   NextState: 0
@@ -219,6 +220,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27ca55ca4c0694927ab551a5ef248523, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MyIsGrounded: 0
   JumpMode: 0
 --- !u!114 &6077000277488273435
 MonoBehaviour:
@@ -241,10 +243,10 @@ MonoBehaviour:
     m_Bits: 64
   _rayDistance: 3
   _jumpOverLimit: 4
-  ParkourMoveSpeed: 4
+  ParkourMoveSpeed: 5
   ParkourJumpTime: 0.3
   ParkourClimbTime: 0.3
-  ParkourVaultTime: 1
+  ParkourVaultTime: 0.75
   ParkourJumpClimbTime: 1
   JumpMode: 0
 --- !u!114 &1766416253153275548
@@ -259,12 +261,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8432163cc1c049c49b4a3e9fabe43b19, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _boxScale: {x: 0.3, y: 0.05, z: 0.3}
-  _detectionMaxDist: 0.1
-  groundLayer:
+  _detectionMaxDist: 0.2
+  GroundLayer:
     serializedVersion: 2
     m_Bits: 72
   drawGizmo: 1
+  _offset: {x: 0, y: 0.2, z: 0}
 --- !u!1 &6106359242755050684
 GameObject:
   m_ObjectHideFlags: 0

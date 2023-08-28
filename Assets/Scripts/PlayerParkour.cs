@@ -46,7 +46,7 @@ public class PlayerParkour : MonoBehaviour
         if(StepPoint != null)
         {
             Gizmos.color = Color.cyan;
-            Gizmos.DrawSphere(StepPoint, 0.1f);
+            Gizmos.DrawWireSphere(StepPoint, 0.1f);
         }
     }
 
@@ -55,6 +55,10 @@ public class PlayerParkour : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(ray.position, this.transform.forward, out hit, range, _layerMask))
         {
+            if(Vector3.Angle(hit.normal, -transform.forward) >= 45f)
+            {
+                return 0;
+            }
             float distance = hit.distance * 100;
             distance = Mathf.Floor(distance);
             return distance / 100;

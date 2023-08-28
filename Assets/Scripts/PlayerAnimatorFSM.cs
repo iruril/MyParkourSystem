@@ -5,9 +5,11 @@ using UnityEngine;
 public class PlayerAnimatorFSM : MonoBehaviour
 {
     public Animator MyAnimator { get; set; }
+    public float DistanceGround = 0.5f;
     private PlayerController _playerControl;
     private GroundChecker _myGroundChecker;
     private PlayerParkour _myParkour;
+    private LayerMask _layerMask;
 
     private Vector3 _myPlayerXZVelocity;
     private float _myPlayerScalar;
@@ -46,6 +48,7 @@ public class PlayerAnimatorFSM : MonoBehaviour
     {
         _playerControl = this.GetComponent<PlayerController>();
         _myGroundChecker = this.GetComponent<GroundChecker>();
+        _layerMask = _myGroundChecker.GroundLayer;
         this.NextState = STATE.IDLE;
     }
 
@@ -74,7 +77,45 @@ public class PlayerAnimatorFSM : MonoBehaviour
         }
         else
         {
+            FootIK();
             _ikWeightSet = false;
+        }
+    }
+
+    private void FootIK()
+    {
+        MyAnimator.SetIKPositionWeight(AvatarIKGoal.LeftFoot, 1);
+        MyAnimator.SetIKRotationWeight(AvatarIKGoal.LeftFoot, 1);
+
+        Ray leftRay = new Ray(MyAnimator.GetIKPosition(AvatarIKGoal.LeftFoot) + Vector3.up, Vector3.down);
+        Debug.DrawRay(MyAnimator.GetIKPosition(AvatarIKGoal.LeftFoot) + Vector3.up, Vector3.down * (1 + DistanceGround), Color.red);
+        if (Physics.Raycast(leftRay, out RaycastHit leftHitinfo, DistanceGround + 1f, _layerMask))
+        {
+            if (leftHitinfo.transform.tag == "Walkable")
+            {
+                Vector3 footPos = leftHitinfo.point;
+                footPos.y += DistanceGround;
+
+                MyAnimator.SetIKPosition(AvatarIKGoal.LeftFoot, footPos);
+                //MyAnimator.SetIKRotation(AvatarIKGoal.LeftFoot, Quaternion.LookRotation(transform.forward, leftHitinfo.normal));
+            }
+        }
+
+        MyAnimator.SetIKPositionWeight(AvatarIKGoal.RightFoot, 1);
+        MyAnimator.SetIKRotationWeight(AvatarIKGoal.RightFoot, 1);
+
+        Ray rightRay = new Ray(MyAnimator.GetIKPosition(AvatarIKGoal.RightFoot) + Vector3.up, Vector3.down);
+        Debug.DrawRay(MyAnimator.GetIKPosition(AvatarIKGoal.RightFoot) + Vector3.up, Vector3.down * (1 + DistanceGround), Color.red);
+        if (Physics.Raycast(rightRay, out RaycastHit rightHitinfo, DistanceGround + 1f, _layerMask))
+        {
+            if (rightHitinfo.transform.tag == "Walkable")
+            {
+                Vector3 footPos = rightHitinfo.point;
+                footPos.y += DistanceGround;
+
+                MyAnimator.SetIKPosition(AvatarIKGoal.RightFoot, footPos);
+                //MyAnimator.SetIKRotation(AvatarIKGoal.RightFoot, Quaternion.LookRotation(transform.forward, rightHitinfo.normal));
+            }
         }
     }
 

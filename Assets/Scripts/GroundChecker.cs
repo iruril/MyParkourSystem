@@ -5,9 +5,9 @@ using UnityEngine;
 public class GroundChecker : MonoBehaviour
 {
     private CharacterController _myPlayer;
-    [SerializeField] private Vector3 _boxScale;
+    private PlayerController _playerControl;
     [SerializeField] private float _detectionMaxDist;
-    [SerializeField] private LayerMask groundLayer;
+    public LayerMask GroundLayer;
 
     [SerializeField] private bool drawGizmo;
     [SerializeField] private Vector3 _offset = new Vector3(0f, 0.3f,0f);
@@ -15,6 +15,7 @@ public class GroundChecker : MonoBehaviour
     private void Awake()
     {
         _myPlayer = this.GetComponent<CharacterController>();
+        _playerControl = this.GetComponent<PlayerController>();
     }
 
     private void OnDrawGizmos()
@@ -22,13 +23,20 @@ public class GroundChecker : MonoBehaviour
         if (!drawGizmo) return;
 
         Gizmos.color = Color.green;
-        Gizmos.DrawCube((transform.position + _offset) - transform.up * _detectionMaxDist, _boxScale);
+        Gizmos.DrawRay((transform.position + _offset), Vector3.down * _detectionMaxDist);
     }
 
     public bool IsGrounded()
     {
-        if(_myPlayer.isGrounded) return true;
-        return Physics.BoxCast(transform.position + _offset, _boxScale, -transform.up, transform.rotation,
-            _detectionMaxDist, groundLayer);
+        if (_myPlayer.isGrounded) return true;
+        else
+        {
+            RaycastHit hit;
+            if(Physics.Raycast(transform.position + _offset, Vector3.down, out hit, _detectionMaxDist, GroundLayer))
+            {
+                return true;
+            }
+            return false;
+        }
     }
 }

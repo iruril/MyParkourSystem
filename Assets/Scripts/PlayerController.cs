@@ -12,12 +12,13 @@ public class PlayerController : MonoBehaviour
     private GroundChecker _myGroundChecker;
     private PlayerAnimatorFSM _myAnimFSM;
 
-    private Vector3 originCenter = new Vector3(0f, 0.9f, 0f);
-    private float originHeight = 1.8f; 
+    private Vector3 originCenter = new Vector3(0f, 1f, 0f);
+    private float originHeight = 1.6f; 
     private Vector3 newCenter = new Vector3(0f, 1.4f, 0f);
     private float newHeight = 0.8f;
 
     public Vector3 PlayerVelocity { get; set; } = Vector3.zero;
+    public bool MyIsGrounded = false;
 
     private float _horizontalInput;
     private float _verticalInput;
@@ -52,6 +53,7 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate() //For Velocity Calculations
     {
+        MyIsGrounded = _myGroundChecker.IsGrounded();
         if (!IsOnDynamicMove) //While Isn't on Parkour Action
         {
             if (_isRotating)
@@ -78,7 +80,7 @@ public class PlayerController : MonoBehaviour
 
     private void CalculatePlayerTransformByInput()
     {
-        if (_myGroundChecker.IsGrounded())
+        if (MyIsGrounded)
         {
             JumpMode = _playerParkour.CheckRay(); //Predicts Next JumpMode
         }
@@ -89,7 +91,6 @@ public class PlayerController : MonoBehaviour
             _isRotating = true;
         }
         _player.Move(PlayerVelocity * Time.deltaTime);
-        Debug.Log(_myGroundChecker.IsGrounded());
     }
     #endregion
 
@@ -113,7 +114,7 @@ public class PlayerController : MonoBehaviour
 
     private float PlayerYAxisVelocity() //Calculates Y-Axis Velocity By Player's Input
     {
-        if (!_myGroundChecker.IsGrounded()) // If isn't on ground, then apply Gravity force
+        if (!MyIsGrounded) // If isn't on ground, then apply Gravity force
         {
             if (IsJumping) //while get input 'Jump'
             {
