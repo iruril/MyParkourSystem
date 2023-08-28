@@ -89,10 +89,7 @@ public class PlayerController : MonoBehaviour
             _isRotating = true;
         }
         _player.Move(PlayerVelocity * Time.deltaTime);
-        //if (!(Vector3.Distance(PlayerVelocity, _player.velocity) <= 0.1f))
-        //{
-        //    Debug.Log(IsOnDynamicMove + "Vel Value" + PlayerVelocity + "Vel Real" + _player.velocity);
-        //}
+        Debug.Log(_myGroundChecker.IsGrounded());
     }
     #endregion
 
@@ -189,9 +186,9 @@ public class PlayerController : MonoBehaviour
         float step = Time.fixedDeltaTime * _playerStat.RotateSpeed; //Smooth Step for Prevent Ragging
         this.transform.rotation = Quaternion.Slerp(transform.rotation, _playerRotation, step);
     }
-#endregion
+    #endregion
 
-#region Parkour Actions Fields
+    #region Parkour Actions Fields
     private IEnumerator DoVault()
     {
         if (JumpMode != PlayerParkour.JumpState.Vault && !_myGroundChecker.IsGrounded())
@@ -227,7 +224,7 @@ public class PlayerController : MonoBehaviour
         //Second Step Action
 
         Vector3 VaultDir = this.transform.forward;
-        float yAxisVel = Mathf.Max(0.0f, PlayerVelocity.y);
+        float yAxisVel = Mathf.Max(0.0f, this.transform.position.y);
         lerpTime = _playerParkour.ParkourVaultTime - _playerParkour.ParkourJumpTime;
         currentTime = 0;
         while (currentTime < lerpTime)
@@ -300,5 +297,5 @@ public class PlayerController : MonoBehaviour
         JumpMode = PlayerParkour.JumpState.None;
         yield break;
     }
-#endregion
+    #endregion
 }
