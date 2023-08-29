@@ -1,8 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Animations;
 using UnityEngine;
-using UnityEngine.Animations;
 
 public class PlayerAnimationController : MonoBehaviour
 {
