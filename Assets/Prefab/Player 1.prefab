@@ -169,7 +169,7 @@ CharacterController:
   m_Enabled: 1
   serializedVersion: 2
   m_Height: 1.7
-  m_Radius: 0.2
+  m_Radius: 0.15
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
@@ -187,7 +187,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7ba26d0be34f4575b3530cf1196bd38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DistanceGround: 0
+  DistanceGround: 0.06
 --- !u!114 &5914477876344920319
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -216,8 +216,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27ca55ca4c0694927ab551a5ef248523, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MyIsGrounded: 0
-  JumpMode: 0
 --- !u!114 &6077000277488273435
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -242,10 +240,9 @@ MonoBehaviour:
   _vaultMaxLength: 1.5
   ParkourMoveSpeed: 5
   ParkourJumpTime: 0.3
-  ParkourClimbTime: 0.3
+  ParkourClimbTime: 0.4
   ParkourVaultTime: 0.75
   ParkourJumpClimbTime: 1.1
-  JumpMode: 0
 --- !u!114 &1766416253153275548
 MonoBehaviour:
   m_ObjectHideFlags: 0

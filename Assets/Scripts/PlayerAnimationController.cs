@@ -177,7 +177,8 @@ public class PlayerAnimationController : MonoBehaviour
     #region Animator Float Value Set Fields
     private void GetPlayerSpeed()
     {
-        _mySpeed = _player.PlayerVelocity.magnitude / _playerStat.Speed;
+        Vector3 zxPlaneConvertVec = new Vector3(_player.PlayerVelocity.x, 0f, _player.PlayerVelocity.z);
+        _mySpeed = zxPlaneConvertVec.magnitude / _playerStat.Speed;
         _animator.SetFloat("Speed", _mySpeed);
     }
 
