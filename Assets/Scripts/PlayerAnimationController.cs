@@ -24,6 +24,7 @@ public class PlayerAnimationController : MonoBehaviour
     private bool _ikWeightSet = false;
     private bool _variableSettedOnDynamic = false;
     private bool _actionEnded = false;
+    private bool _isJumped = false;
 
     void Awake()
     {
@@ -58,6 +59,21 @@ public class PlayerAnimationController : MonoBehaviour
                 }
                 break;
             case false:
+                if (_player.JumpMode == PlayerParkour.JumpState.DefaultJump)
+                {
+                    if (_player.IsJumping && !_isJumped)
+                    {
+                        _animator.SetTrigger("Jump");
+                        _isJumped = true;
+                    }
+                }
+
+                if (_player.MyIsGrounded && _isJumped)
+                {
+                    _animator.SetTrigger("IsGrounded");
+                    _isJumped = false;
+                }
+
                 if (_variableSettedOnDynamic)
                 {
                     _actionEnded = true;
@@ -69,6 +85,7 @@ public class PlayerAnimationController : MonoBehaviour
                     _animator.SetTrigger("IsGrounded");
                     _actionEnded = false;
                 }
+
                 GetPlayerSpeed();
                 break;
         }

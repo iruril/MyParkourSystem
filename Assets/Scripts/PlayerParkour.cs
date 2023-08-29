@@ -20,6 +20,7 @@ public class PlayerParkour : MonoBehaviour
     public float ParkourClimbTime = 0.4f;
     public float ParkourVaultTime= 1.0f;
     public float ParkourJumpClimbTime = 1.3f;
+
     public float StepHeight { get; set; } = 0.0f;
     public Vector3 StepPoint { get; set; } = Vector3.zero;
     public Vector3 LeftStepPoint { get; set; } = Vector3.zero;
@@ -33,7 +34,7 @@ public class PlayerParkour : MonoBehaviour
         JumpClimb,
         Climb
     }
-    public JumpState JumpMode = JumpState.None;
+    public JumpState JumpMode { get; set; } = JumpState.None;
 
     private void OnDrawGizmos()
     {

@@ -18,7 +18,7 @@ public class PlayerController : MonoBehaviour
     private float newHeight = 0.8f;
 
     public Vector3 PlayerVelocity { get; set; } = Vector3.zero;
-    public bool MyIsGrounded = false;
+    public bool MyIsGrounded { get; set; } = false;
 
     private float _horizontalInput;
     private float _verticalInput;
@@ -29,9 +29,10 @@ public class PlayerController : MonoBehaviour
     private Vector3 _playerMoveOrientedRight;
     private Quaternion _playerRotation;
     private bool _isRotating;
+
     public bool IsOnDynamicMove { get; set; } = false;
     public bool IsJumping { get; set; } = false;
-    public PlayerParkour.JumpState JumpMode = PlayerParkour.JumpState.None;
+    public PlayerParkour.JumpState JumpMode { get; set; } = PlayerParkour.JumpState.None;
 
     void Start()
     {
@@ -189,15 +190,6 @@ public class PlayerController : MonoBehaviour
             yield break;
         }
 
-        //Animation Set
-        //_myAnimFSM.PrevState = _myAnimFSM.CurrentState;
-        //_myAnimFSM.NextState = PlayerAnimatorFSM.STATE.PARKOUR_VAULT;
-        //Animator anim = _myAnimFSM.MyAnimator;
-        //if (anim.GetCurrentAnimatorStateInfo(0).IsName("JumpOver"))
-        //{
-        //    anim.Play(anim.GetCurrentAnimatorStateInfo(0).fullPathHash, 0, 0);
-        //}
-
         //Default Value Set
         IsOnDynamicMove = true;
         PlayerVelocity = Vector3.zero;
@@ -244,15 +236,6 @@ public class PlayerController : MonoBehaviour
             IsJumping = false;
             yield break;
         }
-
-        //Animation Set
-        //_myAnimFSM.PrevState = _myAnimFSM.CurrentState;
-        //_myAnimFSM.NextState = PlayerAnimatorFSM.STATE.PARKOUR_JUMP_CLIMB;
-        //Animator anim = _myAnimFSM.MyAnimator;
-        //if (anim.GetCurrentAnimatorStateInfo(0).IsName("JumpClimb"))
-        //{
-        //    anim.Play(anim.GetCurrentAnimatorStateInfo(0).fullPathHash, 0, 0);
-        //}
 
         //Default Value Set
         IsOnDynamicMove = true;
