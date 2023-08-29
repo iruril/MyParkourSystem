@@ -63,6 +63,7 @@ public class PlayerAnimationController : MonoBehaviour
                     _actionEnded = true;
                     _variableSettedOnDynamic = false;
                 }
+
                 if (_player.MyIsGrounded && _actionEnded)
                 {
                     _animator.SetTrigger("IsGrounded");
