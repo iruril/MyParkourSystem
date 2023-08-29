@@ -40,7 +40,7 @@ public class PlayerAnimationController : MonoBehaviour
         {
             case true:
                 _mySpeed = 0;
-                if (!_variableSettedOnDynamic)
+                if (!_variableSettedOnDynamic && !_isJumped)
                 {
                     if (_player.JumpMode == PlayerParkour.JumpState.Vault)
                     {
@@ -57,20 +57,20 @@ public class PlayerAnimationController : MonoBehaviour
                 }
                 break;
             case false:
-                //if (_player.JumpMode == PlayerParkour.JumpState.DefaultJump)
-                //{
-                //    if (_player.IsJumping && !_isJumped)
-                //    {
-                //        _animator.SetTrigger("Jump");
-                //        _isJumped = true;
-                //    }
-                //}
+                if (_player.JumpMode == PlayerParkour.JumpState.DefaultJump)
+                {
+                    if (_player.IsJumping)
+                    {
+                        StartCoroutine(JumpCoroutine());
+                        _isJumped = true;
+                    }
+                }
 
-                //if (_player.MyIsGrounded && _isJumped)
-                //{
-                //    _animator.SetTrigger("IsGrounded");
-                //    _isJumped = false;
-                //}
+                if (_player.MyIsGrounded && _isJumped)
+                {
+                    _animator.SetBool("IsGrounded", true);
+                    _isJumped = false;
+                }
 
                 if (_variableSettedOnDynamic)
                 {
@@ -80,7 +80,7 @@ public class PlayerAnimationController : MonoBehaviour
 
                 if (_player.MyIsGrounded && _actionEnded)
                 {
-                    _animator.SetTrigger("IsGrounded");
+                    _animator.SetBool("IsGrounded", true);
                     _actionEnded = false;
                 }
 
@@ -197,6 +197,13 @@ public class PlayerAnimationController : MonoBehaviour
     {
         _vaultType = Random.Range(0, 2);
         _animator.SetFloat("VaultType", _vaultType);
+    }
+
+    private IEnumerator JumpCoroutine()
+    {
+        _animator.SetTrigger("Jump");
+        yield return new WaitForSeconds(0.45f);
+        _animator.ResetTrigger("Jump");
     }
     #endregion
 }
