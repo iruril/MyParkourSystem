@@ -104,7 +104,7 @@ GameObject:
   - component: {fileID: 6623151625495519376}
   - component: {fileID: 9040520263884236171}
   - component: {fileID: 837832966038624224}
-  - component: {fileID: 1110791184128592105}
+  - component: {fileID: 6174699157057261632}
   - component: {fileID: 5914477876344920319}
   - component: {fileID: 1067423347918403410}
   - component: {fileID: 6077000277488273435}
@@ -146,7 +146,7 @@ Animator:
   m_GameObject: {fileID: 4289582053426445286}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: fecc1ccc3482313429dae10fdab2803e, type: 3}
-  m_Controller: {fileID: 9100000, guid: 715dad9cc34bcbe4580f3c1aaa82899e, type: 2}
+  m_Controller: {fileID: 9100000, guid: b51ea6fd2bd434bd78f117191d460685, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -169,13 +169,13 @@ CharacterController:
   m_Enabled: 1
   serializedVersion: 2
   m_Height: 1.7
-  m_Radius: 0.15
+  m_Radius: 0.2
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0.975, z: 0}
---- !u!114 &1110791184128592105
+--- !u!114 &6174699157057261632
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -184,14 +184,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 4289582053426445286}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c5986b18568ae49d788668a185818572, type: 3}
+  m_Script: {fileID: 11500000, guid: e7ba26d0be34f4575b3530cf1196bd38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DistanceGround: 0.05
-  PrevState: 0
-  CurrentState: 0
-  NextState: 0
-  StateTimer: 0
+  DistanceGround: 0
 --- !u!114 &5914477876344920319
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -306,15 +302,50 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 6623151625495519376}
     m_Modifications:
+    - target: {fileID: 227071494456681730, guid: bea101530b261864494c7927a11a1299,
+        type: 3}
+      propertyPath: m_ConnectedAnchor.x
+      value: -0.0000000033760448
+      objectReference: {fileID: 0}
     - target: {fileID: 1725656728055842659, guid: bea101530b261864494c7927a11a1299,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 984b14fffcc86bf4c8edbb53d5ce0749, type: 2}
+    - target: {fileID: 3568641385297610137, guid: bea101530b261864494c7927a11a1299,
+        type: 3}
+      propertyPath: m_ConnectedAnchor.x
+      value: -0.00000000721775
+      objectReference: {fileID: 0}
+    - target: {fileID: 3568641385297610137, guid: bea101530b261864494c7927a11a1299,
+        type: 3}
+      propertyPath: m_ConnectedAnchor.y
+      value: 0.23455949
+      objectReference: {fileID: 0}
+    - target: {fileID: 3568641385297610137, guid: bea101530b261864494c7927a11a1299,
+        type: 3}
+      propertyPath: m_ConnectedAnchor.z
+      value: 0.00000012665987
+      objectReference: {fileID: 0}
+    - target: {fileID: 4908551723055409068, guid: bea101530b261864494c7927a11a1299,
+        type: 3}
+      propertyPath: m_ConnectedAnchor.x
+      value: -0.000000010244447
+      objectReference: {fileID: 0}
+    - target: {fileID: 4908551723055409068, guid: bea101530b261864494c7927a11a1299,
+        type: 3}
+      propertyPath: m_ConnectedAnchor.z
+      value: -4.0745318e-10
+      objectReference: {fileID: 0}
     - target: {fileID: 8472221963285055633, guid: bea101530b261864494c7927a11a1299,
         type: 3}
       propertyPath: m_Name
       value: Haydee
+      objectReference: {fileID: 0}
+    - target: {fileID: 8918328801560158627, guid: bea101530b261864494c7927a11a1299,
+        type: 3}
+      propertyPath: m_ConnectedAnchor.y
+      value: 0.42357236
       objectReference: {fileID: 0}
     - target: {fileID: 9140249303429550635, guid: bea101530b261864494c7927a11a1299,
         type: 3}

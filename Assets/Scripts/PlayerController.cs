@@ -10,7 +10,7 @@ public class PlayerController : MonoBehaviour
     private PlayerStatus _playerStat;
     private PlayerParkour _playerParkour;
     private GroundChecker _myGroundChecker;
-    private PlayerAnimatorFSM _myAnimFSM;
+    //private PlayerAnimatorFSM _myAnimFSM;
 
     private Vector3 originCenter = new Vector3(0f, 0.975f, 0f);
     private float originHeight = 1.7f; 
@@ -39,7 +39,7 @@ public class PlayerController : MonoBehaviour
         _playerStat = this.GetComponent<PlayerStatus>();
         _playerParkour = this.GetComponent<PlayerParkour>();
         _myGroundChecker = this.GetComponent<GroundChecker>();
-        _myAnimFSM = this.GetComponent<PlayerAnimatorFSM>();
+        //_myAnimFSM = this.GetComponent<PlayerAnimatorFSM>();
         _playerYAngleOffset = _myCamera.GetComponent<CameraController>().GetCameraOffsetAngles().y;
         _playerMoveOrientedForward = Quaternion.Euler(0, _playerYAngleOffset, 0) * this.transform.forward;
         _playerMoveOrientedRight = Quaternion.Euler(0, _playerYAngleOffset, 0) * this.transform.right;
@@ -80,7 +80,7 @@ public class PlayerController : MonoBehaviour
 
     private void CalculatePlayerTransformByInput()
     {
-        if (MyIsGrounded)
+        if (MyIsGrounded && !IsOnDynamicMove)
         {
             JumpMode = _playerParkour.CheckRay(); //Predicts Next JumpMode
         }
@@ -116,15 +116,6 @@ public class PlayerController : MonoBehaviour
     {
         if (!MyIsGrounded) // If isn't on ground, then apply Gravity force
         {
-            if (IsJumping) //while get input 'Jump'
-            {
-                switch (JumpMode)
-                {
-                    default:
-                        IsJumping = false;
-                        break;
-                }
-            }
             return PlayerVelocity.y - _playerStat.GravityForce * Time.fixedDeltaTime;
         }
 
@@ -199,17 +190,17 @@ public class PlayerController : MonoBehaviour
         }
 
         //Animation Set
-        _myAnimFSM.PrevState = _myAnimFSM.CurrentState;
-        _myAnimFSM.NextState = PlayerAnimatorFSM.STATE.PARKOUR_VAULT;
-        Animator anim = _myAnimFSM.MyAnimator;
-        if (anim.GetCurrentAnimatorStateInfo(0).IsName("JumpOver"))
-        {
-            anim.Play(anim.GetCurrentAnimatorStateInfo(0).fullPathHash, 0, 0);
-        }
+        //_myAnimFSM.PrevState = _myAnimFSM.CurrentState;
+        //_myAnimFSM.NextState = PlayerAnimatorFSM.STATE.PARKOUR_VAULT;
+        //Animator anim = _myAnimFSM.MyAnimator;
+        //if (anim.GetCurrentAnimatorStateInfo(0).IsName("JumpOver"))
+        //{
+        //    anim.Play(anim.GetCurrentAnimatorStateInfo(0).fullPathHash, 0, 0);
+        //}
 
         //Default Value Set
-        PlayerVelocity = Vector3.zero;
         IsOnDynamicMove = true;
+        PlayerVelocity = Vector3.zero;
         Vector3 startPoint = this.transform.position;
         Vector3 vaultPoint = _playerParkour.StepPoint;
         vaultPoint.y = vaultPoint.y - originCenter.y;
@@ -255,17 +246,17 @@ public class PlayerController : MonoBehaviour
         }
 
         //Animation Set
-        _myAnimFSM.PrevState = _myAnimFSM.CurrentState;
-        _myAnimFSM.NextState = PlayerAnimatorFSM.STATE.PARKOUR_JUMP_CLIMB;
-        Animator anim = _myAnimFSM.MyAnimator;
-        if (anim.GetCurrentAnimatorStateInfo(0).IsName("JumpClimb"))
-        {
-            anim.Play(anim.GetCurrentAnimatorStateInfo(0).fullPathHash, 0, 0);
-        }
+        //_myAnimFSM.PrevState = _myAnimFSM.CurrentState;
+        //_myAnimFSM.NextState = PlayerAnimatorFSM.STATE.PARKOUR_JUMP_CLIMB;
+        //Animator anim = _myAnimFSM.MyAnimator;
+        //if (anim.GetCurrentAnimatorStateInfo(0).IsName("JumpClimb"))
+        //{
+        //    anim.Play(anim.GetCurrentAnimatorStateInfo(0).fullPathHash, 0, 0);
+        //}
 
         //Default Value Set
-        PlayerVelocity = Vector3.zero;
         IsOnDynamicMove = true;
+        PlayerVelocity = Vector3.zero;
         Vector3 startPoint = this.transform.position;
         Vector3 endPoint = _playerParkour.StepPoint;
         Vector3 t1 = new Vector3(endPoint.x, 0, endPoint.z);
@@ -275,26 +266,52 @@ public class PlayerController : MonoBehaviour
         _player.height = newHeight;
         _player.center = newCenter;
 
-        //First Step Action (Move to Step Point)
-        float lerpTime = _playerParkour.ParkourClimbTime;
-        float currentTime = 0;
-        while (currentTime < _playerParkour.ParkourClimbTime)
+        if (_playerParkour.StepHeight > 1.5f)
         {
-            currentTime += Time.deltaTime;
-            this.transform.position = Vector3.Slerp(startPoint, climbPoint, currentTime / lerpTime);
-            
-            yield return null;
-        }
+            //First Step Action (Move to Step Point)
+            float lerpTime = _playerParkour.ParkourClimbTime;
+            float currentTime = 0;
+            while (currentTime < _playerParkour.ParkourClimbTime)
+            {
+                currentTime += Time.deltaTime;
+                this.transform.position = Vector3.Slerp(startPoint, climbPoint, currentTime / lerpTime);
 
-        //Second Step Action
-        lerpTime = _playerParkour.ParkourJumpClimbTime - _playerParkour.ParkourClimbTime;
-        currentTime = 0;
-        while (currentTime < lerpTime)
+                yield return null;
+            }
+
+            //Second Step Action
+            lerpTime = _playerParkour.ParkourJumpClimbTime - _playerParkour.ParkourClimbTime;
+            currentTime = 0;
+            while (currentTime < lerpTime)
+            {
+                currentTime += Time.deltaTime;
+                this.transform.position = Vector3.Slerp(climbPoint, endPoint, currentTime / lerpTime);
+
+                yield return null;
+            }
+        }
+        else
         {
-            currentTime += Time.deltaTime;
-            this.transform.position = Vector3.Slerp(climbPoint, endPoint, currentTime / lerpTime);
-            
-            yield return null;
+            //First Step Action (Move to Step Point)
+            float lerpTime = _playerParkour.ParkourClimbTime;
+            float currentTime = 0;
+            while (currentTime < _playerParkour.ParkourClimbTime)
+            {
+                currentTime += Time.deltaTime;
+                this.transform.position = Vector3.Lerp(startPoint, endPoint, currentTime / lerpTime);
+
+                yield return null;
+            }
+
+            //Second Step Action
+            lerpTime = _playerParkour.ParkourJumpClimbTime - _playerParkour.ParkourClimbTime;
+            currentTime = 0;
+            while (currentTime < lerpTime)
+            {
+                currentTime += Time.deltaTime;
+                this.transform.position = endPoint;
+                yield return null;
+            }
         }
         _player.height = originHeight;
         _player.center = originCenter;

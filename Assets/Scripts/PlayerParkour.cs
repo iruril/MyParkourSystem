@@ -15,8 +15,6 @@ public class PlayerParkour : MonoBehaviour
     [SerializeField] private float _vaultLimit = 4.0f;
     [SerializeField] private float _vaultMaxLength = 1.5f;
 
-    private Animator _anim;
-
     public float ParkourMoveSpeed= 5.0f;
     public float ParkourJumpTime= 0.3f;
     public float ParkourClimbTime = 0.4f;
