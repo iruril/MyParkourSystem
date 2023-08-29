@@ -130,6 +130,7 @@ public class PlayerController : MonoBehaviour
                 case PlayerParkour.JumpState.Vault: //Do Vault Action
                     if (!IsOnDynamicMove)
                     {
+                        IsOnDynamicMove = true;
                         StartCoroutine(DoVault());
                     }
                     else
@@ -141,6 +142,7 @@ public class PlayerController : MonoBehaviour
                 case PlayerParkour.JumpState.JumpClimb: //Do JumpClimb Action
                     if (!IsOnDynamicMove)
                     {
+                        IsOnDynamicMove = true;
                         StartCoroutine(DoHopClimb());
                     }
                     else
@@ -154,12 +156,12 @@ public class PlayerController : MonoBehaviour
                     return PlayerVelocity.y + _playerStat.JumpPower;
                 default:
                     IsJumping = false;
-                    return 0; //Mathf.Max(0.0f, PlayerVelocity.y); //If There's no condition
+                    return Mathf.Max(0.0f, PlayerVelocity.y); //If There's no condition
             }
         }
         else
         {
-            return 0; //Mathf.Max(0.0f, PlayerVelocity.y); //Default Y-Axis Velocity
+            return Mathf.Max(0.0f, PlayerVelocity.y); //Default Y-Axis Velocity
         }
     }
 
@@ -191,7 +193,6 @@ public class PlayerController : MonoBehaviour
         }
 
         //Default Value Set
-        IsOnDynamicMove = true;
         PlayerVelocity = Vector3.zero;
         Vector3 startPoint = this.transform.position;
         Vector3 vaultPoint = _playerParkour.StepPoint;
@@ -238,7 +239,6 @@ public class PlayerController : MonoBehaviour
         }
 
         //Default Value Set
-        IsOnDynamicMove = true;
         PlayerVelocity = Vector3.zero;
         Vector3 startPoint = this.transform.position;
         Vector3 endPoint = _playerParkour.StepPoint;
