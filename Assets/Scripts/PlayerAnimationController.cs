@@ -68,7 +68,7 @@ public class PlayerAnimationController : MonoBehaviour
 
                 if (_player.MyIsGrounded && _isJumped)
                 {
-                    _animator.SetBool("IsGrounded", true);
+                    _animator.SetTrigger("IsGrounded");
                     _isJumped = false;
                 }
 
@@ -80,7 +80,7 @@ public class PlayerAnimationController : MonoBehaviour
 
                 if (_player.MyIsGrounded && _actionEnded)
                 {
-                    _animator.SetBool("IsGrounded", true);
+                    _animator.SetTrigger("IsGrounded");
                     _actionEnded = false;
                 }
 
