@@ -59,20 +59,20 @@ public class PlayerAnimationController : MonoBehaviour
                 }
                 break;
             case false:
-                if (_player.JumpMode == PlayerParkour.JumpState.DefaultJump)
-                {
-                    if (_player.IsJumping && !_isJumped)
-                    {
-                        _animator.SetTrigger("Jump");
-                        _isJumped = true;
-                    }
-                }
+                //if (_player.JumpMode == PlayerParkour.JumpState.DefaultJump)
+                //{
+                //    if (_player.IsJumping && !_isJumped)
+                //    {
+                //        _animator.SetTrigger("Jump");
+                //        _isJumped = true;
+                //    }
+                //}
 
-                if (_player.MyIsGrounded && _isJumped)
-                {
-                    _animator.SetTrigger("IsGrounded");
-                    _isJumped = false;
-                }
+                //if (_player.MyIsGrounded && _isJumped)
+                //{
+                //    _animator.SetTrigger("IsGrounded");
+                //    _isJumped = false;
+                //}
 
                 if (_variableSettedOnDynamic)
                 {
