@@ -187,6 +187,10 @@ public class PlayerAnimationController : MonoBehaviour
         {
             _animator.SetFloat("ClimbType", 0f);
         }
+        else if(_stepHeight is > 1.5f and <= 2.0f)
+        {
+            _animator.SetFloat("ClimbType", 0.5f);
+        }
         else
         {
             _animator.SetFloat("ClimbType", 1f);
@@ -195,8 +199,8 @@ public class PlayerAnimationController : MonoBehaviour
 
     private void SetVaultType()
     {
-        _vaultType = Random.Range(0, 2);
-        _animator.SetFloat("VaultType", _vaultType);
+        _vaultType = Random.Range(0, 3);
+        _animator.SetFloat("VaultType", _vaultType * 0.5f);
     }
 
     private IEnumerator JumpCoroutine()

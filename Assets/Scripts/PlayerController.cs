@@ -10,7 +10,6 @@ public class PlayerController : MonoBehaviour
     private PlayerStatus _playerStat;
     private PlayerParkour _playerParkour;
     private GroundChecker _myGroundChecker;
-    //private PlayerAnimatorFSM _myAnimFSM;
 
     private Vector3 originCenter = new Vector3(0f, 0.975f, 0f);
     private float originHeight = 1.7f; 
@@ -40,7 +39,6 @@ public class PlayerController : MonoBehaviour
         _playerStat = this.GetComponent<PlayerStatus>();
         _playerParkour = this.GetComponent<PlayerParkour>();
         _myGroundChecker = this.GetComponent<GroundChecker>();
-        //_myAnimFSM = this.GetComponent<PlayerAnimatorFSM>();
         _playerYAngleOffset = _myCamera.GetComponent<CameraController>().GetCameraOffsetAngles().y;
         _playerMoveOrientedForward = Quaternion.Euler(0, _playerYAngleOffset, 0) * this.transform.forward;
         _playerMoveOrientedRight = Quaternion.Euler(0, _playerYAngleOffset, 0) * this.transform.right;
@@ -209,8 +207,8 @@ public class PlayerController : MonoBehaviour
             this.transform.position = Vector3.Slerp(startPoint, vaultPoint, currentTime / lerpTime);
             yield return null;
         }
-        //Second Step Action
 
+        //Second Step Action
         Vector3 vaultDir = this.transform.forward;
         lerpTime = _playerParkour.ParkourVaultTime - _playerParkour.ParkourJumpTime;
         currentTime = 0;

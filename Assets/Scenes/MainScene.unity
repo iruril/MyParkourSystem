@@ -520,7 +520,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 14203826}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5.13555, y: 7.989, z: -9.542069}
+  m_LocalPosition: {x: -5.13555, y: 7.924, z: -9.542069}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -6431,15 +6431,25 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 837832966038624224, guid: ab767081d6392d4408ea66b53acf9c4a,
+        type: 3}
+      propertyPath: m_Radius
+      value: 0.2
+      objectReference: {fileID: 0}
     - target: {fileID: 4289582053426445286, guid: ab767081d6392d4408ea66b53acf9c4a,
         type: 3}
       propertyPath: m_Name
       value: Player 1
       objectReference: {fileID: 0}
-    - target: {fileID: 5914477876344920319, guid: ab767081d6392d4408ea66b53acf9c4a,
+    - target: {fileID: 6077000277488273435, guid: ab767081d6392d4408ea66b53acf9c4a,
         type: 3}
-      propertyPath: JumpPower
-      value: 3
+      propertyPath: _rayDistance
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6077000277488273435, guid: ab767081d6392d4408ea66b53acf9c4a,
+        type: 3}
+      propertyPath: ParkourJumpClimbTime
+      value: 1.2
       objectReference: {fileID: 0}
     - target: {fileID: 6623151625495519376, guid: ab767081d6392d4408ea66b53acf9c4a,
         type: 3}
