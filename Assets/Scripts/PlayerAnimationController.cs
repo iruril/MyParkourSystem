@@ -8,6 +8,7 @@ public class PlayerAnimationController : MonoBehaviour
 
     private Animator _animator;
     private PlayerController _player;
+    private CharacterController _playerCharacter;
     private PlayerStatus _playerStat;
     private PlayerParkour _playerParkour;
     private GroundChecker _myGroundChecker;
@@ -20,14 +21,12 @@ public class PlayerAnimationController : MonoBehaviour
     private float _animIKWeight = 1.0f;
     private float _animIKWeightLerpTime = 0.5f;
     private bool _ikWeightSet = false;
-    private bool _variableSettedOnDynamic = false;
-    private bool _actionEnded = false;
-    private bool _isJumped = false;
 
     void Awake()
     {
         _animator = this.GetComponent<Animator>();
         _player = this.GetComponent<PlayerController>();
+        _playerCharacter = this.GetComponent<CharacterController>();
         _playerStat = this.GetComponent<PlayerStatus>();
         _playerParkour = this.GetComponent<PlayerParkour>();
         _myGroundChecker = this.GetComponent<GroundChecker>();
@@ -36,56 +35,35 @@ public class PlayerAnimationController : MonoBehaviour
 
     void Update()
     {
-        switch (_player.IsOnDynamicMove)
+        GetPlayerActionBoolean();
+        if (!_player.IsOnDynamicMove) GetPlayerSpeed();
+
+        if (_player.IsJumping)
         {
-            case true:
-                _mySpeed = 0;
-                if (!_variableSettedOnDynamic && !_isJumped)
-                {
-                    if (_player.JumpMode == PlayerParkour.JumpState.Vault)
+            switch (_player.JumpMode)
+            {
+                case PlayerParkour.JumpState.DefaultJump:
+                    StartCoroutine(DefaultJumpCoroutine());
+                    return;
+                case PlayerParkour.JumpState.Vault:
+                    if (!_player.IsOnDynamicMove)
                     {
+                        _mySpeed = 0;
+                        _animator.SetFloat("Speed", _mySpeed);
                         SetVaultType();
-                        _animator.SetTrigger("Vault");
-                        _variableSettedOnDynamic = true;
+                        StartCoroutine(VaultCoroutine());
                     }
-                    else if (_player.JumpMode == PlayerParkour.JumpState.JumpClimb)
+                    return;
+                case PlayerParkour.JumpState.JumpClimb:
+                    if (!_player.IsOnDynamicMove)
                     {
+                        _mySpeed = 0;
+                        _animator.SetFloat("Speed", _mySpeed);
                         SetJumpClimbType();
-                        _animator.SetTrigger("JumpClimb");
-                        _variableSettedOnDynamic = true;
+                        StartCoroutine(JumpClimbCoroutine());
                     }
-                }
-                break;
-            case false:
-                if (_player.JumpMode == PlayerParkour.JumpState.DefaultJump)
-                {
-                    if (_player.IsJumping)
-                    {
-                        StartCoroutine(JumpCoroutine());
-                        _isJumped = true;
-                    }
-                }
-
-                if (_player.MyIsGrounded && _isJumped)
-                {
-                    _animator.SetTrigger("IsGrounded");
-                    _isJumped = false;
-                }
-
-                if (_variableSettedOnDynamic)
-                {
-                    _actionEnded = true;
-                    _variableSettedOnDynamic = false;
-                }
-
-                if (_player.MyIsGrounded && _actionEnded)
-                {
-                    _animator.SetTrigger("IsGrounded");
-                    _actionEnded = false;
-                }
-
-                GetPlayerSpeed();
-                break;
+                    return;
+            }
         }
     }
 
@@ -172,12 +150,18 @@ public class PlayerAnimationController : MonoBehaviour
     }
     #endregion
 
-    #region Animator Float Value Set Fields
+    #region Animator Value Set Fields
     private void GetPlayerSpeed()
     {
-        Vector3 zxPlaneConvertVec = new Vector3(_player.PlayerVelocity.x, 0f, _player.PlayerVelocity.z);
+        Vector3 zxPlaneConvertVec = new Vector3(_playerCharacter.velocity.x, 0f, _playerCharacter.velocity.z);
         _mySpeed = zxPlaneConvertVec.magnitude / _playerStat.Speed;
         _animator.SetFloat("Speed", _mySpeed);
+    }
+
+    private void GetPlayerActionBoolean()
+    {
+        _animator.SetBool("IsGrounded", _player.MyIsGrounded);
+        _animator.SetBool("IsOnDynamic", _player.IsOnDynamicMove);
     }
 
     private void SetJumpClimbType()
@@ -203,11 +187,25 @@ public class PlayerAnimationController : MonoBehaviour
         _animator.SetFloat("VaultType", _vaultType * 0.5f);
     }
 
-    private IEnumerator JumpCoroutine()
+    private IEnumerator DefaultJumpCoroutine()
     {
         _animator.SetTrigger("Jump");
-        yield return new WaitForSeconds(0.45f);
+        yield return new WaitForSeconds(0.1f);
         _animator.ResetTrigger("Jump");
+    }
+
+    private IEnumerator VaultCoroutine()
+    {
+        _animator.SetTrigger("Vault");
+        yield return new WaitForSeconds(0.1f);
+        _animator.ResetTrigger("Vault");
+    }
+
+    private IEnumerator JumpClimbCoroutine()
+    {
+        _animator.SetTrigger("JumpClimb");
+        yield return new WaitForSeconds(0.1f);
+        _animator.ResetTrigger("JumpClimb");
     }
     #endregion
 }
