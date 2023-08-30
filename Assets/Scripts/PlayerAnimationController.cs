@@ -72,6 +72,7 @@ public class PlayerAnimationController : MonoBehaviour
     {
         if (_player.IsOnDynamicMove)
         {
+            _animator.SetLookAtPosition(_playerParkour.StepPoint);
             if (!_ikWeightSet)
             {
                 StartCoroutine(WeightDecreaser());
