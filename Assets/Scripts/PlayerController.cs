@@ -118,7 +118,7 @@ public class PlayerController : MonoBehaviour
             return PlayerVelocity.y - _playerStat.GravityForce * Time.fixedDeltaTime;
         }
 
-        if (IsJumping && MyIsGrounded) //while get input 'Jump'
+        if (IsJumping) //while get input 'Jump'
         {
             switch (JumpMode)
             {

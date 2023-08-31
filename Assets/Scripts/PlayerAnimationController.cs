@@ -191,21 +191,21 @@ public class PlayerAnimationController : MonoBehaviour
     private IEnumerator DefaultJumpCoroutine()
     {
         _animator.SetTrigger("Jump");
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.05f);
         _animator.ResetTrigger("Jump");
     }
 
     private IEnumerator VaultCoroutine()
     {
         _animator.SetTrigger("Vault");
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.05f);
         _animator.ResetTrigger("Vault");
     }
 
     private IEnumerator JumpClimbCoroutine()
     {
         _animator.SetTrigger("JumpClimb");
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.05f);
         _animator.ResetTrigger("JumpClimb");
     }
     #endregion
