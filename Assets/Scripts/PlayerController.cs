@@ -177,7 +177,7 @@ public class PlayerController : MonoBehaviour
         }
 
         float step = Time.fixedDeltaTime * _playerStat.RotateSpeed; //Smooth Step for Prevent Ragging
-        this.transform.rotation = Quaternion.Slerp(transform.rotation, _playerRotation, step);
+        this.transform.rotation = Quaternion.Slerp(this.transform.rotation, _playerRotation, step);
     }
     #endregion
 

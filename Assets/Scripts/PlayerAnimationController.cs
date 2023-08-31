@@ -48,7 +48,6 @@ public class PlayerAnimationController : MonoBehaviour
                 case PlayerParkour.JumpState.Vault:
                     if (!_player.IsOnDynamicMove)
                     {
-                        _mySpeed = 0;
                         _animator.SetFloat("Speed", _mySpeed);
                         SetVaultType();
                         StartCoroutine(VaultCoroutine());
@@ -57,7 +56,6 @@ public class PlayerAnimationController : MonoBehaviour
                 case PlayerParkour.JumpState.JumpClimb:
                     if (!_player.IsOnDynamicMove)
                     {
-                        _mySpeed = 0;
                         _animator.SetFloat("Speed", _mySpeed);
                         SetJumpClimbType();
                         StartCoroutine(JumpClimbCoroutine());
@@ -154,7 +152,7 @@ public class PlayerAnimationController : MonoBehaviour
     #region Animator Value Set Fields
     private void GetPlayerSpeed()
     {
-        Vector3 zxPlaneConvertVec = new Vector3(_playerCharacter.velocity.x, 0f, _playerCharacter.velocity.z);
+        Vector3 zxPlaneConvertVec = new Vector3(_player.PlayerVelocity.x, 0f, _player.PlayerVelocity.z);
         _mySpeed = zxPlaneConvertVec.magnitude / _playerStat.Speed;
         _animator.SetFloat("Speed", _mySpeed);
     }
