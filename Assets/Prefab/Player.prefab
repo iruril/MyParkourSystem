@@ -110,7 +110,7 @@ GameObject:
   - component: {fileID: 6077000277488273435}
   - component: {fileID: 1766416253153275548}
   m_Layer: 7
-  m_Name: Player 1
+  m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -201,7 +201,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Speed: 5
-  JumpPower: 4
+  JumpPower: 3
   GravityForce: 9.8
   RotateSpeed: 10
 --- !u!114 &1067423347918403410
