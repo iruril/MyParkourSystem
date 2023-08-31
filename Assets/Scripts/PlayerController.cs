@@ -13,8 +13,8 @@ public class PlayerController : MonoBehaviour
 
     private Vector3 originCenter = new Vector3(0f, 0.975f, 0f);
     private float originHeight = 1.7f; 
-    private Vector3 newCenter = new Vector3(0f, 1.4f, 0f);
-    private float newHeight = 0.8f;
+    private Vector3 newCenter = new Vector3(0f, 1.5f, 0f);
+    private float newHeight = 0.6f;
 
     public Vector3 PlayerVelocity { get; set; } = Vector3.zero;
     public bool MyIsGrounded { get; set; } = false;
@@ -194,7 +194,7 @@ public class PlayerController : MonoBehaviour
         PlayerVelocity = Vector3.zero;
         Vector3 startPoint = this.transform.position;
         Vector3 vaultPoint = _playerParkour.StepPoint;
-        vaultPoint.y = vaultPoint.y - originCenter.y;
+        vaultPoint.y = vaultPoint.y - (originCenter.y / 2.0f);
         _player.height = newHeight;
         _player.center = newCenter;
 
@@ -298,7 +298,7 @@ public class PlayerController : MonoBehaviour
         {
             Vector3 secondClimbPoint = climbPoint;
             climbPoint.y = climbPoint.y - 0.7f;
-            float firstClimbTime = 0.15f;
+            float firstClimbTime = _playerParkour.ParkourClimbTime / 2.0f;
 
             //First Step Action
             float lerpTime = firstClimbTime;

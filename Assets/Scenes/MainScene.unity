@@ -2868,13 +2868,43 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5914477876344920319, guid: ab767081d6392d4408ea66b53acf9c4a,
         type: 3}
+      propertyPath: Speed
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5914477876344920319, guid: ab767081d6392d4408ea66b53acf9c4a,
+        type: 3}
       propertyPath: JumpPower
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5914477876344920319, guid: ab767081d6392d4408ea66b53acf9c4a,
+        type: 3}
+      propertyPath: RotateSpeed
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6077000277488273435, guid: ab767081d6392d4408ea66b53acf9c4a,
+        type: 3}
+      propertyPath: ParkourJumpTime
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6077000277488273435, guid: ab767081d6392d4408ea66b53acf9c4a,
+        type: 3}
+      propertyPath: ParkourClimbTime
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6077000277488273435, guid: ab767081d6392d4408ea66b53acf9c4a,
+        type: 3}
+      propertyPath: ParkourMoveSpeed
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6077000277488273435, guid: ab767081d6392d4408ea66b53acf9c4a,
+        type: 3}
+      propertyPath: ParkourVaultTime
+      value: 0.75
       objectReference: {fileID: 0}
     - target: {fileID: 6077000277488273435, guid: ab767081d6392d4408ea66b53acf9c4a,
         type: 3}
       propertyPath: ParkourJumpClimbTime
-      value: 1.25
+      value: 1.2
       objectReference: {fileID: 0}
     - target: {fileID: 6623151625495519376, guid: ab767081d6392d4408ea66b53acf9c4a,
         type: 3}
