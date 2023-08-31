@@ -113,12 +113,12 @@ public class PlayerController : MonoBehaviour
 
     private float PlayerYAxisVelocity() //Calculates Y-Axis Velocity By Player's Input
     {
-        if (!MyIsGrounded && !IsOnDynamicMove && !IsJumping) // If isn't on ground, then apply Gravity force
+        if (!MyIsGrounded && !IsOnDynamicMove) // If isn't on ground, then apply Gravity force
         {
             return PlayerVelocity.y - _playerStat.GravityForce * Time.fixedDeltaTime;
         }
 
-        if (IsJumping) //while get input 'Jump'
+        if (IsJumping && MyIsGrounded) //while get input 'Jump'
         {
             switch (JumpMode)
             {

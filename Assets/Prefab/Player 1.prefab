@@ -258,7 +258,7 @@ MonoBehaviour:
   _detectionMaxDist: 0.25
   GroundLayer:
     serializedVersion: 2
-    m_Bits: 72
+    m_Bits: 73
   drawGizmo: 1
   _offset: {x: 0, y: 0.2, z: 0}
 --- !u!1 &6106359242755050684
