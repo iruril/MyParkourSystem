@@ -802,7 +802,6 @@ Transform:
   - {fileID: 5363909968622171672}
   - {fileID: 543454700970184905}
   - {fileID: 3133227088839972695}
-  - {fileID: 8840297189898684061}
   m_Father: {fileID: 1583637996266211076}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -854,22 +853,22 @@ CharacterJoint:
     spring: 0
     damper: 0
   m_LowTwistLimit:
-    limit: -20
+    limit: -45
     bounciness: 0
     contactDistance: 0
   m_HighTwistLimit:
-    limit: 20
+    limit: 45
     bounciness: 0
     contactDistance: 0
   m_SwingLimitSpring:
-    spring: 0
+    spring: 45
     damper: 0
   m_Swing1Limit:
     limit: 10
     bounciness: 0
     contactDistance: 0
   m_Swing2Limit:
-    limit: 0
+    limit: 45
     bounciness: 0
     contactDistance: 0
   m_EnableProjection: 1
@@ -1319,7 +1318,7 @@ CharacterJoint:
     spring: 0
     damper: 0
   m_LowTwistLimit:
-    limit: -15
+    limit: -20
     bounciness: 0
     contactDistance: 0
   m_HighTwistLimit:
@@ -1330,11 +1329,11 @@ CharacterJoint:
     spring: 0
     damper: 0
   m_Swing1Limit:
-    limit: 60
+    limit: 50
     bounciness: 0
     contactDistance: 0
   m_Swing2Limit:
-    limit: 5
+    limit: 30
     bounciness: 0
     contactDistance: 0
   m_EnableProjection: 1
@@ -2035,11 +2034,11 @@ CharacterJoint:
     spring: 0
     damper: 0
   m_LowTwistLimit:
-    limit: -140
+    limit: -130
     bounciness: 0
     contactDistance: 0
   m_HighTwistLimit:
-    limit: -30
+    limit: -20
     bounciness: 0
     contactDistance: 0
   m_SwingLimitSpring:
@@ -3211,7 +3210,7 @@ CharacterJoint:
     spring: 0
     damper: 0
   m_LowTwistLimit:
-    limit: -15
+    limit: -20
     bounciness: 0
     contactDistance: 0
   m_HighTwistLimit:
@@ -3222,11 +3221,11 @@ CharacterJoint:
     spring: 0
     damper: 0
   m_Swing1Limit:
-    limit: 60
+    limit: 50
     bounciness: 0
     contactDistance: 0
   m_Swing2Limit:
-    limit: 15
+    limit: 30
     bounciness: 0
     contactDistance: 0
   m_EnableProjection: 1
@@ -3322,11 +3321,11 @@ CharacterJoint:
     spring: 0
     damper: 0
   m_LowTwistLimit:
-    limit: -140
+    limit: -130
     bounciness: 0
     contactDistance: 0
   m_HighTwistLimit:
-    limit: -30
+    limit: -20
     bounciness: 0
     contactDistance: 0
   m_SwingLimitSpring:
@@ -3935,79 +3934,4 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8363799439777806132, guid: 9ed4ef0d32652d14fb30df1a6368eb68,
     type: 3}
   m_PrefabInstance: {fileID: 102621872221807551}
-  m_PrefabAsset: {fileID: 0}
---- !u!1001 &1062044884906193321
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 6472352853055911177}
-    m_Modifications:
-    - target: {fileID: 4146202505395019543, guid: 9ed4ef0d32652d14fb30df1a6368eb68,
-        type: 3}
-      propertyPath: m_Name
-      value: SMG
-      objectReference: {fileID: 0}
-    - target: {fileID: 8363799439777806132, guid: 9ed4ef0d32652d14fb30df1a6368eb68,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 8363799439777806132, guid: 9ed4ef0d32652d14fb30df1a6368eb68,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.02
-      objectReference: {fileID: 0}
-    - target: {fileID: 8363799439777806132, guid: 9ed4ef0d32652d14fb30df1a6368eb68,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.14
-      objectReference: {fileID: 0}
-    - target: {fileID: 8363799439777806132, guid: 9ed4ef0d32652d14fb30df1a6368eb68,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -0.176
-      objectReference: {fileID: 0}
-    - target: {fileID: 8363799439777806132, guid: 9ed4ef0d32652d14fb30df1a6368eb68,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.63389385
-      objectReference: {fileID: 0}
-    - target: {fileID: 8363799439777806132, guid: 9ed4ef0d32652d14fb30df1a6368eb68,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0.37705866
-      objectReference: {fileID: 0}
-    - target: {fileID: 8363799439777806132, guid: 9ed4ef0d32652d14fb30df1a6368eb68,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0.577612
-      objectReference: {fileID: 0}
-    - target: {fileID: 8363799439777806132, guid: 9ed4ef0d32652d14fb30df1a6368eb68,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0.3498139
-      objectReference: {fileID: 0}
-    - target: {fileID: 8363799439777806132, guid: 9ed4ef0d32652d14fb30df1a6368eb68,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 61.902
-      objectReference: {fileID: 0}
-    - target: {fileID: 8363799439777806132, guid: 9ed4ef0d32652d14fb30df1a6368eb68,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: -84.104
-      objectReference: {fileID: 0}
-    - target: {fileID: 8363799439777806132, guid: 9ed4ef0d32652d14fb30df1a6368eb68,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0.961
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 9ed4ef0d32652d14fb30df1a6368eb68, type: 3}
---- !u!4 &8840297189898684061 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 8363799439777806132, guid: 9ed4ef0d32652d14fb30df1a6368eb68,
-    type: 3}
-  m_PrefabInstance: {fileID: 1062044884906193321}
   m_PrefabAsset: {fileID: 0}
