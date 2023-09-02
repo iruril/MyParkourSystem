@@ -5,12 +5,14 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public Camera _myCamera { get; set; } = null;
+    public GameObject Weapon = null;
 
     private CharacterController _player;
     private PlayerStatus _playerStat;
     private PlayerParkour _playerParkour;
     private GroundChecker _myGroundChecker;
-    
+    [SerializeField] private LayerMask _IgnoreRaycast;
+
     #region Character Size Variables
     private Vector3 originCenter = new Vector3(0f, 0.975f, 0f);
     private float originHeight = 1.7f; 
@@ -19,13 +21,17 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     public Vector3 PlayerVelocity { get; private set; } = Vector3.zero;
+    public Vector3 PlayerVelocityBasedOnLookDir { get; private set; } = Vector3.zero;
     public bool MyIsGrounded { get; private set; } = false;
+    public Vector3 LookTarget { get; private set; } = Vector3.zero;
 
     #region Input Varibales
     private float _horizontalInput;
     private float _verticalInput;
     private float _rotationHorizontalInput;
     private float _rotationVerticalInput;
+
+    private Vector3 _mouseLookPosition;
     #endregion
 
     private float _playerYAngleOffset = 0;
@@ -59,16 +65,30 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if (Input.GetMouseButton(1) && !IsJumping && !IsOnDynamicMove)
+        {
+            if(CurrentMode != MoveMode.Aim) CurrentMode = MoveMode.Aim;
+        }
+        else
+        {
+            if (CurrentMode != MoveMode.Default) CurrentMode = MoveMode.Default;
+        }
+
         switch (CurrentMode)
         {
             case MoveMode.Default:
                 #region Default Player Update
+                if (Weapon.activeSelf) Weapon.SetActive(false);
                 GetInput();
                 CalculatePlayerTransformByInput(); //Calculated PlayerVelocity is based on 'FixedTime', so we smooth this with 'Time'.
                 #endregion
                 break;
             case MoveMode.Aim:
-
+                #region Aim-Mode Player Update
+                if (!Weapon.activeSelf) Weapon.SetActive(true);
+                AimModeInput();
+                CalculatePlayerTransformByInputOnAim();
+                #endregion
                 break;
         }
     }
@@ -76,16 +96,26 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate() //For Velocity Calculations
     {
         MyIsGrounded = _myGroundChecker.IsGrounded();
-        #region Default Player FixedUpdate
-        if (!IsOnDynamicMove) //While Isn't on Parkour Action
+        switch (CurrentMode)
         {
-            if (_isRotating)
-            {
-                PlayerRotate();
-            }
-            PlayerMove();
-        }
-        #endregion
+            case MoveMode.Default:
+                #region Default Player FixedUpdate
+                if (!IsOnDynamicMove) //While Isn't on Parkour Action
+                {
+                    if (_isRotating)
+                    {
+                        PlayerRotate();
+                    }
+                    PlayerMove();
+                }
+                #endregion
+                break;
+            case MoveMode.Aim:
+                #region Aim-Mode Player FixedUpdate
+                PlayerAimModeMove();
+                #endregion
+                break;
+        }     
     }
     #region Default Player Control Fields
     #region Player Input Fields
@@ -370,5 +400,62 @@ public class PlayerController : MonoBehaviour
 
     #region Aim-Mode Player Control Fields
 
+    private void AimModeInput()
+    {
+        _horizontalInput = Input.GetAxis("Horizontal");
+        _verticalInput = Input.GetAxis("Vertical");
+    }
+    private void RotateToAimPoint()
+    {
+        Ray aimPointRay = _myCamera.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hitInfo;
+        if (Physics.Raycast(aimPointRay, out hitInfo, 100f, ~_IgnoreRaycast))
+        {
+            LookTarget = hitInfo.point;
+            _mouseLookPosition = LookTarget;
+            _mouseLookPosition.y = this.transform.position.y;
+        }
+        Vector3 lookDirection = _mouseLookPosition - this.transform.position;
+        lookDirection =  lookDirection.normalized;
+        if (lookDirection != Vector3.zero)
+        {
+            float step = Time.fixedDeltaTime * _playerStat.RotateSpeed;
+            this.transform.rotation = Quaternion.Slerp(this.transform.rotation, Quaternion.LookRotation(lookDirection), step);
+        }
+    }
+
+    private void PlayerAimModeMove()
+    {
+        RotateToAimPoint();
+
+        Vector3 xzPlaneVel = PlayerXZPlaneVelocityOnAim(); //Calculates XZ-Plane Velocity
+        float yAxisVel = PlayerYAxisVelocityOnAim(); //Calculates Y-Axis Velocity
+        PlayerVelocity = new Vector3(xzPlaneVel.x, yAxisVel, xzPlaneVel.z); //Combine
+    }
+    private Vector3 PlayerXZPlaneVelocityOnAim()
+    {
+        Vector3 moveVel = _playerMoveOrientedForward * _verticalInput + _playerMoveOrientedRight * _horizontalInput;
+        Vector3 moveDir = moveVel.normalized;
+
+        float moveSpeed = Mathf.Min(moveVel.magnitude, 1.0f) * (_playerStat.MyCurrentSpeed / 2f);
+
+        return moveDir * moveSpeed;
+    }
+
+    private float PlayerYAxisVelocityOnAim()
+    {
+        if (!MyIsGrounded && !IsOnDynamicMove) // If isn't on ground, then apply Gravity force
+        {
+            return PlayerVelocity.y - _playerStat.GravityForce * Time.fixedDeltaTime;
+        }
+
+        return Mathf.Max(0.0f, PlayerVelocity.y); //Default Y-Axis Velocity
+    }
+
+    private void CalculatePlayerTransformByInputOnAim()
+    {
+        PlayerVelocityBasedOnLookDir = transform.InverseTransformDirection(_player.velocity);
+        _player.Move(PlayerVelocity * Time.deltaTime);
+    }
     #endregion
 }

@@ -5,6 +5,9 @@ using UnityEngine;
 public class PlayerAnimationController : MonoBehaviour
 {
     public float DistanceGround = 0.5f;
+    public float TransitionTime = 0.5f;
+    public Transform LeftHandOnGun = null;
+    public Transform RightHandOnGun = null;
 
     private Animator _animator;
     private PlayerController _player;
@@ -22,6 +25,7 @@ public class PlayerAnimationController : MonoBehaviour
     private float _animIKWeightLerpTime = 0.5f;
     private bool _ikWeightSet = false;
 
+
     void Awake()
     {
         _animator = this.GetComponent<Animator>();
@@ -35,42 +39,78 @@ public class PlayerAnimationController : MonoBehaviour
 
     void Update()
     {
-        GetPlayerActionBoolean();
-        if (!_player.IsOnDynamicMove) GetPlayerSpeed();
-
-        if (_player.IsJumping)
+        switch (_player.CurrentMode)
         {
-            switch (_player.JumpMode)
-            {
-                case PlayerParkour.JumpState.DefaultJump:
-                    StartCoroutine(DefaultJumpCoroutine());
-                    return;
-                case PlayerParkour.JumpState.Vault:
-                    if (!_player.IsOnDynamicMove)
+            case PlayerController.MoveMode.Default:
+                _animator.SetLayerWeight(1, 0.0f); //서서히 증감시킬 것.
+
+                GetPlayerActionBoolean();
+                if (!_player.IsOnDynamicMove) GetPlayerSpeed();
+
+                if (_player.IsJumping)
+                {
+                    switch (_player.JumpMode)
                     {
-                        _animator.SetFloat("Speed", _mySpeed);
-                        SetVaultType();
-                        StartCoroutine(VaultCoroutine());
+                        case PlayerParkour.JumpState.DefaultJump:
+                            StartCoroutine(DefaultJumpCoroutine());
+                            return;
+                        case PlayerParkour.JumpState.Vault:
+                            if (!_player.IsOnDynamicMove)
+                            {
+                                _animator.SetFloat("Speed", _mySpeed);
+                                SetVaultType();
+                                StartCoroutine(VaultCoroutine());
+                            }
+                            return;
+                        case PlayerParkour.JumpState.JumpClimb:
+                            if (!_player.IsOnDynamicMove)
+                            {
+                                _animator.SetFloat("Speed", _mySpeed);
+                                SetJumpClimbType();
+                                StartCoroutine(JumpClimbCoroutine());
+                            }
+                            return;
                     }
-                    return;
-                case PlayerParkour.JumpState.JumpClimb:
-                    if (!_player.IsOnDynamicMove)
-                    {
-                        _animator.SetFloat("Speed", _mySpeed);
-                        SetJumpClimbType();
-                        StartCoroutine(JumpClimbCoroutine());
-                    }
-                    return;
-            }
+                }
+                break;
+            case PlayerController.MoveMode.Aim:
+                _animator.SetLayerWeight(1, 1.0f); //서서히 증감시킬 것.
+
+                GetPlayerSpeedOnAim();
+                break;
         }
+       
     }
 
     #region Animator Inverse Kinematic Calculation Fields
     private void OnAnimatorIK(int layerIndex)
     {
+        if(_player.CurrentMode == PlayerController.MoveMode.Aim)
+        {
+            _animator.SetLookAtWeight(1.0f);
+            _animator.SetLookAtPosition(_player.LookTarget);
+            if (LeftHandOnGun != null)
+            {
+                _animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, 1f);
+                _animator.SetIKPosition(AvatarIKGoal.LeftHand, LeftHandOnGun.position);
+                _animator.SetIKRotationWeight(AvatarIKGoal.LeftHand, 1f);
+                _animator.SetIKRotation(AvatarIKGoal.LeftHand, LeftHandOnGun.rotation);
+            }
+            if (RightHandOnGun != null)
+            {
+                _animator.SetIKPositionWeight(AvatarIKGoal.RightHand, 1f);
+                _animator.SetIKPosition(AvatarIKGoal.RightHand, RightHandOnGun.position);
+                _animator.SetIKRotationWeight(AvatarIKGoal.RightHand, 1f);
+                _animator.SetIKRotation(AvatarIKGoal.RightHand, RightHandOnGun.rotation);
+            }
+        }
+        else
+        {
+            _animator.SetLookAtWeight(0.0f);
+        }
+
         if (_player.IsOnDynamicMove)
         {
-            _animator.SetLookAtPosition(_playerParkour.StepPoint);
             if (!_ikWeightSet)
             {
                 StartCoroutine(WeightDecreaser());
@@ -205,6 +245,14 @@ public class PlayerAnimationController : MonoBehaviour
         _animator.SetTrigger("JumpClimb");
         yield return new WaitForSeconds(0.05f);
         _animator.ResetTrigger("JumpClimb");
+    }
+    #endregion
+
+    #region 'Aim Layer' Animator Value Set Fields
+    private void GetPlayerSpeedOnAim()
+    {
+        _animator.SetFloat("SpeedForward", _player.PlayerVelocityBasedOnLookDir.z / (_playerStat.Speed / 2f));
+        _animator.SetFloat("SpeedRight", _player.PlayerVelocityBasedOnLookDir.x / (_playerStat.Speed / 2f));
     }
     #endregion
 }
