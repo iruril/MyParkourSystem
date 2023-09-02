@@ -10,28 +10,41 @@ public class PlayerController : MonoBehaviour
     private PlayerStatus _playerStat;
     private PlayerParkour _playerParkour;
     private GroundChecker _myGroundChecker;
-
+    
+    #region Character Size Variables
     private Vector3 originCenter = new Vector3(0f, 0.975f, 0f);
     private float originHeight = 1.7f; 
     private Vector3 newCenter = new Vector3(0f, 1.5f, 0f);
     private float newHeight = 0.6f;
+    #endregion
 
-    public Vector3 PlayerVelocity { get; set; } = Vector3.zero;
-    public bool MyIsGrounded { get; set; } = false;
+    public Vector3 PlayerVelocity { get; private set; } = Vector3.zero;
+    public bool MyIsGrounded { get; private set; } = false;
 
+    #region Input Varibales
     private float _horizontalInput;
     private float _verticalInput;
     private float _rotationHorizontalInput;
     private float _rotationVerticalInput;
+    #endregion
+
     private float _playerYAngleOffset = 0;
     private Vector3 _playerMoveOrientedForward;
     private Vector3 _playerMoveOrientedRight;
     private Quaternion _playerRotation;
     private bool _isRotating;
 
-    public bool IsOnDynamicMove { get; set; } = false;
-    public bool IsJumping { get; set; } = false;
-    public PlayerParkour.JumpState JumpMode { get; set; } = PlayerParkour.JumpState.None;
+    #region Movement Trigger Restriction Variables
+    public bool IsOnDynamicMove { get; private set; } = false;
+    public bool IsJumping { get; private set; } = false;
+    public PlayerParkour.JumpState JumpMode { get; private set; } = PlayerParkour.JumpState.None;
+
+    public enum MoveMode{
+        Default,
+        Aim
+    }
+    public MoveMode CurrentMode { get; private set; } = MoveMode.Default;
+    #endregion
 
     void Start()
     {
@@ -46,13 +59,24 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        GetInput();
-        CalculatePlayerTransformByInput(); //Calculated PlayerVelocity is based on 'FixedTime', so we smooth this with 'Time'.
+        switch (CurrentMode)
+        {
+            case MoveMode.Default:
+                #region Default Player Update
+                GetInput();
+                CalculatePlayerTransformByInput(); //Calculated PlayerVelocity is based on 'FixedTime', so we smooth this with 'Time'.
+                #endregion
+                break;
+            case MoveMode.Aim:
+
+                break;
+        }
     }
 
     private void FixedUpdate() //For Velocity Calculations
     {
         MyIsGrounded = _myGroundChecker.IsGrounded();
+        #region Default Player FixedUpdate
         if (!IsOnDynamicMove) //While Isn't on Parkour Action
         {
             if (_isRotating)
@@ -61,8 +85,9 @@ public class PlayerController : MonoBehaviour
             }
             PlayerMove();
         }
+        #endregion
     }
-
+    #region Default Player Control Fields
     #region Player Input Fields
     private void GetInput()
     {
@@ -340,5 +365,10 @@ public class PlayerController : MonoBehaviour
         JumpMode = PlayerParkour.JumpState.None;
         yield break;
     }
+    #endregion
+    #endregion
+
+    #region Aim-Mode Player Control Fields
+
     #endregion
 }
