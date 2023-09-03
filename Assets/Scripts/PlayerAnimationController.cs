@@ -88,7 +88,17 @@ public class PlayerAnimationController : MonoBehaviour
         if(_player.CurrentMode == PlayerController.MoveMode.Aim)
         {
             _animator.SetLookAtWeight(1.0f);
-            _animator.SetLookAtPosition(_player.LookTarget);
+            Vector3 LookTarget = _player.LookTarget;
+            if (_player.IsAimOnEnemy)
+            {
+                _animator.SetLookAtPosition(LookTarget);
+            }
+            else
+            {
+                LookTarget.y = this.transform.position.y + 1.2f;
+                _animator.SetLookAtPosition(LookTarget);
+            }
+
             if (LeftHandOnGun != null)
             {
                 _animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, 1f);

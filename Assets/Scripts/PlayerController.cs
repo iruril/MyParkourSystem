@@ -24,13 +24,13 @@ public class PlayerController : MonoBehaviour
     public Vector3 PlayerVelocityBasedOnLookDir { get; private set; } = Vector3.zero;
     public bool MyIsGrounded { get; private set; } = false;
     public Vector3 LookTarget { get; private set; } = Vector3.zero;
+    public bool IsAimOnEnemy { get; private set; } = false;
 
     #region Input Varibales
     private float _horizontalInput;
     private float _verticalInput;
     private float _rotationHorizontalInput;
     private float _rotationVerticalInput;
-
     private Vector3 _mouseLookPosition;
     #endregion
 
@@ -399,7 +399,6 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region Aim-Mode Player Control Fields
-
     private void AimModeInput()
     {
         _horizontalInput = Input.GetAxis("Horizontal");
@@ -411,6 +410,9 @@ public class PlayerController : MonoBehaviour
         RaycastHit hitInfo;
         if (Physics.Raycast(aimPointRay, out hitInfo, 100f, ~_IgnoreRaycast))
         {
+            if (hitInfo.transform.tag == "Enemy") IsAimOnEnemy = true;
+            else IsAimOnEnemy = false;
+
             LookTarget = hitInfo.point;
             _mouseLookPosition = LookTarget;
             _mouseLookPosition.y = this.transform.position.y;
