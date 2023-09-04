@@ -24,7 +24,11 @@ public class PlayerAnimationController : MonoBehaviour
     private float _animIKWeight = 1.0f;
     private float _animIKWeightLerpTime = 0.5f;
     private bool _ikWeightSet = false;
+    private Vector3 _currentLookAtPosition;
+    private Vector3 _targetLookAtPosition;
 
+    private float _currentWeight = 0.0f;
+    private float _targetWeight = 0.0f;
 
     void Awake()
     {
@@ -39,11 +43,14 @@ public class PlayerAnimationController : MonoBehaviour
 
     void Update()
     {
+        _targetWeight = (_player.CurrentMode == PlayerController.MoveMode.Aim) ? 1.0f : 0.0f;
+        _currentWeight = Mathf.Lerp(_currentWeight, _targetWeight, Time.deltaTime / TransitionTime);
+
+        _animator.SetLayerWeight(1, _currentWeight);
+
         switch (_player.CurrentMode)
         {
             case PlayerController.MoveMode.Default:
-                _animator.SetLayerWeight(1, 0.0f); //서서히 증감시킬 것.
-
                 GetPlayerActionBoolean();
                 if (!_player.IsOnDynamicMove) GetPlayerSpeed();
 
@@ -74,8 +81,6 @@ public class PlayerAnimationController : MonoBehaviour
                 }
                 break;
             case PlayerController.MoveMode.Aim:
-                _animator.SetLayerWeight(1, 1.0f); //서서히 증감시킬 것.
-
                 GetPlayerSpeedOnAim();
                 break;
         }
@@ -91,13 +96,24 @@ public class PlayerAnimationController : MonoBehaviour
             Vector3 LookTarget = _player.LookTarget;
             if (_player.IsAimOnEnemy)
             {
-                _animator.SetLookAtPosition(LookTarget);
+                _targetLookAtPosition = LookTarget;
             }
             else
             {
-                LookTarget.y = this.transform.position.y + 1.2f;
-                _animator.SetLookAtPosition(LookTarget);
+                if (Vector3.Distance(this.transform.position, LookTarget) <= 1.5f)
+                {
+                    _targetLookAtPosition = this.transform.position + this.transform.forward * 1.0f;
+                    _targetLookAtPosition.y = 1.2f;
+                }
+                else
+                {
+                    LookTarget.y = this.transform.position.y + 1.2f;
+                    _targetLookAtPosition = LookTarget;
+                }
             }
+            float step = Time.deltaTime * _playerStat.RotateSpeed;
+            _currentLookAtPosition = Vector3.Slerp(_currentLookAtPosition, _targetLookAtPosition, step);
+            _animator.SetLookAtPosition(_currentLookAtPosition);
 
             if (LeftHandOnGun != null)
             {

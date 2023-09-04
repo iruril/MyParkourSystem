@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public Camera _myCamera { get; set; } = null;
+    public Transform MyHead = null;
     public GameObject Weapon = null;
 
     private CharacterController _player;
