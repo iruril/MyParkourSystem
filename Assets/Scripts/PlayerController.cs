@@ -5,8 +5,9 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public Camera _myCamera { get; set; } = null;
-    public Transform MyHead = null;
     public GameObject Weapon = null;
+    public Transform Muzzle = null;
+    public GameObject MuzzleFlash = null;
 
     private CharacterController _player;
     private PlayerStatus _playerStat;
@@ -40,6 +41,7 @@ public class PlayerController : MonoBehaviour
     private Vector3 _playerMoveOrientedRight;
     private Quaternion _playerRotation;
     private bool _isRotating;
+    private Vector3 _lookDirection;
 
     #region Movement Trigger Restriction Variables
     public bool IsOnDynamicMove { get; private set; } = false;
@@ -53,6 +55,13 @@ public class PlayerController : MonoBehaviour
     public MoveMode CurrentMode { get; private set; } = MoveMode.Default;
     #endregion
 
+    #region Shooting Variables
+    public float FireRate = 0.1f;
+    private float _fireTime = 0f;
+    private LineRenderer _projectileLine;
+    private WaitForSeconds shotDuration = new WaitForSeconds(0.02f);
+    #endregion
+
     void Start()
     {
         _player = this.GetComponent<CharacterController>();
@@ -62,6 +71,11 @@ public class PlayerController : MonoBehaviour
         _playerYAngleOffset = _myCamera.GetComponent<CameraController>().GetCameraOffsetAngles().y;
         _playerMoveOrientedForward = Quaternion.Euler(0, _playerYAngleOffset, 0) * this.transform.forward;
         _playerMoveOrientedRight = Quaternion.Euler(0, _playerYAngleOffset, 0) * this.transform.right;
+
+        _projectileLine = this.GetComponent<LineRenderer>();
+        _projectileLine.enabled = false;
+        MuzzleFlash = Muzzle.GetChild(0).gameObject;
+        MuzzleFlash.SetActive(false);
     }
 
     void Update()
@@ -79,6 +93,7 @@ public class PlayerController : MonoBehaviour
         {
             case MoveMode.Default:
                 #region Default Player Update
+                if (MuzzleFlash.activeSelf) MuzzleFlash.SetActive(false);
                 if (Weapon.activeSelf) Weapon.SetActive(false);
                 GetInput();
                 CalculatePlayerTransformByInput(); //Calculated PlayerVelocity is based on 'FixedTime', so we smooth this with 'Time'.
@@ -87,7 +102,8 @@ public class PlayerController : MonoBehaviour
             case MoveMode.Aim:
                 #region Aim-Mode Player Update
                 if (!Weapon.activeSelf) Weapon.SetActive(true);
-                AimModeInput();
+                AimModeInput(); 
+                ShootingInput();
                 CalculatePlayerTransformByInputOnAim();
                 #endregion
                 break;
@@ -411,19 +427,25 @@ public class PlayerController : MonoBehaviour
         RaycastHit hitInfo;
         if (Physics.Raycast(aimPointRay, out hitInfo, 100f, ~_IgnoreRaycast))
         {
-            if (hitInfo.transform.tag == "Enemy") IsAimOnEnemy = true;
-            else IsAimOnEnemy = false;
+            if (hitInfo.transform.tag == "Enemy")
+            {
+                IsAimOnEnemy = true;
+            }
+            else
+            {
+                IsAimOnEnemy = false;
+            }
 
             LookTarget = hitInfo.point;
             _mouseLookPosition = LookTarget;
             _mouseLookPosition.y = this.transform.position.y;
         }
-        Vector3 lookDirection = _mouseLookPosition - this.transform.position;
-        lookDirection =  lookDirection.normalized;
-        if (lookDirection != Vector3.zero)
+        _lookDirection = _mouseLookPosition - this.transform.position;
+        _lookDirection = _lookDirection.normalized;
+        if (_lookDirection != Vector3.zero)
         {
             float step = Time.fixedDeltaTime * _playerStat.RotateSpeed;
-            this.transform.rotation = Quaternion.Slerp(this.transform.rotation, Quaternion.LookRotation(lookDirection), step);
+            this.transform.rotation = Quaternion.Slerp(this.transform.rotation, Quaternion.LookRotation(_lookDirection), step);
         }
     }
 
@@ -459,6 +481,66 @@ public class PlayerController : MonoBehaviour
     {
         PlayerVelocityBasedOnLookDir = transform.InverseTransformDirection(_player.velocity);
         _player.Move(PlayerVelocity * Time.deltaTime);
+    }
+    #endregion
+
+    #region Player Shooting Guns On Aim-Mode Fields
+    private void ShootingInput()
+    {
+        if (Input.GetMouseButton(0))
+        {
+            Shoot();
+            if (_fireTime < FireRate)
+            {
+                _fireTime += Time.deltaTime;
+            }
+        }
+
+        if (Input.GetMouseButton(0))
+        {
+            if (!MuzzleFlash.activeSelf) MuzzleFlash.SetActive(true);
+        }
+        else
+        {
+            if (MuzzleFlash.activeSelf) MuzzleFlash.SetActive(false);
+        }
+    }
+
+    private void Shoot()
+    {
+        if (_fireTime < FireRate) return;
+        RaycastHit hitInfo;
+        _projectileLine.SetPosition(0, Muzzle.position);
+        if (IsAimOnEnemy)
+        {
+            if (Physics.Raycast(Muzzle.position, (LookTarget - Muzzle.position).normalized, out hitInfo, 100f))
+            {
+                _projectileLine.SetPosition(1, hitInfo.point);
+                if(hitInfo.transform.tag == "Enemy")
+                {
+                    hitInfo.transform.GetComponent<IDamageable>().TakeHit(10.0f, (LookTarget - Muzzle.position).normalized);
+                }
+            }
+        }
+        else
+        {
+            if (Physics.Raycast(Muzzle.position, Muzzle.transform.forward, out hitInfo, 100f))
+            {
+                _projectileLine.SetPosition(1, hitInfo.point);
+            }
+            else
+            {
+                _projectileLine.SetPosition(1, Muzzle.transform.forward * 100f);
+            }
+        }
+        StartCoroutine(shootEffect());
+        _fireTime = 0.0f;
+    }
+    private IEnumerator shootEffect()
+    {
+        _projectileLine.enabled = true;
+        yield return shotDuration;
+        _projectileLine.enabled = false;
     }
     #endregion
 }

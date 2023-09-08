@@ -5,28 +5,45 @@ using UnityEngine;
 public class RagdollController : MonoBehaviour
 {
     public GameObject MySkeleton;
-    private Rigidbody[] _myRigids;
+    private List<Rigidbody> _myRigids = new();
+    private Rigidbody _myHead;
 
     void Start()
     {
-        _myRigids = MySkeleton.GetComponentsInChildren<Rigidbody>();
+        Rigidbody[] tempRigids = MySkeleton.GetComponentsInChildren<Rigidbody>();
+        foreach(Rigidbody item in tempRigids)
+        {
+            if(item.transform.name != "SMG")
+            {
+                _myRigids.Add(item);
+            }
+            if (item.transform.name.Contains("Head"))
+            {
+                _myHead = item;
+            }
+        }
         SetMyRagdollState(true);
         SetMyRagdollCollisionState(false);
     }
 
-    public void SetMyRagdollState(bool state)
+    public void SetMyRagdollState(bool kinematicState)
     {
         foreach (Rigidbody rigid in _myRigids)
         {
-            rigid.isKinematic = state;
+            rigid.isKinematic = kinematicState;
         }
     }
 
-    public void SetMyRagdollCollisionState(bool state)
+    public void SetMyRagdollCollisionState(bool collisionRecieveState)
     {
         foreach (Rigidbody rigid in _myRigids)
         {
-            rigid.transform.GetComponent<Collider>().enabled = state;
+            rigid.transform.GetComponent<Collider>().enabled = collisionRecieveState;
         }
+    }
+
+    public void DeadEffect(Vector3 forceDir)
+    {
+        _myHead.AddForce(forceDir * 30.0f, ForceMode.Impulse);
     }
 }
