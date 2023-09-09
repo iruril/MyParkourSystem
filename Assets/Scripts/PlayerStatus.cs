@@ -8,6 +8,7 @@ public class PlayerStatus : MonoBehaviour, IDamageable
     public float JumpPower = 5f;
     public float GravityForce = 9.8f;
     public float RotateSpeed = 30.0f;
+    public float WeaponDamage = 30.0f;
 
     public float MyStartingHealth = 100.0f;
     public float Health { get; set; }

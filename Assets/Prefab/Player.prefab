@@ -209,6 +209,7 @@ MonoBehaviour:
   JumpPower: 3
   GravityForce: 9.8
   RotateSpeed: 10
+  WeaponDamage: 30
   MyStartingHealth: 100
   Dead: 0
   DealtDamage: 0
@@ -229,10 +230,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Weapon: {fileID: 6873524056783363298}
   Muzzle: {fileID: 2026364925203406157}
-  MuzzleFlash: {fileID: 0}
+  MuzzleFlash: {fileID: 78176673279578212}
   _IgnoreRaycast:
     serializedVersion: 2
     m_Bits: 166
+  _bloodEffect: {fileID: 100002, guid: 556d09d7fda29fd4185eed4067d5777b, type: 3}
   FireRate: 0.1
 --- !u!114 &78176673745024626
 MonoBehaviour:
@@ -479,6 +481,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c5946a66b3eec2d479e20b7315b06bf8, type: 3}
+--- !u!1 &78176673279578212 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 100006, guid: c5946a66b3eec2d479e20b7315b06bf8,
+    type: 3}
+  m_PrefabInstance: {fileID: 78176673279547074}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &8391793455261792862
 PrefabInstance:
   m_ObjectHideFlags: 0

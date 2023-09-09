@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour
     private PlayerParkour _playerParkour;
     private GroundChecker _myGroundChecker;
     [SerializeField] private LayerMask _IgnoreRaycast;
+    [SerializeField] private GameObject _bloodEffect = null;
 
     #region Character Size Variables
     private Vector3 originCenter = new Vector3(0f, 0.975f, 0f);
@@ -269,6 +270,7 @@ public class PlayerController : MonoBehaviour
         vaultPoint.y = vaultPoint.y - (originCenter.y / 2.0f);
         _player.height = newHeight;
         _player.center = newCenter;
+        IsJumping = false;
 
         //First Step Action (Move to Step Point)
         float lerpTime = _playerParkour.ParkourJumpTime;
@@ -294,7 +296,6 @@ public class PlayerController : MonoBehaviour
             _player.center = Vector3.Lerp(newCenter, originCenter, currentTime / lerpTime);
             yield return null;
         }
-        IsJumping = false;
         IsOnDynamicMove = false;
         JumpMode = PlayerParkour.JumpState.None;
         yield break;
@@ -318,6 +319,7 @@ public class PlayerController : MonoBehaviour
         climbPoint.y = climbPoint.y - 0.9f;
         _player.height = newHeight;
         _player.center = newCenter;
+        IsJumping = false;
 
         if (_playerParkour.StepHeight <= 1.5f) //if StepHeoght is lower then 1.5m
         {
@@ -407,7 +409,6 @@ public class PlayerController : MonoBehaviour
         }
         _player.height = originHeight;
         _player.center = originCenter;
-        IsJumping = false;
         IsOnDynamicMove = false;
         JumpMode = PlayerParkour.JumpState.None;
         yield break;
@@ -513,12 +514,21 @@ public class PlayerController : MonoBehaviour
         _projectileLine.SetPosition(0, Muzzle.position);
         if (IsAimOnEnemy)
         {
-            if (Physics.Raycast(Muzzle.position, (LookTarget - Muzzle.position).normalized, out hitInfo, 100f))
+            Vector3 dir = (LookTarget - Muzzle.position).normalized;
+            if (Physics.Raycast(Muzzle.position, dir, out hitInfo, 100f))
             {
                 _projectileLine.SetPosition(1, hitInfo.point);
                 if(hitInfo.transform.tag == "Enemy")
                 {
-                    hitInfo.transform.GetComponent<IDamageable>().TakeHit(10.0f, (LookTarget - Muzzle.position).normalized);
+                    StartCoroutine(BloodEffect(hitInfo.point));
+                    if (hitInfo.transform.GetComponent<IDamageable>() != null)
+                    {
+                        hitInfo.transform.GetComponent<IDamageable>().TakeHit(_playerStat.WeaponDamage, dir);
+                    }
+                    if (hitInfo.transform.GetComponent<Rigidbody>() != null)
+                    {
+                        hitInfo.transform.GetComponent<Rigidbody>().AddForce(dir * 30f, ForceMode.Impulse);
+                    }
                 }
             }
         }
@@ -533,14 +543,21 @@ public class PlayerController : MonoBehaviour
                 _projectileLine.SetPosition(1, Muzzle.transform.forward * 100f);
             }
         }
-        StartCoroutine(shootEffect());
+        StartCoroutine(ShootEffect());
         _fireTime = 0.0f;
     }
-    private IEnumerator shootEffect()
+    private IEnumerator ShootEffect()
     {
         _projectileLine.enabled = true;
         yield return shotDuration;
         _projectileLine.enabled = false;
+    }
+    private IEnumerator BloodEffect(Vector3 position)
+    {
+        GameObject effect = Instantiate(_bloodEffect, position, Quaternion.Euler(new Vector3(-90f, 0, 0f)));
+        effect.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+        yield return new WaitForSeconds(1.0f);
+        Destroy(effect);
     }
     #endregion
 }
