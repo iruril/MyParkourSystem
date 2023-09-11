@@ -44,6 +44,6 @@ public class RagdollController : MonoBehaviour
 
     public void DeadEffect(Vector3 forceDir)
     {
-        _myHead.AddForce(forceDir * 50.0f, ForceMode.Impulse);
+        _myHead.AddForce(forceDir * 30.0f, ForceMode.Impulse);
     }
 }

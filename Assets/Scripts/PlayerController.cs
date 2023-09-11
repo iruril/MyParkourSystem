@@ -15,6 +15,7 @@ public class PlayerController : MonoBehaviour
     private GroundChecker _myGroundChecker;
     [SerializeField] private LayerMask _IgnoreRaycast;
     [SerializeField] private GameObject _bloodEffect = null;
+    private Outline _enemyOutline = null;
 
     #region Character Size Variables
     private Vector3 originCenter = new Vector3(0f, 0.975f, 0f);
@@ -430,10 +431,20 @@ public class PlayerController : MonoBehaviour
         {
             if (hitInfo.transform.tag == "Enemy")
             {
+                _enemyOutline = hitInfo.transform.GetComponent<Outline>();
+                if (_enemyOutline != null)
+                {
+                    _enemyOutline.enabled = true;
+                }
                 IsAimOnEnemy = true;
             }
             else
             {
+                if (_enemyOutline != null)
+                {
+                    _enemyOutline.enabled = false;
+                    _enemyOutline = null;
+                }
                 IsAimOnEnemy = false;
             }
 
@@ -527,7 +538,7 @@ public class PlayerController : MonoBehaviour
                     }
                     if (hitInfo.transform.GetComponent<Rigidbody>() != null)
                     {
-                        hitInfo.transform.GetComponent<Rigidbody>().AddForce(dir * 30f, ForceMode.Impulse);
+                        hitInfo.transform.GetComponent<Rigidbody>().AddForce(dir * 20f, ForceMode.Impulse);
                     }
                 }
             }
