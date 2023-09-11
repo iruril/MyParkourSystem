@@ -97,6 +97,11 @@ public class PlayerController : MonoBehaviour
                 #region Default Player Update
                 if (MuzzleFlash.activeSelf) MuzzleFlash.SetActive(false);
                 if (Weapon.activeSelf) Weapon.SetActive(false);
+                if (_enemyOutline != null)
+                {
+                    _enemyOutline.enabled = false;
+                    _enemyOutline = null;
+                }
                 GetInput();
                 CalculatePlayerTransformByInput(); //Calculated PlayerVelocity is based on 'FixedTime', so we smooth this with 'Time'.
                 #endregion
