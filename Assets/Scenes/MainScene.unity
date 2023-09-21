@@ -1459,8 +1459,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd2c058c033024d6c974915ad5431927, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _cameraOffset: {x: -3, y: 4.5, z: -3}
-  _cameraOffsetAngles: {x: 45, y: 45, z: 0}
+  LerpTime: 1
+  WheelSpeed: 10
   _smoothTime: 0.3
 --- !u!1001 &330753341
 PrefabInstance:
