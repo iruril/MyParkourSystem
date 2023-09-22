@@ -10,21 +10,22 @@ public class CameraController : MonoBehaviour
 
     private Vector3 _currentCamOffset;
     private List<Vector3> _camOffsets = new();
-    private Vector3 _cameraOffsetFirst = new Vector3(-3f, 4.5f, -3f);
-    private Vector3 _cameraOffsetSecond = new Vector3(-1.5f, 2f, -1.5f);
-    private Vector3 _cameraOffsetThird = new Vector3(-0.75f, 1.5f, -0.75f);
+    [SerializeField] private Vector3 _cameraOffsetFirst = new Vector3(-3f, 4.5f, -3f);
+    [SerializeField] private Vector3 _cameraOffsetSecond = new Vector3(-1.5f, 2f, -1.5f);
+    [SerializeField] private Vector3 _cameraOffsetThird = new Vector3(-0.75f, 1.5f, -0.75f);
 
     private Vector3 _currentCamAngleOffset;
     private List<Vector3> _camAngleOffsets = new();
-    private Vector3 _cameraOffsetAnglesFirst = new Vector3(45f, 45f, 0f);
-    private Vector3 _cameraOffsetAnglesSecond = new Vector3(15f, 45f, 0f);
-    private Vector3 _cameraOffsetAnglesThird = new Vector3(10f, 45f, 0f);
+    [SerializeField] private Vector3 _cameraOffsetAnglesFirst = new Vector3(45f, 45f, 0f);
+    [SerializeField] private Vector3 _cameraOffsetAnglesSecond = new Vector3(15f, 45f, 0f);
+    [SerializeField] private Vector3 _cameraOffsetAnglesThird = new Vector3(10f, 45f, 0f);
+
     [SerializeField] private float _smoothTime = 0.3f;
     private Vector3 _targetPos;
     private Vector3 _velocity = Vector3.zero;
 
     private bool _isCamOnAction = false;
-    private int _index = 0;
+    private int _currentCamOffsetIndex = 0;
     
     void Awake()
     {
@@ -75,37 +76,38 @@ public class CameraController : MonoBehaviour
         return _cameraOffsetAnglesFirst;
     }
 
-    private IEnumerator CamOffsetIncrease() //Far Away
+    private IEnumerator CamOffsetIncrease() //Close 
     {
-        if (_currentCamOffset == _camOffsets[2] || _currentCamAngleOffset == _camAngleOffsets[2]) yield break;
+        if (_currentCamOffset == _camOffsets[2]) yield break;
         _isCamOnAction = true;
-        _index++;
+        _currentCamOffsetIndex++;
         float currentTime = 0;
         while(currentTime < LerpTime)
         {
             currentTime += Time.deltaTime;
-            _currentCamOffset = Vector3.Lerp(_camOffsets[_index - 1], _camOffsets[_index], currentTime / LerpTime);
-            _currentCamAngleOffset = Vector3.Lerp(_camAngleOffsets[_index - 1], _camAngleOffsets[_index], currentTime / LerpTime);
-            this.transform.rotation = Quaternion.Euler(_currentCamAngleOffset);
+            _currentCamOffset = Vector3.Lerp(_camOffsets[_currentCamOffsetIndex - 1], _camOffsets[_currentCamOffsetIndex], currentTime / LerpTime);
+            this.transform.rotation = Quaternion.Lerp(Quaternion.Euler(_camAngleOffsets[_currentCamOffsetIndex - 1]),
+                                      Quaternion.Euler(_camAngleOffsets[_currentCamOffsetIndex]), currentTime / LerpTime);
             yield return null;
         }
         _isCamOnAction = false;
     }
 
-    private IEnumerator CamOffsetDecrease() //Close
+    private IEnumerator CamOffsetDecrease() //Far Away
     {
-        if (_currentCamOffset == _camOffsets[0] || _currentCamAngleOffset == _camAngleOffsets[0]) yield break;
+        if (_currentCamOffset == _camOffsets[0]) yield break;
         _isCamOnAction = true;
-        _index--;
+        _currentCamOffsetIndex--;
         float currentTime = 0;
         while (currentTime < LerpTime)
         {
             currentTime += Time.deltaTime;
-            _currentCamOffset = Vector3.Lerp(_camOffsets[_index + 1], _camOffsets[_index], currentTime / LerpTime);
-            _currentCamAngleOffset = Vector3.Lerp(_camAngleOffsets[_index + 1], _camAngleOffsets[_index], currentTime / LerpTime);
-            this.transform.rotation = Quaternion.Euler(_currentCamAngleOffset);
+            _currentCamOffset = Vector3.Lerp(_camOffsets[_currentCamOffsetIndex + 1], _camOffsets[_currentCamOffsetIndex], currentTime / LerpTime);
+            this.transform.rotation = Quaternion.Lerp(Quaternion.Euler(_camAngleOffsets[_currentCamOffsetIndex + 1]),
+                                      Quaternion.Euler(_camAngleOffsets[_currentCamOffsetIndex]), currentTime / LerpTime);
             yield return null;
         }
+        _currentCamAngleOffset = _camAngleOffsets[_currentCamOffsetIndex];
         _isCamOnAction = false;
     }
 }
