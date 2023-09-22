@@ -14,7 +14,6 @@ public class CameraController : MonoBehaviour
     [SerializeField] private Vector3 _cameraOffsetSecond = new Vector3(-1.5f, 2f, -1.5f);
     [SerializeField] private Vector3 _cameraOffsetThird = new Vector3(-0.75f, 1.5f, -0.75f);
 
-    private Quaternion _currentCamAngleOffset;
     private List<Quaternion> _camAngleOffsets = new();
     [SerializeField] private Vector3 _cameraOffsetAnglesFirst = new Vector3(45f, 45f, 0f);
     [SerializeField] private Vector3 _cameraOffsetAnglesSecond = new Vector3(15f, 45f, 0f);
@@ -38,12 +37,11 @@ public class CameraController : MonoBehaviour
         _camAngleOffsets.Add(Quaternion.Euler(_cameraOffsetAnglesThird));
 
         _currentCamOffset = _camOffsets[0];
-        _currentCamAngleOffset = _camAngleOffsets[0];
         RefTarget = GameObject.FindGameObjectWithTag("Player").gameObject.transform;
         RefTarget.GetComponent<PlayerController>()._myCamera = this.GetComponent<Camera>();
         this.transform.position = RefTarget.transform.position + _currentCamOffset;
         _targetPos = RefTarget.transform.position + _currentCamOffset;
-        this.transform.rotation = _currentCamAngleOffset;
+        this.transform.rotation = _camAngleOffsets[0];
     }
 
     private void Update()
@@ -52,13 +50,11 @@ public class CameraController : MonoBehaviour
         if (_isCamOnAction) return;
         if (scroll > 0)
         {
-            //카메라 위치, 오프셋 변화 (가까이)
-            StartCoroutine(CamOffsetIncrease());
+            StartCoroutine(CamOffsetIncrease()); //카메라 위치, 오프셋 변화 (가까이)
         }
         else if (scroll < 0)
         {
-            //카메라 위치, 오프셋 변화 (멀리)
-            StartCoroutine(CamOffsetDecrease());
+            StartCoroutine(CamOffsetDecrease()); //카메라 위치, 오프셋 변화 (멀리)
         }
     }
 
@@ -105,7 +101,6 @@ public class CameraController : MonoBehaviour
             this.transform.rotation = Quaternion.Lerp(_camAngleOffsets[_currentCamOffsetIndex + 1], _camAngleOffsets[_currentCamOffsetIndex], currentTime / LerpTime);
             yield return null;
         }
-        _currentCamAngleOffset = _camAngleOffsets[_currentCamOffsetIndex];
         _isCamOnAction = false;
     }
 }

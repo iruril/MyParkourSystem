@@ -436,6 +436,14 @@ public class PlayerController : MonoBehaviour
         {
             if (hitInfo.transform.tag == "Enemy")
             {
+                if(_enemyOutline != null)
+                {
+                    if (_enemyOutline != null)
+                    {
+                        _enemyOutline.enabled = false;
+                        _enemyOutline = null;
+                    }
+                }
                 _enemyOutline = hitInfo.transform.GetComponent<Outline>();
                 if (_enemyOutline != null)
                 {
