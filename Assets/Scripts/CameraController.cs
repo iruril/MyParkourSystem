@@ -14,8 +14,8 @@ public class CameraController : MonoBehaviour
     [SerializeField] private Vector3 _cameraOffsetSecond = new Vector3(-1.5f, 2f, -1.5f);
     [SerializeField] private Vector3 _cameraOffsetThird = new Vector3(-0.75f, 1.5f, -0.75f);
 
-    private Vector3 _currentCamAngleOffset;
-    private List<Vector3> _camAngleOffsets = new();
+    private Quaternion _currentCamAngleOffset;
+    private List<Quaternion> _camAngleOffsets = new();
     [SerializeField] private Vector3 _cameraOffsetAnglesFirst = new Vector3(45f, 45f, 0f);
     [SerializeField] private Vector3 _cameraOffsetAnglesSecond = new Vector3(15f, 45f, 0f);
     [SerializeField] private Vector3 _cameraOffsetAnglesThird = new Vector3(10f, 45f, 0f);
@@ -33,9 +33,9 @@ public class CameraController : MonoBehaviour
         _camOffsets.Add(_cameraOffsetSecond);
         _camOffsets.Add(_cameraOffsetThird);
 
-        _camAngleOffsets.Add(_cameraOffsetAnglesFirst);
-        _camAngleOffsets.Add(_cameraOffsetAnglesSecond);
-        _camAngleOffsets.Add(_cameraOffsetAnglesThird);
+        _camAngleOffsets.Add(Quaternion.Euler(_cameraOffsetAnglesFirst));
+        _camAngleOffsets.Add(Quaternion.Euler(_cameraOffsetAnglesSecond));
+        _camAngleOffsets.Add(Quaternion.Euler(_cameraOffsetAnglesThird));
 
         _currentCamOffset = _camOffsets[0];
         _currentCamAngleOffset = _camAngleOffsets[0];
@@ -43,7 +43,7 @@ public class CameraController : MonoBehaviour
         RefTarget.GetComponent<PlayerController>()._myCamera = this.GetComponent<Camera>();
         this.transform.position = RefTarget.transform.position + _currentCamOffset;
         _targetPos = RefTarget.transform.position + _currentCamOffset;
-        this.transform.rotation = Quaternion.Euler(_currentCamAngleOffset);
+        this.transform.rotation = _currentCamAngleOffset;
     }
 
     private void Update()
@@ -86,8 +86,7 @@ public class CameraController : MonoBehaviour
         {
             currentTime += Time.deltaTime;
             _currentCamOffset = Vector3.Lerp(_camOffsets[_currentCamOffsetIndex - 1], _camOffsets[_currentCamOffsetIndex], currentTime / LerpTime);
-            this.transform.rotation = Quaternion.Lerp(Quaternion.Euler(_camAngleOffsets[_currentCamOffsetIndex - 1]),
-                                      Quaternion.Euler(_camAngleOffsets[_currentCamOffsetIndex]), currentTime / LerpTime);
+            this.transform.rotation = Quaternion.Lerp(_camAngleOffsets[_currentCamOffsetIndex - 1], _camAngleOffsets[_currentCamOffsetIndex], currentTime / LerpTime);
             yield return null;
         }
         _isCamOnAction = false;
@@ -103,8 +102,7 @@ public class CameraController : MonoBehaviour
         {
             currentTime += Time.deltaTime;
             _currentCamOffset = Vector3.Lerp(_camOffsets[_currentCamOffsetIndex + 1], _camOffsets[_currentCamOffsetIndex], currentTime / LerpTime);
-            this.transform.rotation = Quaternion.Lerp(Quaternion.Euler(_camAngleOffsets[_currentCamOffsetIndex + 1]),
-                                      Quaternion.Euler(_camAngleOffsets[_currentCamOffsetIndex]), currentTime / LerpTime);
+            this.transform.rotation = Quaternion.Lerp(_camAngleOffsets[_currentCamOffsetIndex + 1], _camAngleOffsets[_currentCamOffsetIndex], currentTime / LerpTime);
             yield return null;
         }
         _currentCamAngleOffset = _camAngleOffsets[_currentCamOffsetIndex];
