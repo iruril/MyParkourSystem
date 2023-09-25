@@ -9,14 +9,14 @@ public class FadeObjectDetecter : MonoBehaviour
     [SerializeField] private Camera _camera;
     [SerializeField][Range(0, 1.0f)] private float _fadedAlpha = 0.33f;
     [SerializeField] private bool _retainShadows = true;
-    [SerializeField] private Vector3 TargetPositionOffset = Vector3.up;
+    [SerializeField] private Vector3 _targetPositionOffset = Vector3.up;
     [SerializeField] private float _fadeSpeed = 1f;
 
     [Header("Read Only Data")]
     [SerializeField] private List<FadingObject> _objectsBlockingView = new();
     private Dictionary<FadingObject, Coroutine> _runningCoroutines = new();
 
-    private RaycastHit[] _hits = new RaycastHit[10];
+    private RaycastHit[] _hits = new RaycastHit[5];
 
     private void Start()
     {
@@ -29,9 +29,9 @@ public class FadeObjectDetecter : MonoBehaviour
         {
             int hits = Physics.RaycastNonAlloc(
                 _camera.transform.position,
-                (_refTarget.transform.position + TargetPositionOffset - _camera.transform.position).normalized,
+                (_refTarget.transform.position + _targetPositionOffset - _camera.transform.position).normalized,
                 _hits,
-                Vector3.Distance(_camera.transform.position, _refTarget.transform.position + TargetPositionOffset),
+                Vector3.Distance(_camera.transform.position, _refTarget.transform.position + _targetPositionOffset),
                 _layerMask
             );
 
@@ -39,7 +39,7 @@ public class FadeObjectDetecter : MonoBehaviour
             {
                 for(int i = 0; i < hits; i++)
                 {
-                    FadingObject fadingObject = GetFindingObjectFromHit(_hits[i]);
+                    FadingObject fadingObject = GetFadingObjectFromHit(_hits[i]);
 
                     if(fadingObject != null && !_objectsBlockingView.Contains(fadingObject))
                     {
@@ -51,7 +51,7 @@ public class FadeObjectDetecter : MonoBehaviour
                             }
                             _runningCoroutines.Remove(fadingObject);
                         }
-                        _runningCoroutines.Add(fadingObject, fadingObject.StartCoroutine(FadeObjectOut(fadingObject)));
+                        _runningCoroutines.Add(fadingObject, StartCoroutine(FadeObjectOut(fadingObject)));
                         _objectsBlockingView.Add(fadingObject);
                     }
                 }
@@ -60,20 +60,20 @@ public class FadeObjectDetecter : MonoBehaviour
             FadeObjectsNoLongerBeingHit();
             ClearHits();
 
-            yield return null;
+            yield return new WaitForSeconds(0.02f);
         }
     }
 
     private void FadeObjectsNoLongerBeingHit()
     {
-        List<FadingObject> objectsToRemove = new();
+        List<FadingObject> objectsToRemove = new List<FadingObject>(_objectsBlockingView.Count);
 
         foreach (FadingObject fadingObject in _objectsBlockingView)
         {
             bool objectIsBeingHit = false;
             for (int i = 0; i < _hits.Length; i++)
             {
-                FadingObject hitFadingObject = GetFindingObjectFromHit(_hits[i]);
+                FadingObject hitFadingObject = GetFadingObjectFromHit(_hits[i]);
                 if(hitFadingObject != null && fadingObject == hitFadingObject)
                 {
                     objectIsBeingHit = true;
@@ -96,9 +96,9 @@ public class FadeObjectDetecter : MonoBehaviour
             }
         }
 
-        foreach(FadingObject removeObjects in objectsToRemove)
+        foreach(FadingObject removeObject in objectsToRemove)
         {
-            _objectsBlockingView.Remove(removeObjects);
+            _objectsBlockingView.Remove(removeObject);
         }
     }
 
@@ -119,7 +119,7 @@ public class FadeObjectDetecter : MonoBehaviour
             material.SetOverrideTag("RenderType", "Transparent");
 
             material.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
-            material.EnableKeyword("_ALPAHPREMULTIPLY_ON");
+            material.EnableKeyword("_ALPHAPREMULTIPLY_ON");
         }
 
         float time = 0;
@@ -128,7 +128,7 @@ public class FadeObjectDetecter : MonoBehaviour
         {
             foreach(Material material in fadingObject.Materials)
             {
-                if (material.HasProperty("_BaseColor"))
+                if (material.HasProperty("_Color"))
                 {
                     material.color = new Color(
                         material.color.r,
@@ -142,6 +142,12 @@ public class FadeObjectDetecter : MonoBehaviour
             time += Time.deltaTime;
             yield return null;
         }
+
+        if (_runningCoroutines.ContainsKey(fadingObject))
+        {
+            StopCoroutine(_runningCoroutines[fadingObject]);
+            _runningCoroutines.Remove(fadingObject);
+        }
     }
 
     private IEnumerator FadeObjectIn(FadingObject fadingObject)
@@ -152,7 +158,7 @@ public class FadeObjectDetecter : MonoBehaviour
         {
             foreach (Material material in fadingObject.Materials)
             {
-                if (material.HasProperty("_BaseColor"))
+                if (material.HasProperty("_Color"))
                 {
                     material.color = new Color(
                         material.color.r,
@@ -181,8 +187,8 @@ public class FadeObjectDetecter : MonoBehaviour
 
             material.SetOverrideTag("RenderType", "Opaque");
 
-            material.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
-            material.EnableKeyword("_ALPAHPREMULTIPLY_ON");
+            material.DisableKeyword("_SURFACE_TYPE_TRANSPARENT");
+            material.DisableKeyword("_ALPHAPREMULTIPLY_ON");
         }
 
         if (_runningCoroutines.ContainsKey(fadingObject))
@@ -197,7 +203,7 @@ public class FadeObjectDetecter : MonoBehaviour
         System.Array.Clear(_hits, 0, _hits.Length);
     }
 
-    private FadingObject GetFindingObjectFromHit(RaycastHit hit)
+    private FadingObject GetFadingObjectFromHit(RaycastHit hit)
     {
         return hit.collider != null ? hit.collider.GetComponent<FadingObject>() : null;
     }

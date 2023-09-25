@@ -8,7 +8,7 @@ public class FadingObject : MonoBehaviour, IEquatable<FadingObject>
     public List<Renderer> Renderers = new();
     public Vector3 Position;
     public List<Material> Materials = new();
-    public float InitialAlpha { get; set; }
+    public float InitialAlpha { get; private set; }
 
     private void Awake()
     {
@@ -26,7 +26,7 @@ public class FadingObject : MonoBehaviour, IEquatable<FadingObject>
         InitialAlpha = Materials[0].color.a;
     }
 
-    bool IEquatable<FadingObject>.Equals(FadingObject other)
+    public bool Equals(FadingObject other)
     {
         return Position.Equals(other.Position);
     }

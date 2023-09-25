@@ -28,10 +28,6 @@ public class CameraController : MonoBehaviour
     private int _currentCamOffsetIndex = 0;
     #endregion
 
-    public List<GameObject> detectedObjects = new List<GameObject>();
-    private Vector3 _screenCenter = Vector3.zero;
-    public LayerMask _fadeObjectLayerMask;
-
     void Awake()
     {
         _camOffsets.Add(_cameraOffsetFirst);
@@ -48,7 +44,6 @@ public class CameraController : MonoBehaviour
         this.transform.position = RefTarget.transform.position + _currentCamOffset;
         _targetPos = RefTarget.transform.position + _currentCamOffset;
         this.transform.rotation = _camAngleOffsets[0];
-        _screenCenter = new Vector3(Camera.main.pixelWidth / 2, Camera.main.pixelHeight / 2);
     }
 
     private void Update()
@@ -63,12 +58,6 @@ public class CameraController : MonoBehaviour
         {
             StartCoroutine(CamOffsetDecrease()); //카메라 위치, 오프셋 변화 (멀리)
         }
-    }
-
-    private void FixedUpdate()
-    {
-        //ObjectFadeOut();
-        //RemoveNotDetectedObject();
     }
 
     void LateUpdate()
@@ -116,56 +105,6 @@ public class CameraController : MonoBehaviour
             yield return null;
         }
         _isCamOnAction = false;
-    }
-    #endregion
-
-    #region Object Fade-Out Fields
-    private void ObjectFadeOut()
-    {
-        Ray ray = Camera.main.ScreenPointToRay(_screenCenter);
-        RaycastHit[] hits;
-        hits = Physics.RaycastAll(ray, Vector3.Distance(RefTarget.position + Vector3.up * 0.7f, this.transform.position), _fadeObjectLayerMask);
-
-        foreach (RaycastHit hit in hits)
-        {
-            GameObject detectedObject = hit.transform.gameObject;
-            if (!detectedObjects.Contains(detectedObject))
-            {
-                ObjectFade objFade = detectedObject.GetComponent<ObjectFade>();
-                if (objFade != null) objFade.FadeOut();
-                detectedObjects.Add(detectedObject);
-            }
-        }
-    }
-
-    private void RemoveNotDetectedObject()
-    {
-        for (int i = detectedObjects.Count - 1; i >= 0; i--)
-        {
-            GameObject obj = detectedObjects[i];
-            if (!IsDetectedObject(obj))
-            {
-                ObjectFade objFade = obj.GetComponent<ObjectFade>();
-                if (objFade != null) objFade.FadeIn();
-                detectedObjects.Remove(obj);
-            }
-        }
-    }
-
-    private bool IsDetectedObject(GameObject obj)
-    {
-        Ray ray = Camera.main.ScreenPointToRay(_screenCenter);
-        RaycastHit[] hits;
-        hits = Physics.RaycastAll(ray, Vector3.Distance(RefTarget.position + Vector3.up * 0.7f, this.transform.position), _fadeObjectLayerMask);
-
-        foreach (RaycastHit hit in hits)
-        {
-            if (hit.transform.gameObject == obj)
-            {
-                return true;
-            }
-        }
-        return false;
     }
     #endregion
 }
