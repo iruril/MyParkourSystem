@@ -67,8 +67,8 @@ public class CameraController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        ObjectFadeOut();
-        RemoveNotDetectedObject();
+        //ObjectFadeOut();
+        //RemoveNotDetectedObject();
     }
 
     void LateUpdate()
@@ -124,11 +124,11 @@ public class CameraController : MonoBehaviour
     {
         Ray ray = Camera.main.ScreenPointToRay(_screenCenter);
         RaycastHit[] hits;
-        hits = Physics.RaycastAll(ray, Vector3.Distance(RefTarget.position, this.transform.position), _fadeObjectLayerMask);
+        hits = Physics.RaycastAll(ray, Vector3.Distance(RefTarget.position + Vector3.up * 0.7f, this.transform.position), _fadeObjectLayerMask);
 
         foreach (RaycastHit hit in hits)
         {
-            GameObject detectedObject = hit.collider.gameObject;
+            GameObject detectedObject = hit.transform.gameObject;
             if (!detectedObjects.Contains(detectedObject))
             {
                 ObjectFade objFade = detectedObject.GetComponent<ObjectFade>();
@@ -147,7 +147,7 @@ public class CameraController : MonoBehaviour
             {
                 ObjectFade objFade = obj.GetComponent<ObjectFade>();
                 if (objFade != null) objFade.FadeIn();
-                detectedObjects.RemoveAt(i);
+                detectedObjects.Remove(obj);
             }
         }
     }
@@ -156,11 +156,11 @@ public class CameraController : MonoBehaviour
     {
         Ray ray = Camera.main.ScreenPointToRay(_screenCenter);
         RaycastHit[] hits;
-        hits = Physics.RaycastAll(ray, Vector3.Distance(RefTarget.position, this.transform.position), _fadeObjectLayerMask);
+        hits = Physics.RaycastAll(ray, Vector3.Distance(RefTarget.position + Vector3.up * 0.7f, this.transform.position), _fadeObjectLayerMask);
 
         foreach (RaycastHit hit in hits)
         {
-            if (hit.collider.gameObject == obj)
+            if (hit.transform.gameObject == obj)
             {
                 return true;
             }

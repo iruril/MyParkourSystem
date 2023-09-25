@@ -23,16 +23,18 @@ public class ObjectFade : MonoBehaviour
     private Material[] _myMaterials;
     private List<Coroutine> _fadeOutSequence = new();
 
+    private float _originOpacity;
+
     void Start()
     {
         _myRenderer = this.GetComponent<MeshRenderer>();
         _myMaterials = _myRenderer.materials;
+        _originOpacity = _myMaterials[0].color.a;
     }
 
     public void FadeOut()
     {
         StopAllFadeCoroutines();
-
         for(int i = 0; i < _myMaterials.Length; i++)
         {
             _fadeOutSequence.Add(StartCoroutine(DoFadeOut(i)));
@@ -42,7 +44,6 @@ public class ObjectFade : MonoBehaviour
     public void FadeIn()
     {
         StopAllFadeCoroutines();
-
         for (int i = 0; i < _myMaterials.Length; i++)
         {
             _fadeOutSequence.Add(StartCoroutine(DoFadeIn(i)));
@@ -67,10 +68,11 @@ public class ObjectFade : MonoBehaviour
 
         Material material = _myMaterials[materialIndex];
         material.SetFloat("_Surface", 1.0f);
+        SetupMaterialBlendMode(material);
         Color baseColor = material.GetColor("_BaseColor");
         float materialAlpha = baseColor.a;
 
-        while(materialAlpha > 0.3f)
+        while (materialAlpha >= 0.3f)
         {
             materialAlpha -= Time.deltaTime;
             baseColor.a = materialAlpha;
