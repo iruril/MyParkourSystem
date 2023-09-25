@@ -1575,7 +1575,7 @@ MonoBehaviour:
   detectedObjects: []
   _fadeObjectLayerMask:
     serializedVersion: 2
-    m_Bits: 9
+    m_Bits: 73
 --- !u!1001 &330753341
 PrefabInstance:
   m_ObjectHideFlags: 0
