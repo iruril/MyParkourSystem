@@ -8,6 +8,7 @@ public class CameraController : MonoBehaviour
     public float LerpTime = 1.0f;
     public float WheelSpeed = 10.0f;
 
+    #region Dynamic Cam-Offset Variables
     private Vector3 _currentCamOffset;
     private List<Vector3> _camOffsets = new();
     [SerializeField] private Vector3 _cameraOffsetFirst = new Vector3(-3f, 4.5f, -3f);
@@ -25,7 +26,12 @@ public class CameraController : MonoBehaviour
 
     private bool _isCamOnAction = false;
     private int _currentCamOffsetIndex = 0;
-    
+    #endregion
+
+    public List<GameObject> detectedObjects = new List<GameObject>();
+    private Vector3 _screenCenter = Vector3.zero;
+    public LayerMask _fadeObjectLayerMask;
+
     void Awake()
     {
         _camOffsets.Add(_cameraOffsetFirst);
@@ -42,6 +48,7 @@ public class CameraController : MonoBehaviour
         this.transform.position = RefTarget.transform.position + _currentCamOffset;
         _targetPos = RefTarget.transform.position + _currentCamOffset;
         this.transform.rotation = _camAngleOffsets[0];
+        _screenCenter = new Vector3(Camera.main.pixelWidth / 2, Camera.main.pixelHeight / 2);
     }
 
     private void Update()
@@ -58,6 +65,12 @@ public class CameraController : MonoBehaviour
         }
     }
 
+    private void FixedUpdate()
+    {
+        ObjectFadeOut();
+        RemoveNotDetectedObject();
+    }
+
     void LateUpdate()
     {
         if(this.transform.position != RefTarget.transform.position + _currentCamOffset)
@@ -72,6 +85,7 @@ public class CameraController : MonoBehaviour
         return _cameraOffsetAnglesFirst;
     }
 
+    #region Camera Zoom-In and Out Fields
     private IEnumerator CamOffsetIncrease() //Close 
     {
         if (_currentCamOffset == _camOffsets[2]) yield break;
@@ -103,4 +117,55 @@ public class CameraController : MonoBehaviour
         }
         _isCamOnAction = false;
     }
+    #endregion
+
+    #region Object Fade-Out Fields
+    private void ObjectFadeOut()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(_screenCenter);
+        RaycastHit[] hits;
+        hits = Physics.RaycastAll(ray, Vector3.Distance(RefTarget.position, this.transform.position), _fadeObjectLayerMask);
+
+        foreach (RaycastHit hit in hits)
+        {
+            GameObject detectedObject = hit.collider.gameObject;
+            if (!detectedObjects.Contains(detectedObject))
+            {
+                ObjectFade objFade = detectedObject.GetComponent<ObjectFade>();
+                if (objFade != null) objFade.FadeOut();
+                detectedObjects.Add(detectedObject);
+            }
+        }
+    }
+
+    private void RemoveNotDetectedObject()
+    {
+        for (int i = detectedObjects.Count - 1; i >= 0; i--)
+        {
+            GameObject obj = detectedObjects[i];
+            if (!IsDetectedObject(obj))
+            {
+                ObjectFade objFade = obj.GetComponent<ObjectFade>();
+                if (objFade != null) objFade.FadeIn();
+                detectedObjects.RemoveAt(i);
+            }
+        }
+    }
+
+    private bool IsDetectedObject(GameObject obj)
+    {
+        Ray ray = Camera.main.ScreenPointToRay(_screenCenter);
+        RaycastHit[] hits;
+        hits = Physics.RaycastAll(ray, Vector3.Distance(RefTarget.position, this.transform.position), _fadeObjectLayerMask);
+
+        foreach (RaycastHit hit in hits)
+        {
+            if (hit.collider.gameObject == obj)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    #endregion
 }
