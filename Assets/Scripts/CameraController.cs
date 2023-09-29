@@ -77,7 +77,7 @@ public class CameraController : MonoBehaviour
     #region Camera Zoom-In and Out Fields
     private IEnumerator CamOffsetIncrease() //Close 
     {
-        if (_currentCamOffset == _camOffsets[2]) yield break;
+        if (_currentCamOffset == _camOffsets[2]) yield break; //If it's on Max Clamp, then Break;
         _isCamOnAction = true;
         _currentCamOffsetIndex++;
         float currentTime = 0;
@@ -93,7 +93,7 @@ public class CameraController : MonoBehaviour
 
     private IEnumerator CamOffsetDecrease() //Far Away
     {
-        if (_currentCamOffset == _camOffsets[0]) yield break;
+        if (_currentCamOffset == _camOffsets[0]) yield break; //If it's on Min Clamp, then Break;
         _isCamOnAction = true;
         _currentCamOffsetIndex--;
         float currentTime = 0;

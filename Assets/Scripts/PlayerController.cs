@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    #region Mobile Controller Variables
+    private FloatingJoystick _myJoystick;
+    #endregion
+
     public Camera _myCamera { get; set; } = null;
     public GameObject Weapon = null;
     public Transform Muzzle = null;
@@ -63,6 +67,13 @@ public class PlayerController : MonoBehaviour
     private LineRenderer _projectileLine;
     private WaitForSeconds shotDuration = new WaitForSeconds(0.02f);
     #endregion
+
+    private void Awake()
+    {
+#if (UNITY_ANDROID || UNITY_IOS)
+        _myJoystick = GameObject.Find("Joystick").GetComponent<FloatingJoystick>();   
+#endif
+    }
 
     void Start()
     {
