@@ -17,7 +17,7 @@ public class RagdollController : MonoBehaviour
             {
                 _myRigids.Add(item);
             }
-            if (item.transform.name.Contains("Head"))
+            if (item.transform.name.Contains("Head") || item.transform.name.Contains("head"))
             {
                 _myHead = item;
             }

@@ -373,7 +373,7 @@ BlendTree:
     m_DirectBlendParameter: Blend
     m_Mirror: 0
   - serializedVersion: 2
-    m_Motion: {fileID: -4791504522942941401, guid: 61ede8c916a304c12a2706af01878845,
+    m_Motion: {fileID: 8993902097722301239, guid: 81ba032999de1b24a82253c13b3b86f1,
       type: 3}
     m_Threshold: 0.5
     m_Position: {x: 0, y: 0}
@@ -382,11 +382,11 @@ BlendTree:
     m_DirectBlendParameter: Blend
     m_Mirror: 0
   - serializedVersion: 2
-    m_Motion: {fileID: -203655887218126122, guid: 2788f14c6ca80cf47819e937e463200d,
+    m_Motion: {fileID: 8993902097722301239, guid: b76cb94d3456a854488a22d18c503df7,
       type: 3}
     m_Threshold: 1
     m_Position: {x: 0, y: 0}
-    m_TimeScale: 1
+    m_TimeScale: 1.2
     m_CycleOffset: 0
     m_DirectBlendParameter: Blend
     m_Mirror: 0
@@ -516,7 +516,7 @@ BlendTree:
     m_DirectBlendParameter: Speed
     m_Mirror: 0
   - serializedVersion: 2
-    m_Motion: {fileID: -203655887218126122, guid: 7f896e34ec5264d44aa7ede1900f75bd,
+    m_Motion: {fileID: 8993902097722301239, guid: 21216dddd0b56af45b134033b3502f09,
       type: 3}
     m_Threshold: 0.5
     m_Position: {x: 0, y: 0}
@@ -525,7 +525,7 @@ BlendTree:
     m_DirectBlendParameter: Speed
     m_Mirror: 0
   - serializedVersion: 2
-    m_Motion: {fileID: -203655887218126122, guid: 89bfdc037ad8d8147a8304011dad8b6c,
+    m_Motion: {fileID: -203655887218126122, guid: 7f896e34ec5264d44aa7ede1900f75bd,
       type: 3}
     m_Threshold: 1
     m_Position: {x: 0, y: 0}
@@ -670,7 +670,7 @@ BlendTree:
   m_Name: Blend Tree
   m_Childs:
   - serializedVersion: 2
-    m_Motion: {fileID: -203655887218126122, guid: d9cef5bbbf998432c8cafcf4d35536da,
+    m_Motion: {fileID: 8993902097722301239, guid: 07db5711fd78c2d4f9abf4bba4908bed,
       type: 3}
     m_Threshold: 0
     m_Position: {x: 0, y: 0}
@@ -679,7 +679,7 @@ BlendTree:
     m_DirectBlendParameter: Speed
     m_Mirror: 0
   - serializedVersion: 2
-    m_Motion: {fileID: -203655887218126122, guid: ed0e74b1a741a2f4caa9cd2770164fbf,
+    m_Motion: {fileID: 8993902097722301239, guid: c446c53d6b56555498d6aa64e5369b05,
       type: 3}
     m_Threshold: 0.5
     m_Position: {x: 0, y: 0}

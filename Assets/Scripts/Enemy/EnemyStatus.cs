@@ -48,9 +48,12 @@ public class EnemyStatus : MonoBehaviour, IDamageable
         MyHead.SetActive(false);
         GoreParticle.SetActive(true);
 
-        MyWeaponGO.GetComponent<BoxCollider>().enabled = true;
-        MyWeaponGO.GetComponent<Rigidbody>().isKinematic = false;
-        MyWeaponGO.transform.SetParent(null);
+        if (MyWeaponGO != null)
+        {
+            MyWeaponGO.GetComponent<BoxCollider>().enabled = true;
+            MyWeaponGO.GetComponent<Rigidbody>().isKinematic = false;
+            MyWeaponGO.transform.SetParent(null);
+        }
 
         _myCollider.enabled = false;
         _myRagdoll.SetMyRagdollState(kinematicState: false);

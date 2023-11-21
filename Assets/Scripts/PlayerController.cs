@@ -346,13 +346,13 @@ public class PlayerController : MonoBehaviour
             while (currentTime < _playerParkour.ParkourClimbTime)
             {
                 currentTime += Time.deltaTime;
-                this.transform.position = Vector3.Lerp(startPoint, endPoint, currentTime / lerpTime);
+                this.transform.position = Vector3.Slerp(startPoint, endPoint, currentTime / lerpTime);
 
                 yield return null;
             }
 
             //Second Step Action
-            lerpTime = _playerParkour.ParkourJumpClimbTime - _playerParkour.ParkourClimbTime;
+            lerpTime = (_playerParkour.ParkourJumpClimbTime - _playerParkour.ParkourClimbTime) / 4.0f;
             currentTime = 0;
             while (currentTime < lerpTime)
             {
@@ -555,7 +555,9 @@ public class PlayerController : MonoBehaviour
                 _projectileLine.SetPosition(1, hitInfo.point);
                 if(hitInfo.transform.tag == "Enemy")
                 {
-                    StartCoroutine(BloodEffect(hitInfo.point));
+                    Vector3 direction = hitInfo.normal;
+                    float angle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + 180;
+                    StartCoroutine(BloodEffect(hitInfo.point, angle));
                     if (hitInfo.transform.GetComponent<IDamageable>() != null)
                     {
                         hitInfo.transform.GetComponent<IDamageable>().TakeHit(_playerStat.WeaponDamage, dir);
@@ -587,11 +589,11 @@ public class PlayerController : MonoBehaviour
         yield return shotDuration;
         _projectileLine.enabled = false;
     }
-    private IEnumerator BloodEffect(Vector3 position)
+    private IEnumerator BloodEffect(Vector3 position, float angle)
     {
-        GameObject effect = Instantiate(_bloodEffect, position, Quaternion.Euler(new Vector3(-90f, 0, 0f)));
-        effect.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
-        yield return new WaitForSeconds(1.0f);
+        GameObject effect = Instantiate(_bloodEffect, position, Quaternion.Euler(new Vector3(0, angle + 90, 0)));
+        effect.GetComponent<BFX_BloodSettings>().GroundHeight = this.transform.position.y;
+        yield return new WaitForSeconds(10.0f);
         Destroy(effect);
     }
     #endregion
