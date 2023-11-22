@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class PlayerController : MonoBehaviour
 {
@@ -20,13 +21,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private LayerMask _IgnoreRaycast;
     [SerializeField] private GameObject _bloodEffect = null;
     private Outline _enemyOutline = null;
-
-    #region Character Size Variables
-    private Vector3 originCenter = new Vector3(0f, 0.975f, 0f);
-    private float originHeight = 1.7f; 
-    private Vector3 newCenter = new Vector3(0f, 1.5f, 0f);
-    private float newHeight = 0.6f;
-    #endregion
 
     public Vector3 PlayerVelocity { get; private set; } = Vector3.zero;
     public Vector3 PlayerVelocityBasedOnLookDir { get; private set; } = Vector3.zero;
@@ -50,6 +44,8 @@ public class PlayerController : MonoBehaviour
     private Vector3 _lookDirection;
 
     #region Movement Trigger Restriction Variables
+    private HashSet<KeyCode> keysToCheck = new HashSet<KeyCode>{ KeyCode.W, KeyCode.A, KeyCode.S, KeyCode.D };
+    int numberOfKeysPressed;
     public bool IsOnDynamicMove { get; private set; } = false;
     public bool IsJumping { get; private set; } = false;
     public PlayerParkour.JumpState JumpMode { get; private set; } = PlayerParkour.JumpState.None;
@@ -93,6 +89,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        numberOfKeysPressed = keysToCheck.Count(key => Input.GetKey(key));
         if (Input.GetMouseButton(1) && !IsJumping && !IsOnDynamicMove)
         {
             if(CurrentMode != MoveMode.Aim) CurrentMode = MoveMode.Aim;
@@ -157,9 +154,13 @@ public class PlayerController : MonoBehaviour
     private void GetInput()
     {
         _horizontalInput = Input.GetAxis("Horizontal");
-        _verticalInput = Input.GetAxis("Vertical");
-        _rotationHorizontalInput = Input.GetAxisRaw("Horizontal");
-        _rotationVerticalInput = Input.GetAxisRaw("Vertical");
+        _verticalInput = Input.GetAxis("Vertical"); 
+
+        if (numberOfKeysPressed < 3)
+        {
+            _rotationHorizontalInput = Input.GetAxisRaw("Horizontal");
+            _rotationVerticalInput = Input.GetAxisRaw("Vertical");
+        }
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -284,9 +285,6 @@ public class PlayerController : MonoBehaviour
         PlayerVelocity = Vector3.zero;
         Vector3 startPoint = this.transform.position;
         Vector3 vaultPoint = _playerParkour.StepPoint;
-        vaultPoint.y = vaultPoint.y - (originCenter.y / 2.0f);
-        _player.height = newHeight;
-        _player.center = newCenter;
         IsJumping = false;
 
         //First Step Action (Move to Step Point)
@@ -303,14 +301,14 @@ public class PlayerController : MonoBehaviour
         Vector3 vaultDir = this.transform.forward;
         lerpTime = _playerParkour.ParkourVaultTime - _playerParkour.ParkourJumpTime;
         currentTime = 0;
+        float speed = _playerParkour.ParkourMoveSpeed;
         while (currentTime < lerpTime)
         {
             currentTime += Time.deltaTime;
-            PlayerVelocity = new Vector3(vaultDir.x *_playerParkour.ParkourMoveSpeed,
-                                         Mathf.Max(0.0f, PlayerVelocity.y),
-                                         vaultDir.z *_playerParkour.ParkourMoveSpeed); 
-            _player.height = Mathf.Lerp(newHeight, originHeight, currentTime / lerpTime);
-            _player.center = Vector3.Lerp(newCenter, originCenter, currentTime / lerpTime);
+            PlayerVelocity = new Vector3(vaultDir.x * speed,
+                                         PlayerVelocity.y - _playerStat.GravityForce * Time.deltaTime,
+                                         vaultDir.z * speed);
+            speed = speed - Time.deltaTime * 2;
             yield return null;
         }
         IsOnDynamicMove = false;
@@ -333,9 +331,6 @@ public class PlayerController : MonoBehaviour
         Vector3 t1 = new Vector3(endPoint.x, 0, endPoint.z);
         Vector3 t2 = new Vector3(startPoint.x, 0, startPoint.z);
         Vector3 climbPoint = _playerParkour.StepPoint - (t1 - t2).normalized * 0.3f;
-        climbPoint.y = climbPoint.y - 0.9f;
-        _player.height = newHeight;
-        _player.center = newCenter;
         IsJumping = false;
 
         if (_playerParkour.StepHeight <= 1.5f) //if StepHeoght is lower then 1.5m
@@ -343,7 +338,7 @@ public class PlayerController : MonoBehaviour
             //First Step Action (Move to Step Point)
             float lerpTime = _playerParkour.ParkourClimbTime;
             float currentTime = 0;
-            while (currentTime < _playerParkour.ParkourClimbTime)
+            while (currentTime < lerpTime)
             {
                 currentTime += Time.deltaTime;
                 this.transform.position = Vector3.Slerp(startPoint, endPoint, currentTime / lerpTime);
@@ -351,22 +346,13 @@ public class PlayerController : MonoBehaviour
                 yield return null;
             }
 
-            //Second Step Action
-            lerpTime = (_playerParkour.ParkourJumpClimbTime - _playerParkour.ParkourClimbTime) / 4.0f;
-            currentTime = 0;
-            while (currentTime < lerpTime)
-            {
-                currentTime += Time.deltaTime;
-                this.transform.position = endPoint;
-                yield return null;
-            }
         }
         else if(_playerParkour.StepHeight is > 1.5f and <= 2.0f) //if StepPoint is higher then 1.5m, and lower then 2m
         {
             //First Step Action (Move to Step Point)
             float lerpTime = _playerParkour.ParkourClimbTime;
             float currentTime = 0;
-            while (currentTime < _playerParkour.ParkourClimbTime)
+            while (currentTime < lerpTime)
             {
                 currentTime += Time.deltaTime;
                 this.transform.position = Vector3.Slerp(startPoint, climbPoint, currentTime / lerpTime);
@@ -375,7 +361,7 @@ public class PlayerController : MonoBehaviour
             }
 
             //Second Step Action
-            lerpTime = _playerParkour.ParkourJumpClimbTime - _playerParkour.ParkourClimbTime;
+            lerpTime = (_playerParkour.ParkourJumpClimbTime - 0.2f) - lerpTime;
             currentTime = 0;
             while (currentTime < lerpTime)
             {
@@ -388,13 +374,12 @@ public class PlayerController : MonoBehaviour
         else //if StepPoint is Higher than 2m
         {
             Vector3 secondClimbPoint = climbPoint;
-            climbPoint.y = climbPoint.y - 0.7f;
-            float firstClimbTime = _playerParkour.ParkourClimbTime / 2.0f;
+            climbPoint.y = climbPoint.y - 1.0f;
 
             //First Step Action
-            float lerpTime = firstClimbTime;
+            float lerpTime = _playerParkour.ParkourClimbTime;
             float currentTime = 0;
-            while (currentTime < _playerParkour.ParkourClimbTime)
+            while (currentTime < lerpTime)
             {
                 currentTime += Time.deltaTime;
                 this.transform.position = Vector3.Slerp(startPoint, climbPoint, currentTime / lerpTime);
@@ -403,7 +388,7 @@ public class PlayerController : MonoBehaviour
             }
 
             //Second Step Action
-            lerpTime = _playerParkour.ParkourClimbTime - firstClimbTime;
+            lerpTime = _playerParkour.ParkourClimbTime;
             currentTime = 0;
             while (currentTime < lerpTime)
             {
@@ -414,7 +399,7 @@ public class PlayerController : MonoBehaviour
             }
 
             //Third Step Action
-            lerpTime = _playerParkour.ParkourJumpClimbTime - _playerParkour.ParkourClimbTime;
+            lerpTime = _playerParkour.ParkourJumpClimbTime - 2 * _playerParkour.ParkourClimbTime;
             currentTime = 0;
             while (currentTime < lerpTime)
             {
@@ -424,8 +409,6 @@ public class PlayerController : MonoBehaviour
                 yield return null;
             }
         }
-        _player.height = originHeight;
-        _player.center = originCenter;
         IsOnDynamicMove = false;
         JumpMode = PlayerParkour.JumpState.None;
         yield break;

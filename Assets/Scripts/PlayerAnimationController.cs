@@ -17,7 +17,7 @@ public class PlayerAnimationController : MonoBehaviour
     private GroundChecker _myGroundChecker;
     private LayerMask _layerMask;
 
-    private float _vaultType = 0f;
+    private int _vaultType = 0;
     private float _stepHeight = 0f;
     private float _mySpeed = 0f;
 
@@ -143,14 +143,11 @@ public class PlayerAnimationController : MonoBehaviour
             }
             if (_player.JumpMode == PlayerParkour.JumpState.Vault)
             {
-                if (_vaultType == 0)
-                {
-                    _animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, _animIKWeight);
+                _animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, _animIKWeight);
 
-                    _animator.SetIKPosition(AvatarIKGoal.LeftHand, _playerParkour.LeftStepPoint);
-                }
+                _animator.SetIKPosition(AvatarIKGoal.LeftHand, _playerParkour.LeftStepPoint);
             }
-            else if (_player.JumpMode == PlayerParkour.JumpState.JumpClimb)
+            else if (_player.JumpMode == PlayerParkour.JumpState.JumpClimb &&  _stepHeight > 1.5f)
             {
                 _animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, _animIKWeight);
                 _animator.SetIKPositionWeight(AvatarIKGoal.RightHand, _animIKWeight);
@@ -248,8 +245,8 @@ public class PlayerAnimationController : MonoBehaviour
 
     private void SetVaultType()
     {
-        _vaultType = Random.Range(0, 3);
-        _animator.SetFloat("VaultType", _vaultType * 0.5f);
+        _vaultType = Random.Range(0, 2);
+        _animator.SetFloat("VaultType", _vaultType);
     }
 
     private IEnumerator DefaultJumpCoroutine()
