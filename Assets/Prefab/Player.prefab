@@ -139,13 +139,13 @@ CharacterController:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Height: 1.64
-  m_Radius: 0.2
+  m_Height: 1.6
+  m_Radius: 0.05
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0.82, z: 0}
+  m_Center: {x: 0, y: 0.84, z: 0}
 --- !u!114 &4172740342571775885
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -158,7 +158,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7ba26d0be34f4575b3530cf1196bd38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DistanceGround: 0.06
+  DistanceGround: 0.1
   TransitionTime: 0.1
   LeftHandOnGun: {fileID: 4172740341673368172}
   RightHandOnGun: {fileID: 4172740342722932132}
@@ -258,7 +258,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8432163cc1c049c49b4a3e9fabe43b19, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _detectionMaxDist: 0.25
+  _detectionMaxDist: 0.1
   GroundLayer:
     serializedVersion: 2
     m_Bits: 73
