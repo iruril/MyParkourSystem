@@ -96,7 +96,8 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            if (CurrentMode != MoveMode.Default) CurrentMode = MoveMode.Default;
+            if (CurrentMode != MoveMode.Default) CurrentMode = MoveMode.Default; 
+            //if (CurrentMode != MoveMode.Aim) CurrentMode = MoveMode.Aim;
         }
 
         switch (CurrentMode)

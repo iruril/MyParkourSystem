@@ -1,15 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
 
 public class PlayerAnimationController : MonoBehaviour
 {
     public float DistanceGround = 0.5f;
     public float TransitionTime = 0.5f;
-    public Transform LeftHandOnGun = null;
-    public Transform RightHandOnGun = null;
 
-    private Animator _animator;
+    [SerializeField] private Animator _animator;
+    [SerializeField] private Rig _myRig;
     private PlayerController _player;
     private CharacterController _playerCharacter;
     private PlayerStatus _playerStat;
@@ -32,7 +32,6 @@ public class PlayerAnimationController : MonoBehaviour
 
     void Awake()
     {
-        _animator = this.GetComponent<Animator>();
         _player = this.GetComponent<PlayerController>();
         _playerCharacter = this.GetComponent<CharacterController>();
         _playerStat = this.GetComponent<PlayerStatus>();
@@ -47,6 +46,7 @@ public class PlayerAnimationController : MonoBehaviour
         _currentWeight = Mathf.Lerp(_currentWeight, _targetWeight, Time.deltaTime / TransitionTime);
 
         _animator.SetLayerWeight(1, _currentWeight);
+        _myRig.weight = _currentWeight;
 
         switch (_player.CurrentMode)
         {
@@ -90,51 +90,6 @@ public class PlayerAnimationController : MonoBehaviour
     #region Animator Inverse Kinematic Calculation Fields
     private void OnAnimatorIK(int layerIndex)
     {
-        if(_player.CurrentMode == PlayerController.MoveMode.Aim)
-        {
-            _animator.SetLookAtWeight(1.0f);
-            Vector3 LookTarget = _player.LookTarget;
-            if (_player.IsAimOnEnemy)
-            {
-                _targetLookAtPosition = LookTarget;
-            }
-            else
-            {
-                if (Vector3.Distance(this.transform.position, LookTarget) <= 1.5f)
-                {
-                    _targetLookAtPosition = this.transform.position + this.transform.forward * 1.0f;
-                    _targetLookAtPosition.y = 1.2f;
-                }
-                else
-                {
-                    LookTarget.y = this.transform.position.y + 1.2f;
-                    _targetLookAtPosition = LookTarget;
-                }
-            }
-            float step = Time.deltaTime * _playerStat.RotateSpeed;
-            _currentLookAtPosition = Vector3.Slerp(_currentLookAtPosition, _targetLookAtPosition, step);
-            _animator.SetLookAtPosition(_currentLookAtPosition);
-
-            if (LeftHandOnGun != null)
-            {
-                _animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, 1f);
-                _animator.SetIKPosition(AvatarIKGoal.LeftHand, LeftHandOnGun.position);
-                _animator.SetIKRotationWeight(AvatarIKGoal.LeftHand, 1f);
-                _animator.SetIKRotation(AvatarIKGoal.LeftHand, LeftHandOnGun.rotation);
-            }
-            if (RightHandOnGun != null)
-            {
-                _animator.SetIKPositionWeight(AvatarIKGoal.RightHand, 1f);
-                _animator.SetIKPosition(AvatarIKGoal.RightHand, RightHandOnGun.position);
-                _animator.SetIKRotationWeight(AvatarIKGoal.RightHand, 1f);
-                _animator.SetIKRotation(AvatarIKGoal.RightHand, RightHandOnGun.rotation);
-            }
-        }
-        else
-        {
-            _animator.SetLookAtWeight(0.0f);
-        }
-
         if (_player.IsOnDynamicMove)
         {
             if (!_ikWeightSet)
