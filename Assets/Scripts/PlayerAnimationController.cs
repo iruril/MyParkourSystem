@@ -11,7 +11,6 @@ public class PlayerAnimationController : MonoBehaviour
     [SerializeField] private Animator _animator;
     [SerializeField] private Rig _myRig;
     private PlayerController _player;
-    private CharacterController _playerCharacter;
     private PlayerStatus _playerStat;
     private PlayerParkour _playerParkour;
     private GroundChecker _myGroundChecker;
@@ -24,8 +23,6 @@ public class PlayerAnimationController : MonoBehaviour
     private float _animIKWeight = 1.0f;
     private float _animIKWeightLerpTime = 0.5f;
     private bool _ikWeightSet = false;
-    private Vector3 _currentLookAtPosition;
-    private Vector3 _targetLookAtPosition;
 
     private float _currentWeight = 0.0f;
     private float _targetWeight = 0.0f;
@@ -33,7 +30,6 @@ public class PlayerAnimationController : MonoBehaviour
     void Awake()
     {
         _player = this.GetComponent<PlayerController>();
-        _playerCharacter = this.GetComponent<CharacterController>();
         _playerStat = this.GetComponent<PlayerStatus>();
         _playerParkour = this.GetComponent<PlayerParkour>();
         _myGroundChecker = this.GetComponent<GroundChecker>();
