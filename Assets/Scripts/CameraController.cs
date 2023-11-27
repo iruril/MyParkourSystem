@@ -40,7 +40,7 @@ public class CameraController : MonoBehaviour
 
         _currentCamOffset = _camOffsets[0];
         RefTarget = GameObject.FindGameObjectWithTag("Player").gameObject.transform;
-        RefTarget.GetComponent<PlayerController>()._myCamera = this.GetComponent<Camera>();
+        //RefTarget.GetComponent<PlayerController>().MyCamera = this.GetComponent<Camera>();
         this.transform.position = RefTarget.transform.position + _currentCamOffset;
         _targetPos = RefTarget.transform.position + _currentCamOffset;
         this.transform.rotation = _camAngleOffsets[0];

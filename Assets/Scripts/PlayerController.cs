@@ -5,11 +5,7 @@ using System.Linq;
 
 public class PlayerController : MonoBehaviour
 {
-    #region Mobile Controller Variables
-    private FloatingJoystick _myJoystick;
-    #endregion
-
-    public Camera _myCamera;
+    public Camera MyCamera { get; private set; }
     public GameObject Weapon = null;
     public Transform Muzzle = null;
     public GameObject MuzzleFlash = null;
@@ -65,12 +61,9 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
-        _myCamera = Camera.main;
+        MyCamera = Camera.main;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-#if (UNITY_ANDROID || UNITY_IOS)
-        _myJoystick = GameObject.Find("Joystick").GetComponent<FloatingJoystick>();   
-#endif
     }
 
     void Start()
@@ -439,7 +432,7 @@ public class PlayerController : MonoBehaviour
     {
         this.transform.rotation = Quaternion.Euler(0, _myTPSCam.CamTarget.rotation.eulerAngles.y, 0);
 
-        Ray aimPointRay = _myCamera.ScreenPointToRay(Input.mousePosition);
+        Ray aimPointRay = MyCamera.ScreenPointToRay(Input.mousePosition);
         RaycastHit hitInfo;
         if (Physics.Raycast(aimPointRay, out hitInfo, 300f, ~_IgnoreRaycast))
         {

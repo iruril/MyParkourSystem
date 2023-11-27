@@ -19,7 +19,6 @@ public class PlayerStatus : MonoBehaviour, IDamageable
     #region Player Death Effect Gameobjects
     public GameObject MyHead = null;
     public GameObject MyWeaponGO = null;
-    public GameObject GoreParticle = null;
     #endregion
 
     #region Player Movement Management Componenets
@@ -66,7 +65,6 @@ public class PlayerStatus : MonoBehaviour, IDamageable
     private void Die()
     {
         MyHead.SetActive(false);
-        GoreParticle.SetActive(true);
         MyWeaponGO.GetComponent<BoxCollider>().enabled = true;
         MyWeaponGO.GetComponent<Rigidbody>().isKinematic = false;
         MyWeaponGO.transform.SetParent(null);

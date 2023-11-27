@@ -13,7 +13,6 @@ public class EnemyStatus : MonoBehaviour, IDamageable
     #region Enemy Death Effect Gameobjects
     public GameObject MyHead = null;
     public GameObject MyWeaponGO = null;
-    public GameObject GoreParticle = null;
     #endregion
 
     #region Enemy Movement Management Componenets
@@ -45,8 +44,7 @@ public class EnemyStatus : MonoBehaviour, IDamageable
 
     private void Die()
     {
-        MyHead.SetActive(false);
-        GoreParticle.SetActive(true);
+        //MyHead.SetActive(false);
 
         if (MyWeaponGO != null)
         {
