@@ -9,15 +9,17 @@ public class PlayerController : MonoBehaviour
     private FloatingJoystick _myJoystick;
     #endregion
 
-    public Camera _myCamera { get; set; } = null;
+    public Camera _myCamera;
     public GameObject Weapon = null;
     public Transform Muzzle = null;
     public GameObject MuzzleFlash = null;
+    public Transform AimPoint = null;
 
     private CharacterController _player;
     private PlayerStatus _playerStat;
     private PlayerParkour _playerParkour;
     private GroundChecker _myGroundChecker;
+    private TPSCamController _myTPSCam;
     [SerializeField] private LayerMask _IgnoreRaycast;
     [SerializeField] private GameObject _bloodEffect = null;
     private Outline _enemyOutline = null;
@@ -25,8 +27,6 @@ public class PlayerController : MonoBehaviour
     public Vector3 PlayerVelocity { get; private set; } = Vector3.zero;
     public Vector3 PlayerVelocityBasedOnLookDir { get; private set; } = Vector3.zero;
     public bool MyIsGrounded { get; private set; } = false;
-    public Vector3 LookTarget { get; private set; } = Vector3.zero;
-    public bool IsAimOnEnemy { get; private set; } = false;
 
     #region Input Varibales
     private float _horizontalInput;
@@ -36,7 +36,6 @@ public class PlayerController : MonoBehaviour
     private Vector3 _mouseLookPosition;
     #endregion
 
-    private float _playerYAngleOffset = 0;
     private Vector3 _playerMoveOrientedForward;
     private Vector3 _playerMoveOrientedRight;
     private Quaternion _playerRotation;
@@ -66,6 +65,9 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
+        _myCamera = Camera.main;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
 #if (UNITY_ANDROID || UNITY_IOS)
         _myJoystick = GameObject.Find("Joystick").GetComponent<FloatingJoystick>();   
 #endif
@@ -77,9 +79,7 @@ public class PlayerController : MonoBehaviour
         _playerStat = this.GetComponent<PlayerStatus>();
         _playerParkour = this.GetComponent<PlayerParkour>();
         _myGroundChecker = this.GetComponent<GroundChecker>();
-        _playerYAngleOffset = _myCamera.GetComponent<CameraController>().GetCameraOffsetAngles().y;
-        _playerMoveOrientedForward = Quaternion.Euler(0, _playerYAngleOffset, 0) * this.transform.forward;
-        _playerMoveOrientedRight = Quaternion.Euler(0, _playerYAngleOffset, 0) * this.transform.right;
+        _myTPSCam = this.GetComponent<TPSCamController>();
 
         _projectileLine = this.GetComponent<LineRenderer>();
         _projectileLine.enabled = false;
@@ -89,15 +89,27 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        _playerMoveOrientedForward = _myTPSCam.CamTarget.forward;
+        _playerMoveOrientedRight = _myTPSCam.CamTarget.right;
+
         numberOfKeysPressed = keysToCheck.Count(key => Input.GetKey(key));
         if (Input.GetMouseButton(1) && !IsJumping && !IsOnDynamicMove)
         {
-            if(CurrentMode != MoveMode.Aim) CurrentMode = MoveMode.Aim;
+            if (CurrentMode != MoveMode.Aim)
+            {
+                CurrentMode = MoveMode.Aim;
+                this.transform.rotation = _myTPSCam.CamTarget.rotation;
+                _myTPSCam.ActivateAimModeCam();
+            }
         }
         else
         {
-            if (CurrentMode != MoveMode.Default) CurrentMode = MoveMode.Default; 
-            //if (CurrentMode != MoveMode.Aim) CurrentMode = MoveMode.Aim;
+            if (CurrentMode != MoveMode.Default)
+            {
+                CurrentMode = MoveMode.Default;
+                //if (CurrentMode != MoveMode.Aim) CurrentMode = MoveMode.Aim;
+                _myTPSCam.DeactivateAimModeCam();
+            }
         }
 
         switch (CurrentMode)
@@ -257,7 +269,7 @@ public class PlayerController : MonoBehaviour
 
     private float CalculateRotationAngle(float h, float v) //Calculates Radian-Angle By Vector2(h,v)
     {
-        return _playerYAngleOffset + Mathf.Atan2(h, v) * Mathf.Rad2Deg;
+        return _myTPSCam.CamTarget.rotation.eulerAngles.y + Mathf.Atan2(h, v) * Mathf.Rad2Deg;
     }
 
     private void PlayerRotate() //Do Character Rotation By Player's Input
@@ -423,11 +435,13 @@ public class PlayerController : MonoBehaviour
         _horizontalInput = Input.GetAxis("Horizontal");
         _verticalInput = Input.GetAxis("Vertical");
     }
-    private void RotateToAimPoint()
+    private void RotatePlayerOnAimMode()
     {
+        this.transform.rotation = Quaternion.Euler(0, _myTPSCam.CamTarget.rotation.eulerAngles.y, 0);
+
         Ray aimPointRay = _myCamera.ScreenPointToRay(Input.mousePosition);
         RaycastHit hitInfo;
-        if (Physics.Raycast(aimPointRay, out hitInfo, 100f, ~_IgnoreRaycast))
+        if (Physics.Raycast(aimPointRay, out hitInfo, 300f, ~_IgnoreRaycast))
         {
             if (hitInfo.transform.tag == "Enemy")
             {
@@ -444,7 +458,6 @@ public class PlayerController : MonoBehaviour
                 {
                     _enemyOutline.enabled = true;
                 }
-                IsAimOnEnemy = true;
             }
             else
             {
@@ -453,25 +466,18 @@ public class PlayerController : MonoBehaviour
                     _enemyOutline.enabled = false;
                     _enemyOutline = null;
                 }
-                IsAimOnEnemy = false;
             }
-
-            LookTarget = hitInfo.point;
-            _mouseLookPosition = LookTarget;
-            _mouseLookPosition.y = this.transform.position.y;
+            AimPoint.position = hitInfo.point;
         }
-        _lookDirection = _mouseLookPosition - this.transform.position;
-        _lookDirection = _lookDirection.normalized;
-        if (_lookDirection != Vector3.zero)
+        else
         {
-            float step = Time.fixedDeltaTime * _playerStat.RotateSpeed;
-            this.transform.rotation = Quaternion.Slerp(this.transform.rotation, Quaternion.LookRotation(_lookDirection), step);
+            AimPoint.position = transform.position + aimPointRay.direction * 300f;
         }
     }
 
     private void PlayerAimModeMove()
     {
-        RotateToAimPoint();
+        RotatePlayerOnAimMode();
 
         Vector3 xzPlaneVel = PlayerXZPlaneVelocityOnAim(); //Calculates XZ-Plane Velocity
         float yAxisVel = PlayerYAxisVelocityOnAim(); //Calculates Y-Axis Velocity
@@ -531,38 +537,27 @@ public class PlayerController : MonoBehaviour
         if (_fireTime < FireRate) return;
         RaycastHit hitInfo;
         _projectileLine.SetPosition(0, Muzzle.position);
-        if (IsAimOnEnemy)
+        if (Physics.Raycast(Muzzle.position, Muzzle.forward, out hitInfo, 100f))
         {
-            Vector3 dir = (LookTarget - Muzzle.position).normalized;
-            if (Physics.Raycast(Muzzle.position, dir, out hitInfo, 100f))
+            _projectileLine.SetPosition(1, hitInfo.point);
+            if (hitInfo.transform.tag == "Enemy")
             {
-                _projectileLine.SetPosition(1, hitInfo.point);
-                if(hitInfo.transform.tag == "Enemy")
+                Vector3 direction = hitInfo.normal;
+                float angle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + 180;
+                StartCoroutine(BloodEffect(hitInfo.point, angle));
+                if (hitInfo.transform.GetComponent<IDamageable>() != null)
                 {
-                    Vector3 direction = hitInfo.normal;
-                    float angle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + 180;
-                    StartCoroutine(BloodEffect(hitInfo.point, angle));
-                    if (hitInfo.transform.GetComponent<IDamageable>() != null)
-                    {
-                        hitInfo.transform.GetComponent<IDamageable>().TakeHit(_playerStat.WeaponDamage, dir);
-                    }
-                    if (hitInfo.transform.GetComponent<Rigidbody>() != null)
-                    {
-                        hitInfo.transform.GetComponent<Rigidbody>().AddForce(dir * 20f, ForceMode.Impulse);
-                    }
+                    hitInfo.transform.GetComponent<IDamageable>().TakeHit(_playerStat.WeaponDamage, Muzzle.forward);
+                }
+                if (hitInfo.transform.GetComponent<Rigidbody>() != null)
+                {
+                    hitInfo.transform.GetComponent<Rigidbody>().AddForce(Muzzle.forward * 20f, ForceMode.Impulse);
                 }
             }
         }
         else
         {
-            if (Physics.Raycast(Muzzle.position, Muzzle.transform.forward, out hitInfo, 100f))
-            {
-                _projectileLine.SetPosition(1, hitInfo.point);
-            }
-            else
-            {
-                _projectileLine.SetPosition(1, Muzzle.transform.forward * 100f);
-            }
+            _projectileLine.SetPosition(1, Muzzle.position + Muzzle.forward * 100f);
         }
         StartCoroutine(ShootEffect());
         _fireTime = 0.0f;
