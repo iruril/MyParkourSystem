@@ -131,8 +131,8 @@ public class PlayerParkour : MonoBehaviour
         {
             StepPoint = hit.point;
             StepHeight = StepPoint.y - this.transform.position.y;
-            RightStepPoint = StepPoint + this.transform.right * 0.25f;
-            LeftStepPoint = StepPoint - this.transform.right * 0.25f;
+            RightStepPoint = StepPoint + this.transform.right * 0.1f;
+            LeftStepPoint = StepPoint - this.transform.right * 0.1f;
         }
     }
 }

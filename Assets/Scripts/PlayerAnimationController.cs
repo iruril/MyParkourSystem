@@ -5,7 +5,6 @@ using UnityEngine.Animations.Rigging;
 
 public class PlayerAnimationController : MonoBehaviour
 {
-    public float DistanceGround = 0.5f;
     public float TransitionTime = 0.5f;
 
     [SerializeField] private Animator _animator;
@@ -13,30 +12,29 @@ public class PlayerAnimationController : MonoBehaviour
     private PlayerController _player;
     private PlayerStatus _playerStat;
     private PlayerParkour _playerParkour;
-    private GroundChecker _myGroundChecker;
-    private LayerMask _layerMask;
 
     private int _vaultType = 0;
-    private float _stepHeight = 0f;
     private float _mySpeed = 0f;
-
-    private float _animIKWeight = 1.0f;
-    private float _animIKWeightLerpTime = 0.5f;
-    private bool _ikWeightSet = false;
 
     private float _currentWeight = 0.0f;
     private float _targetWeight = 0.0f;
+
+    private WaitForSeconds _triggerResetTime;
+    private bool _isOnAction = false;
 
     void Awake()
     {
         _player = this.GetComponent<PlayerController>();
         _playerStat = this.GetComponent<PlayerStatus>();
         _playerParkour = this.GetComponent<PlayerParkour>();
-        _myGroundChecker = this.GetComponent<GroundChecker>();
-        _layerMask = _myGroundChecker.GroundLayer;
     }
 
-    void Update()
+    private void Start()
+    {
+        _triggerResetTime = new WaitForSeconds(_playerParkour.ParkourJumpTime);
+    }
+
+    void LateUpdate()
     {
         _targetWeight = (_player.CurrentMode == PlayerController.MoveMode.Aim) ? 1.0f : 0.0f;
         _currentWeight = Mathf.Lerp(_currentWeight, _targetWeight, Time.deltaTime / TransitionTime);
@@ -55,10 +53,13 @@ public class PlayerAnimationController : MonoBehaviour
                     switch (_player.JumpMode)
                     {
                         case PlayerParkour.JumpState.DefaultJump:
-                            StartCoroutine(DefaultJumpCoroutine());
+                            if (!_isOnAction)
+                            {
+                                StartCoroutine(DefaultJumpCoroutine());
+                            }
                             return;
                         case PlayerParkour.JumpState.Vault:
-                            if (!_player.IsOnDynamicMove)
+                            if (!_player.IsOnDynamicMove && !_isOnAction)
                             {
                                 _animator.SetFloat("Speed", _mySpeed);
                                 SetVaultType();
@@ -66,7 +67,7 @@ public class PlayerAnimationController : MonoBehaviour
                             }
                             return;
                         case PlayerParkour.JumpState.JumpClimb:
-                            if (!_player.IsOnDynamicMove)
+                            if (!_player.IsOnDynamicMove && !_isOnAction)
                             {
                                 _animator.SetFloat("Speed", _mySpeed);
                                 SetJumpClimbType();
@@ -82,86 +83,6 @@ public class PlayerAnimationController : MonoBehaviour
         }
        
     }
-
-    #region Animator Inverse Kinematic Calculation Fields
-    private void OnAnimatorIK(int layerIndex)
-    {
-        if (_player.IsOnDynamicMove)
-        {
-            if (!_ikWeightSet)
-            {
-                StartCoroutine(WeightDecreaser());
-            }
-            if (_player.JumpMode == PlayerParkour.JumpState.Vault)
-            {
-                _animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, _animIKWeight);
-
-                _animator.SetIKPosition(AvatarIKGoal.LeftHand, _playerParkour.LeftStepPoint);
-            }
-            else if (_player.JumpMode == PlayerParkour.JumpState.JumpClimb &&  _stepHeight > 1.5f)
-            {
-                _animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, _animIKWeight);
-                _animator.SetIKPositionWeight(AvatarIKGoal.RightHand, _animIKWeight);
-
-                _animator.SetIKPosition(AvatarIKGoal.LeftHand, _playerParkour.LeftStepPoint);
-                _animator.SetIKPosition(AvatarIKGoal.RightHand, _playerParkour.RightStepPoint);
-            }
-        }
-        else
-        {
-            FootIK();
-            _ikWeightSet = false;
-        }
-    }
-
-    private void FootIK()
-    {
-        _animator.SetIKPositionWeight(AvatarIKGoal.LeftFoot, 1);
-        _animator.SetIKRotationWeight(AvatarIKGoal.LeftFoot, 1);
-
-        Ray leftRay = new Ray(_animator.GetIKPosition(AvatarIKGoal.LeftFoot) + Vector3.up * 0.75f, Vector3.down);
-        Debug.DrawRay(_animator.GetIKPosition(AvatarIKGoal.LeftFoot) + Vector3.up * 0.75f, Vector3.down * (0.75f + DistanceGround), Color.red);
-        if (Physics.Raycast(leftRay, out RaycastHit leftHitinfo, DistanceGround + 0.75f, _layerMask))
-        {
-            if (leftHitinfo.transform.tag == "Walkable")
-            {
-                Vector3 footPos = leftHitinfo.point;
-                footPos.y += DistanceGround;
-
-                _animator.SetIKPosition(AvatarIKGoal.LeftFoot, footPos);
-            }
-        }
-
-        _animator.SetIKPositionWeight(AvatarIKGoal.RightFoot, 1);
-        _animator.SetIKRotationWeight(AvatarIKGoal.RightFoot, 1);
-
-        Ray rightRay = new Ray(_animator.GetIKPosition(AvatarIKGoal.RightFoot) + Vector3.up * 0.75f, Vector3.down);
-        Debug.DrawRay(_animator.GetIKPosition(AvatarIKGoal.RightFoot) + Vector3.up * 0.75f, Vector3.down * (0.75f + DistanceGround), Color.red);
-        if (Physics.Raycast(rightRay, out RaycastHit rightHitinfo, DistanceGround + 0.75f, _layerMask))
-        {
-            if (rightHitinfo.transform.tag == "Walkable")
-            {
-                Vector3 footPos = rightHitinfo.point;
-                footPos.y += DistanceGround;
-
-                _animator.SetIKPosition(AvatarIKGoal.RightFoot, footPos);
-            }
-        }
-    }
-
-    private IEnumerator WeightDecreaser()
-    {
-        _ikWeightSet = true;
-        float time = 0;
-        while (time <= _animIKWeightLerpTime)
-        {
-            _animIKWeight = Mathf.Lerp(1.0f, 0.3f, time / _animIKWeightLerpTime);
-            time += Time.deltaTime;
-            yield return null;
-        }
-        yield break;
-    }
-    #endregion
 
     #region 'Run Layer' Animator Value Set Fields
     private void GetPlayerSpeed()
@@ -179,12 +100,11 @@ public class PlayerAnimationController : MonoBehaviour
 
     private void SetJumpClimbType()
     {
-        _stepHeight = _playerParkour.StepHeight;
-        if (_stepHeight <= 1.5f)
+        if (_playerParkour.StepHeight <= 1.5f)
         {
             _animator.SetFloat("ClimbType", 0f);
         }
-        else if(_stepHeight is > 1.5f and <= 2.0f)
+        else if(_playerParkour.StepHeight is > 1.5f and <= 2.0f)
         {
             _animator.SetFloat("ClimbType", 0.5f);
         }
@@ -202,22 +122,29 @@ public class PlayerAnimationController : MonoBehaviour
 
     private IEnumerator DefaultJumpCoroutine()
     {
+        _isOnAction = true;
         _animator.SetTrigger("Jump");
-        yield return new WaitForSeconds(0.05f);
+        yield return _triggerResetTime;
+        _isOnAction = false;
         _animator.ResetTrigger("Jump");
     }
 
     private IEnumerator VaultCoroutine()
     {
-        _animator.SetTrigger("Vault");
-        yield return new WaitForSeconds(0.05f);
+        _isOnAction = true;
+        _animator.SetTrigger("Vault"); 
+        yield return _triggerResetTime; 
+        _isOnAction = false;
         _animator.ResetTrigger("Vault");
+
     }
 
     private IEnumerator JumpClimbCoroutine()
     {
+        _isOnAction = true;
         _animator.SetTrigger("JumpClimb");
-        yield return new WaitForSeconds(0.05f);
+        yield return _triggerResetTime;
+        _isOnAction = false;
         _animator.ResetTrigger("JumpClimb");
     }
     #endregion

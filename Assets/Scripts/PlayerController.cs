@@ -436,6 +436,12 @@ public class PlayerController : MonoBehaviour
         RaycastHit hitInfo;
         if (Physics.Raycast(aimPointRay, out hitInfo, 300f, ~_IgnoreRaycast))
         {
+            if(Vector3.Distance(hitInfo.point, this.transform.position) < 2.0f)
+            {
+                AimPoint.position = transform.position + aimPointRay.direction * 300f;
+                return;
+            }
+
             if (hitInfo.transform.tag == "Enemy")
             {
                 if(_enemyOutline != null)
