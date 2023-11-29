@@ -9,33 +9,30 @@ public class PlayerController : MonoBehaviour
     public GameObject Weapon = null;
     public Transform Muzzle = null;
     public GameObject MuzzleFlash = null;
-    public Transform AimPoint = null;
+    private Transform _aimPoint = null;
 
     private CharacterController _player;
     private PlayerStatus _playerStat;
     private PlayerParkour _playerParkour;
-    private GroundChecker _myGroundChecker;
+    public GroundChecker MyGroundChecker;
     private TPSCamController _myTPSCam;
     [SerializeField] private LayerMask _IgnoreRaycast;
     [SerializeField] private GameObject _bloodEffect = null;
 
     public Vector3 PlayerVelocity { get; private set; } = Vector3.zero;
-    public Vector3 PlayerVelocityBasedOnLookDir { get; private set; } = Vector3.zero;
-    public bool MyIsGrounded { get; private set; } = false;
+    public Vector3 PlayerVelocityOnAim { get; private set; } = Vector3.zero;
 
     #region Input Varibales
     private float _horizontalInput;
     private float _verticalInput;
     private float _rotationHorizontalInput;
     private float _rotationVerticalInput;
-    private Vector3 _mouseLookPosition;
     #endregion
 
     private Vector3 _playerMoveOrientedForward;
     private Vector3 _playerMoveOrientedRight;
     private Quaternion _playerRotation;
     private bool _isRotating;
-    private Vector3 _lookDirection;
 
     #region Movement Trigger Restriction Variables
     private HashSet<KeyCode> keysToCheck = new HashSet<KeyCode>{ KeyCode.W, KeyCode.A, KeyCode.S, KeyCode.D };
@@ -52,6 +49,8 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region Shooting Variables
+    public float AimSpeed = 0.2f;
+    private Vector3 _refVelocity = Vector3.zero;
     public float FireRate = 0.1f;
     private float _fireTime = 0f;
     private LineRenderer _projectileLine;
@@ -63,6 +62,8 @@ public class PlayerController : MonoBehaviour
         MyCamera = Camera.main;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
+        _aimPoint = GameObject.FindWithTag("AimPoint").transform;
     }
 
     void Start()
@@ -70,7 +71,7 @@ public class PlayerController : MonoBehaviour
         _player = this.GetComponent<CharacterController>();
         _playerStat = this.GetComponent<PlayerStatus>();
         _playerParkour = this.GetComponent<PlayerParkour>();
-        _myGroundChecker = this.GetComponent<GroundChecker>();
+        MyGroundChecker = this.GetComponent<GroundChecker>();
         _myTPSCam = this.GetComponent<TPSCamController>();
 
         _projectileLine = this.GetComponent<LineRenderer>();
@@ -99,7 +100,6 @@ public class PlayerController : MonoBehaviour
             if (CurrentMode != MoveMode.Default)
             {
                 CurrentMode = MoveMode.Default;
-                //if (CurrentMode != MoveMode.Aim) CurrentMode = MoveMode.Aim;
                 _myTPSCam.DeactivateAimModeCam();
             }
         }
@@ -127,13 +127,17 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate() //For Velocity Calculations
     {
-        MyIsGrounded = _myGroundChecker.IsGrounded();
         switch (CurrentMode)
         {
             case MoveMode.Default:
                 #region Default Player FixedUpdate
                 if (!IsOnDynamicMove) //While Isn't on Parkour Action
                 {
+                    if (MyGroundChecker.IsGrounded())
+                    {
+                        JumpMode = _playerParkour.CheckRay(); //Predicts Next JumpMode
+                    }
+
                     if (_isRotating)
                     {
                         PlayerRotate();
@@ -170,11 +174,6 @@ public class PlayerController : MonoBehaviour
 
     private void CalculatePlayerTransformByInput()
     {
-        if (MyIsGrounded && !IsOnDynamicMove)
-        {
-            JumpMode = _playerParkour.CheckRay(); //Predicts Next JumpMode
-        }
-
         if (_rotationHorizontalInput != 0 || _rotationVerticalInput != 0)
         {
             _playerRotation = Quaternion.Euler(0, CalculateRotationAngle(_rotationHorizontalInput, _rotationVerticalInput), 0);
@@ -204,7 +203,7 @@ public class PlayerController : MonoBehaviour
 
     private float PlayerYAxisVelocity() //Calculates Y-Axis Velocity By Player's Input
     {
-        if (!MyIsGrounded && !IsOnDynamicMove) // If isn't on ground, then apply Gravity force
+        if (!MyGroundChecker.IsGrounded()) // If isn't on ground, then apply Gravity force
         {
             return PlayerVelocity.y - _playerStat.GravityForce * Time.fixedDeltaTime;
         }
@@ -275,7 +274,7 @@ public class PlayerController : MonoBehaviour
     #region Parkour Actions Fields
     private IEnumerator DoVault()
     {
-        if (JumpMode != PlayerParkour.JumpState.Vault && !_myGroundChecker.IsGrounded())
+        if (JumpMode != PlayerParkour.JumpState.Vault || !MyGroundChecker.IsGrounded())
         {
             IsJumping = false;
             yield break;
@@ -318,7 +317,7 @@ public class PlayerController : MonoBehaviour
 
     private IEnumerator DoHopClimb()
     {
-        if (JumpMode != PlayerParkour.JumpState.JumpClimb && !_myGroundChecker.IsGrounded())
+        if (JumpMode != PlayerParkour.JumpState.JumpClimb || !MyGroundChecker.IsGrounded())
         {
             IsJumping = false;
             yield break;
@@ -345,7 +344,6 @@ public class PlayerController : MonoBehaviour
 
                 yield return null;
             }
-
         }
         else if(_playerParkour.StepHeight is > 1.5f and <= 2.0f) //if StepPoint is higher then 1.5m, and lower then 2m
         {
@@ -404,7 +402,7 @@ public class PlayerController : MonoBehaviour
             while (currentTime < lerpTime)
             {
                 currentTime += Time.deltaTime;
-                this.transform.position = Vector3.Slerp(secondClimbPoint, endPoint, currentTime / lerpTime);
+                this.transform.position = Vector3.Lerp(secondClimbPoint, endPoint, currentTime / lerpTime);
 
                 yield return null;
             }
@@ -425,21 +423,27 @@ public class PlayerController : MonoBehaviour
     private void RotatePlayerOnAimMode()
     {
         this.transform.rotation = Quaternion.Euler(0, _myTPSCam.CamTarget.rotation.eulerAngles.y, 0);
+        Vector2 screenCenter = new Vector2(Screen.width / 2f, Screen.height / 2f);
 
         Ray aimPointRay = MyCamera.ScreenPointToRay(Input.mousePosition);
         RaycastHit hitInfo;
         if (Physics.Raycast(aimPointRay, out hitInfo, 300f, ~_IgnoreRaycast))
         {
-            if(Vector3.Distance(hitInfo.point, this.transform.position) < 2.0f)
+            Vector3 aimPos;
+            if (Vector3.Distance(hitInfo.point, this.transform.position) < 1.5f)
             {
-                AimPoint.position = transform.position + aimPointRay.direction * 300f;
-                return;
+                aimPos = aimPointRay.origin + aimPointRay.direction * 5f;
             }
-            AimPoint.position = hitInfo.point;
+            else
+            {
+                aimPos = hitInfo.point;
+            }
+            _aimPoint.position = Vector3.SmoothDamp(_aimPoint.position, aimPos, ref _refVelocity, AimSpeed);
         }
         else
         {
-            AimPoint.position = transform.position + aimPointRay.direction * 300f;
+            Vector3 aimPos = aimPointRay.origin + aimPointRay.direction * 5f;
+            _aimPoint.position = Vector3.SmoothDamp(_aimPoint.position, aimPos, ref _refVelocity, AimSpeed);
         }
     }
 
@@ -463,7 +467,7 @@ public class PlayerController : MonoBehaviour
 
     private float PlayerYAxisVelocityOnAim()
     {
-        if (!MyIsGrounded && !IsOnDynamicMove) // If isn't on ground, then apply Gravity force
+        if (!MyGroundChecker.IsGrounded()) // If isn't on ground, then apply Gravity force
         {
             return PlayerVelocity.y - _playerStat.GravityForce * Time.fixedDeltaTime;
         }
@@ -473,7 +477,7 @@ public class PlayerController : MonoBehaviour
 
     private void CalculatePlayerTransformByInputOnAim()
     {
-        PlayerVelocityBasedOnLookDir = transform.InverseTransformDirection(_player.velocity);
+        PlayerVelocityOnAim = transform.InverseTransformDirection(_player.velocity);
         _player.Move(PlayerVelocity * Time.deltaTime);
     }
     #endregion
@@ -508,7 +512,7 @@ public class PlayerController : MonoBehaviour
         if (Physics.Raycast(Muzzle.position, Muzzle.forward, out hitInfo, 100f))
         {
             _projectileLine.SetPosition(1, hitInfo.point);
-            if (hitInfo.transform.tag == "Enemy")
+            if (hitInfo.transform.CompareTag("Enemy"))
             {
                 Vector3 direction = hitInfo.normal;
                 float angle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + 180;

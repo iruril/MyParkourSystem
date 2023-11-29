@@ -6,11 +6,14 @@ using Cinemachine;
 public class TPSCamController : MonoBehaviour
 {
     [SerializeField] private CinemachineVirtualCamera _aimCam;
-    [SerializeField] private float _normalSensitivity;
-    [SerializeField] private float _aimSensitivity;
     [SerializeField] private float _mouseRotateSpeed = 1.0f;
 
-    public Transform CamTarget;
+    public Transform CamTarget { get; private set; }
+
+    private void Awake()
+    {
+        CamTarget = GameObject.FindWithTag("CamTarget").transform;
+    }
     private void Update()
     {
         CamTarget.position = this.transform.position + Vector3.up * 1.4f;

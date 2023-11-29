@@ -94,7 +94,7 @@ public class PlayerAnimationController : MonoBehaviour
 
     private void GetPlayerActionBoolean()
     {
-        _animator.SetBool("IsGrounded", _player.MyIsGrounded);
+        _animator.SetBool("IsGrounded", _player.MyGroundChecker.IsGrounded());
         _animator.SetBool("IsOnDynamic", _player.IsOnDynamicMove);
     }
 
@@ -152,8 +152,8 @@ public class PlayerAnimationController : MonoBehaviour
     #region 'Aim Layer' Animator Value Set Fields
     private void GetPlayerSpeedOnAim()
     {
-        _animator.SetFloat("SpeedForward", _player.PlayerVelocityBasedOnLookDir.z / (_playerStat.Speed / 2f));
-        _animator.SetFloat("SpeedRight", _player.PlayerVelocityBasedOnLookDir.x / (_playerStat.Speed / 2f));
+        _animator.SetFloat("SpeedForward", _player.PlayerVelocityOnAim.z / (_playerStat.Speed / 2f));
+        _animator.SetFloat("SpeedRight", _player.PlayerVelocityOnAim.x / (_playerStat.Speed / 2f));
     }
     #endregion
 }
