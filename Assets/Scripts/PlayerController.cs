@@ -18,7 +18,6 @@ public class PlayerController : MonoBehaviour
     private TPSCamController _myTPSCam;
     [SerializeField] private LayerMask _IgnoreRaycast;
     [SerializeField] private GameObject _bloodEffect = null;
-    private Outline _enemyOutline = null;
 
     public Vector3 PlayerVelocity { get; private set; } = Vector3.zero;
     public Vector3 PlayerVelocityBasedOnLookDir { get; private set; } = Vector3.zero;
@@ -111,11 +110,6 @@ public class PlayerController : MonoBehaviour
                 #region Default Player Update
                 if (MuzzleFlash.activeSelf) MuzzleFlash.SetActive(false);
                 if (Weapon.activeSelf) Weapon.SetActive(false);
-                if (_enemyOutline != null)
-                {
-                    _enemyOutline.enabled = false;
-                    _enemyOutline = null;
-                }
                 GetInput();
                 CalculatePlayerTransformByInput(); //Calculated PlayerVelocity is based on 'FixedTime', so we smooth this with 'Time'.
                 #endregion
@@ -440,31 +434,6 @@ public class PlayerController : MonoBehaviour
             {
                 AimPoint.position = transform.position + aimPointRay.direction * 300f;
                 return;
-            }
-
-            if (hitInfo.transform.tag == "Enemy")
-            {
-                if(_enemyOutline != null)
-                {
-                    if (_enemyOutline != null)
-                    {
-                        _enemyOutline.enabled = false;
-                        _enemyOutline = null;
-                    }
-                }
-                _enemyOutline = hitInfo.transform.GetComponent<Outline>();
-                if (_enemyOutline != null)
-                {
-                    _enemyOutline.enabled = true;
-                }
-            }
-            else
-            {
-                if (_enemyOutline != null)
-                {
-                    _enemyOutline.enabled = false;
-                    _enemyOutline = null;
-                }
             }
             AimPoint.position = hitInfo.point;
         }
