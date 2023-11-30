@@ -1199,7 +1199,7 @@ MonoBehaviour:
       m_Item7:
         transform: {fileID: 0}
         weight: 0
-    m_Offset: {x: 0, y: 0, z: 0}
+    m_Offset: {x: 0, y: 45, z: 0}
     m_MinLimit: -180
     m_MaxLimit: 180
     m_AimAxis: 4
@@ -3347,7 +3347,7 @@ Animator:
   m_Avatar: {fileID: 9000000, guid: df7d549d92472f049a52b6ccfb0ad551, type: 3}
   m_Controller: {fileID: 9100000, guid: b51ea6fd2bd434bd78f117191d460685, type: 2}
   m_CullingMode: 1
-  m_UpdateMode: 1
+  m_UpdateMode: 0
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
@@ -4170,6 +4170,7 @@ MonoBehaviour:
     m_Bits: 166
   _bloodEffect: {fileID: 5170585893340993107, guid: 7b88f11816abaa34c9e02cbaa8485321,
     type: 3}
+  InputAxisSensitivity: 2
   AimSpeed: 0.1
   FireRate: 0.1
 --- !u!114 &3162793587962164791

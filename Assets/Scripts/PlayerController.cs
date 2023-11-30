@@ -14,7 +14,7 @@ public class PlayerController : MonoBehaviour
     private CharacterController _player;
     private PlayerStatus _playerStat;
     private PlayerParkour _playerParkour;
-    public GroundChecker MyGroundChecker;
+    public GroundChecker MyGroundChecker { get; private set; }
     private TPSCamController _myTPSCam;
     [SerializeField] private LayerMask _IgnoreRaycast;
     [SerializeField] private GameObject _bloodEffect = null;

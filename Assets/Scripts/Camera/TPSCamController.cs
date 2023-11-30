@@ -5,6 +5,7 @@ using Cinemachine;
 
 public class TPSCamController : MonoBehaviour
 {
+    [SerializeField] private GameObject _aimPointUI;
     [SerializeField] private CinemachineVirtualCamera _aimCam;
     [SerializeField] private float _mouseRotateSpeed = 1.0f;
 
@@ -24,9 +25,11 @@ public class TPSCamController : MonoBehaviour
     public void ActivateAimModeCam()
     {
         _aimCam.gameObject.SetActive(true);
+        _aimPointUI.SetActive(true);
     }
     public void DeactivateAimModeCam()
     {
         _aimCam.gameObject.SetActive(false);
+        _aimPointUI.SetActive(false);
     }
 }
