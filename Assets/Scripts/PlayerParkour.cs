@@ -36,6 +36,15 @@ public class PlayerParkour : MonoBehaviour
     }
     public JumpState JumpMode { get; set; } = JumpState.None;
 
+    public enum StepState
+    {
+        None,
+        Lowest,
+        Middle,
+        Highest
+    }
+    public StepState StepMode { get; set; } = StepState.None;
+
     private void OnDrawGizmos()
     {
         Debug.DrawRay(_jumpBottomRay.position, this.transform.forward * _rayDistance, Color.cyan);
@@ -133,6 +142,19 @@ public class PlayerParkour : MonoBehaviour
             StepHeight = StepPoint.y - this.transform.position.y;
             RightStepPoint = StepPoint + this.transform.right * 0.1f;
             LeftStepPoint = StepPoint - this.transform.right * 0.1f;
+        }
+
+        if(StepHeight <= 1.2f)
+        {
+            StepMode = StepState.Lowest;
+        }
+        else if(StepHeight is >1.2f and <= 2.0f)
+        {
+            StepMode = StepState.Middle;
+        }
+        else
+        {
+            StepMode = StepState.Highest;
         }
     }
 }

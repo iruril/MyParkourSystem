@@ -46,6 +46,8 @@ public class PlayerController : MonoBehaviour
         Aim
     }
     public MoveMode CurrentMode { get; private set; } = MoveMode.Default;
+
+    private Coroutine _myCoroutine;
     #endregion
 
     #region Shooting Variables
@@ -216,10 +218,10 @@ public class PlayerController : MonoBehaviour
                     IsJumping = false;
                     return PlayerVelocity.y + _playerStat.JumpPower;
                 case PlayerParkour.JumpState.Vault: //Do Vault Action
-                    if (!IsOnDynamicMove)
+                    if (!IsOnDynamicMove && _myCoroutine == null)
                     {
                         IsOnDynamicMove = true;
-                        StartCoroutine(DoVault());
+                        _myCoroutine = StartCoroutine(DoVault());
                     }
                     else
                     {
@@ -228,10 +230,10 @@ public class PlayerController : MonoBehaviour
                     }
                     return Mathf.Max(0.0f, PlayerVelocity.y);
                 case PlayerParkour.JumpState.JumpClimb: //Do JumpClimb Action
-                    if (!IsOnDynamicMove)
+                    if (!IsOnDynamicMove && _myCoroutine == null)
                     {
                         IsOnDynamicMove = true;
-                        StartCoroutine(DoHopClimb());
+                        _myCoroutine = StartCoroutine(DoHopClimb());
                     }
                     else
                     {
@@ -307,10 +309,12 @@ public class PlayerController : MonoBehaviour
             PlayerVelocity = new Vector3(vaultDir.x * speed,
                                          PlayerVelocity.y - _playerStat.GravityForce * Time.deltaTime,
                                          vaultDir.z * speed);
-            speed = speed - Time.deltaTime * 2;
+            speed = speed - Time.deltaTime;
             yield return null;
         }
+
         IsOnDynamicMove = false;
+        _myCoroutine = null;
         JumpMode = PlayerParkour.JumpState.None;
         yield break;
     }
@@ -332,82 +336,161 @@ public class PlayerController : MonoBehaviour
         Vector3 climbPoint = _playerParkour.StepPoint - (t1 - t2).normalized * 0.3f;
         IsJumping = false;
 
-        if (_playerParkour.StepHeight <= 1.5f) //if StepHeoght is lower then 1.5m
+        float lerpTime;
+        float currentTime;
+
+        switch (_playerParkour.StepMode)
         {
-            //First Step Action (Move to Step Point)
-            float lerpTime = _playerParkour.ParkourClimbTime;
-            float currentTime = 0;
-            while (currentTime < lerpTime)
-            {
-                currentTime += Time.deltaTime;
-                this.transform.position = Vector3.Slerp(startPoint, endPoint, currentTime / lerpTime);
+            case PlayerParkour.StepState.Lowest:
+                lerpTime = _playerParkour.ParkourClimbTime;
+                currentTime = 0;
+                while (currentTime < lerpTime)
+                {
+                    currentTime += Time.deltaTime;
+                    this.transform.position = Vector3.Slerp(startPoint, endPoint, currentTime / lerpTime);
 
-                yield return null;
-            }
+                    yield return null;
+                }
+                break;
+            case PlayerParkour.StepState.Middle:
+                //First Step Action (Move to Step Point)
+                lerpTime = _playerParkour.ParkourClimbTime;
+                currentTime = 0;
+                while (currentTime < lerpTime)
+                {
+                    currentTime += Time.deltaTime;
+                    this.transform.position = Vector3.Slerp(startPoint, climbPoint, currentTime / lerpTime);
+
+                    yield return null;
+                }
+
+                //Second Step Action
+                lerpTime = (_playerParkour.ParkourJumpClimbTime - 0.2f) - lerpTime;
+                currentTime = 0;
+                while (currentTime < lerpTime)
+                {
+                    currentTime += Time.deltaTime;
+                    this.transform.position = Vector3.Slerp(climbPoint, endPoint, currentTime / lerpTime);
+
+                    yield return null;
+                }
+                break;
+            case PlayerParkour.StepState.Highest:
+                Vector3 secondClimbPoint = climbPoint;
+                climbPoint.y = climbPoint.y - 1.0f;
+
+                //First Step Action
+                lerpTime = _playerParkour.ParkourClimbTime;
+                currentTime = 0;
+                while (currentTime < lerpTime)
+                {
+                    currentTime += Time.deltaTime;
+                    this.transform.position = Vector3.Slerp(startPoint, climbPoint, currentTime / lerpTime);
+
+                    yield return null;
+                }
+
+                //Second Step Action
+                lerpTime = _playerParkour.ParkourClimbTime;
+                currentTime = 0;
+                while (currentTime < lerpTime)
+                {
+                    currentTime += Time.deltaTime;
+                    this.transform.position = Vector3.Lerp(climbPoint, secondClimbPoint, currentTime / lerpTime);
+
+                    yield return null;
+                }
+
+                //Third Step Action
+                lerpTime = _playerParkour.ParkourJumpClimbTime - 2 * _playerParkour.ParkourClimbTime;
+                currentTime = 0;
+                while (currentTime < lerpTime)
+                {
+                    currentTime += Time.deltaTime;
+                    this.transform.position = Vector3.Lerp(secondClimbPoint, endPoint, currentTime / lerpTime);
+
+                    yield return null;
+                }
+                break;
         }
-        else if(_playerParkour.StepHeight is > 1.5f and <= 2.0f) //if StepPoint is higher then 1.5m, and lower then 2m
-        {
-            //First Step Action (Move to Step Point)
-            float lerpTime = _playerParkour.ParkourClimbTime;
-            float currentTime = 0;
-            while (currentTime < lerpTime)
-            {
-                currentTime += Time.deltaTime;
-                this.transform.position = Vector3.Slerp(startPoint, climbPoint, currentTime / lerpTime);
 
-                yield return null;
-            }
+        //if (_playerParkour.StepHeight <= 1.5f) //if StepHeoght is lower then 1.5m
+        //{
+        //    //First Step Action (Move to Step Point)
+        //    float lerpTime = _playerParkour.ParkourClimbTime;
+        //    float currentTime = 0;
+        //    while (currentTime < lerpTime)
+        //    {
+        //        currentTime += Time.deltaTime;
+        //        this.transform.position = Vector3.Slerp(startPoint, endPoint, currentTime / lerpTime);
 
-            //Second Step Action
-            lerpTime = (_playerParkour.ParkourJumpClimbTime - 0.2f) - lerpTime;
-            currentTime = 0;
-            while (currentTime < lerpTime)
-            {
-                currentTime += Time.deltaTime;
-                this.transform.position = Vector3.Slerp(climbPoint, endPoint, currentTime / lerpTime);
+        //        yield return null;
+        //    }
+        //}
+        //else if(_playerParkour.StepHeight is > 1.5f and <= 2.0f) //if StepPoint is higher then 1.5m, and lower then 2m
+        //{
+        //    //First Step Action (Move to Step Point)
+        //    float lerpTime = _playerParkour.ParkourClimbTime;
+        //    float currentTime = 0;
+        //    while (currentTime < lerpTime)
+        //    {
+        //        currentTime += Time.deltaTime;
+        //        this.transform.position = Vector3.Slerp(startPoint, climbPoint, currentTime / lerpTime);
 
-                yield return null;
-            }
-        }
-        else //if StepPoint is Higher than 2m
-        {
-            Vector3 secondClimbPoint = climbPoint;
-            climbPoint.y = climbPoint.y - 1.0f;
+        //        yield return null;
+        //    }
 
-            //First Step Action
-            float lerpTime = _playerParkour.ParkourClimbTime;
-            float currentTime = 0;
-            while (currentTime < lerpTime)
-            {
-                currentTime += Time.deltaTime;
-                this.transform.position = Vector3.Slerp(startPoint, climbPoint, currentTime / lerpTime);
+        //    //Second Step Action
+        //    lerpTime = (_playerParkour.ParkourJumpClimbTime - 0.2f) - lerpTime;
+        //    currentTime = 0;
+        //    while (currentTime < lerpTime)
+        //    {
+        //        currentTime += Time.deltaTime;
+        //        this.transform.position = Vector3.Slerp(climbPoint, endPoint, currentTime / lerpTime);
 
-                yield return null;
-            }
+        //        yield return null;
+        //    }
+        //}
+        //else //if StepPoint is Higher than 2m
+        //{
+        //    Vector3 secondClimbPoint = climbPoint;
+        //    climbPoint.y = climbPoint.y - 1.0f;
 
-            //Second Step Action
-            lerpTime = _playerParkour.ParkourClimbTime;
-            currentTime = 0;
-            while (currentTime < lerpTime)
-            {
-                currentTime += Time.deltaTime;
-                this.transform.position = Vector3.Lerp(climbPoint, secondClimbPoint, currentTime / lerpTime);
+        //    //First Step Action
+        //    float lerpTime = _playerParkour.ParkourClimbTime;
+        //    float currentTime = 0;
+        //    while (currentTime < lerpTime)
+        //    {
+        //        currentTime += Time.deltaTime;
+        //        this.transform.position = Vector3.Slerp(startPoint, climbPoint, currentTime / lerpTime);
 
-                yield return null;
-            }
+        //        yield return null;
+        //    }
 
-            //Third Step Action
-            lerpTime = _playerParkour.ParkourJumpClimbTime - 2 * _playerParkour.ParkourClimbTime;
-            currentTime = 0;
-            while (currentTime < lerpTime)
-            {
-                currentTime += Time.deltaTime;
-                this.transform.position = Vector3.Lerp(secondClimbPoint, endPoint, currentTime / lerpTime);
+        //    //Second Step Action
+        //    lerpTime = _playerParkour.ParkourClimbTime;
+        //    currentTime = 0;
+        //    while (currentTime < lerpTime)
+        //    {
+        //        currentTime += Time.deltaTime;
+        //        this.transform.position = Vector3.Lerp(climbPoint, secondClimbPoint, currentTime / lerpTime);
 
-                yield return null;
-            }
-        }
+        //        yield return null;
+        //    }
+
+        //    //Third Step Action
+        //    lerpTime = _playerParkour.ParkourJumpClimbTime - 2 * _playerParkour.ParkourClimbTime;
+        //    currentTime = 0;
+        //    while (currentTime < lerpTime)
+        //    {
+        //        currentTime += Time.deltaTime;
+        //        this.transform.position = Vector3.Lerp(secondClimbPoint, endPoint, currentTime / lerpTime);
+
+        //        yield return null;
+        //    }
+        //}
         IsOnDynamicMove = false;
+        _myCoroutine = null;
         JumpMode = PlayerParkour.JumpState.None;
         yield break;
     }

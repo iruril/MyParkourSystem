@@ -100,18 +100,30 @@ public class PlayerAnimationController : MonoBehaviour
 
     private void SetJumpClimbType()
     {
-        if (_playerParkour.StepHeight <= 1.5f)
+        switch (_playerParkour.StepMode)
         {
-            _animator.SetFloat("ClimbType", 0f);
+            case PlayerParkour.StepState.Lowest:
+                _animator.SetFloat("ClimbType", 0f);
+                break;
+            case PlayerParkour.StepState.Middle:
+                _animator.SetFloat("ClimbType", 0.5f);
+                break;
+            case PlayerParkour.StepState.Highest:
+                _animator.SetFloat("ClimbType", 1f);
+                break;
         }
-        else if(_playerParkour.StepHeight is > 1.5f and <= 2.0f)
-        {
-            _animator.SetFloat("ClimbType", 0.5f);
-        }
-        else
-        {
-            _animator.SetFloat("ClimbType", 1f);
-        }
+        //if (_playerParkour.StepHeight <= 1.5f)
+        //{
+        //    _animator.SetFloat("ClimbType", 0f);
+        //}
+        //else if(_playerParkour.StepHeight is > 1.5f and <= 2.0f)
+        //{
+        //    _animator.SetFloat("ClimbType", 0.5f);
+        //}
+        //else
+        //{
+        //    _animator.SetFloat("ClimbType", 1f);
+        //}
     }
 
     private void SetVaultType()
