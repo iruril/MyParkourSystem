@@ -22,6 +22,8 @@ public class PlayerAnimationController : MonoBehaviour
     private WaitForSeconds _triggerResetTime;
     private bool _isOnAction = false;
 
+    private Coroutine _animCoroutine = null;
+
     void Awake()
     {
         _player = this.GetComponent<PlayerController>();
@@ -55,7 +57,7 @@ public class PlayerAnimationController : MonoBehaviour
                         case PlayerParkour.JumpState.DefaultJump:
                             if (!_isOnAction)
                             {
-                                StartCoroutine(DefaultJumpCoroutine());
+                                _animCoroutine = StartCoroutine(DefaultJumpCoroutine());
                             }
                             return;
                         case PlayerParkour.JumpState.Vault:
@@ -63,7 +65,7 @@ public class PlayerAnimationController : MonoBehaviour
                             {
                                 _animator.SetFloat("Speed", _mySpeed);
                                 SetVaultType();
-                                StartCoroutine(VaultCoroutine());
+                                _animCoroutine = StartCoroutine(VaultCoroutine());
                             }
                             return;
                         case PlayerParkour.JumpState.JumpClimb:
@@ -71,7 +73,7 @@ public class PlayerAnimationController : MonoBehaviour
                             {
                                 _animator.SetFloat("Speed", _mySpeed);
                                 SetJumpClimbType();
-                                StartCoroutine(JumpClimbCoroutine());
+                                _animCoroutine = StartCoroutine(JumpClimbCoroutine());
                             }
                             return;
                     }
@@ -136,7 +138,6 @@ public class PlayerAnimationController : MonoBehaviour
         yield return _triggerResetTime; 
         _isOnAction = false;
         _animator.ResetTrigger("Vault");
-
     }
 
     private IEnumerator JumpClimbCoroutine()

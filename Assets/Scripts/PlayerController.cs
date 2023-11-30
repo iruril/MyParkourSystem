@@ -23,6 +23,7 @@ public class PlayerController : MonoBehaviour
     public Vector3 PlayerVelocityOnAim { get; private set; } = Vector3.zero;
 
     #region Input Varibales
+    public float InputAxisSensitivity = 0.5f;
     private float _horizontalInput;
     private float _verticalInput;
     private float _rotationHorizontalInput;
@@ -84,8 +85,8 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        _playerMoveOrientedForward = _myTPSCam.CamTarget.forward;
-        _playerMoveOrientedRight = _myTPSCam.CamTarget.right;
+        _playerMoveOrientedForward = new Vector3(_myTPSCam.CamTarget.forward.x, 0, _myTPSCam.CamTarget.forward.z).normalized;
+        _playerMoveOrientedRight = new Vector3(_myTPSCam.CamTarget.right.x, 0, _myTPSCam.CamTarget.right.z).normalized;
 
         numberOfKeysPressed = keysToCheck.Count(key => Input.GetKey(key));
         if (Input.GetMouseButton(1) && !IsJumping && !IsOnDynamicMove)
@@ -160,7 +161,7 @@ public class PlayerController : MonoBehaviour
     private void GetInput()
     {
         _horizontalInput = Input.GetAxis("Horizontal");
-        _verticalInput = Input.GetAxis("Vertical"); 
+        _verticalInput = Input.GetAxis("Vertical");
 
         if (numberOfKeysPressed < 3)
         {
@@ -223,22 +224,12 @@ public class PlayerController : MonoBehaviour
                         IsOnDynamicMove = true;
                         _myCoroutine = StartCoroutine(DoVault());
                     }
-                    else
-                    {
-                        JumpMode = PlayerParkour.JumpState.None;
-                        IsJumping = false;
-                    }
                     return Mathf.Max(0.0f, PlayerVelocity.y);
                 case PlayerParkour.JumpState.JumpClimb: //Do JumpClimb Action
                     if (!IsOnDynamicMove && _myCoroutine == null)
                     {
                         IsOnDynamicMove = true;
                         _myCoroutine = StartCoroutine(DoHopClimb());
-                    }
-                    else
-                    {
-                        JumpMode = PlayerParkour.JumpState.None;
-                        IsJumping = false;
                     }
                     return Mathf.Max(0.0f, PlayerVelocity.y); //Do Climb Action
                 case PlayerParkour.JumpState.Climb:
@@ -365,7 +356,7 @@ public class PlayerController : MonoBehaviour
                 }
 
                 //Second Step Action
-                lerpTime = (_playerParkour.ParkourJumpClimbTime - 0.2f) - lerpTime;
+                lerpTime = _playerParkour.ParkourJumpClimbTime - 2 * _playerParkour.ParkourClimbTime;
                 currentTime = 0;
                 while (currentTime < lerpTime)
                 {
@@ -439,7 +430,7 @@ public class PlayerController : MonoBehaviour
             Vector3 aimPos;
             if (Vector3.Distance(hitInfo.point, this.transform.position) < 1.5f)
             {
-                aimPos = aimPointRay.origin + aimPointRay.direction * 5f;
+                aimPos = aimPointRay.origin + aimPointRay.direction * 15f;
             }
             else
             {
@@ -449,7 +440,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            Vector3 aimPos = aimPointRay.origin + aimPointRay.direction * 5f;
+            Vector3 aimPos = aimPointRay.origin + aimPointRay.direction * 15f;
             _aimPoint.position = Vector3.SmoothDamp(_aimPoint.position, aimPos, ref _refVelocity, AimSpeed);
         }
     }
