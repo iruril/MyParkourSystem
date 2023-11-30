@@ -331,9 +331,9 @@ public class PlayerController : MonoBehaviour
         PlayerVelocity = Vector3.zero;
         Vector3 startPoint = this.transform.position;
         Vector3 endPoint = _playerParkour.StepPoint;
-        Vector3 t1 = new Vector3(endPoint.x, 0, endPoint.z);
-        Vector3 t2 = new Vector3(startPoint.x, 0, startPoint.z);
-        Vector3 climbPoint = _playerParkour.StepPoint - (t1 - t2).normalized * 0.3f;
+        Vector3 endPointXZ = new Vector3(endPoint.x, 0, endPoint.z);
+        Vector3 startPointXZ = new Vector3(startPoint.x, 0, startPoint.z);
+        Vector3 climbPoint = _playerParkour.StepPoint - (endPointXZ - startPointXZ).normalized * 0.3f;
         IsJumping = false;
 
         float lerpTime;

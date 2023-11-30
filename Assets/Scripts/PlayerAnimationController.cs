@@ -112,18 +112,6 @@ public class PlayerAnimationController : MonoBehaviour
                 _animator.SetFloat("ClimbType", 1f);
                 break;
         }
-        //if (_playerParkour.StepHeight <= 1.5f)
-        //{
-        //    _animator.SetFloat("ClimbType", 0f);
-        //}
-        //else if(_playerParkour.StepHeight is > 1.5f and <= 2.0f)
-        //{
-        //    _animator.SetFloat("ClimbType", 0.5f);
-        //}
-        //else
-        //{
-        //    _animator.SetFloat("ClimbType", 1f);
-        //}
     }
 
     private void SetVaultType()
