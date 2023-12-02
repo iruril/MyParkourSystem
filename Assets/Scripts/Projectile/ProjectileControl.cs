@@ -5,6 +5,8 @@ using UnityEngine;
 public class ProjectileControl : MonoBehaviour
 {
     public GameObject hitPrefab;
+    public Vector3 HitNormal = Vector3.zero;
+    public Vector3 HitPoint = Vector3.zero;
     public float AutomaticDestroySec = 10f;
 
     public float Speed = 100;
@@ -23,6 +25,13 @@ public class ProjectileControl : MonoBehaviour
         }
     }
 
+    public void Initailize(float damage, Vector3 pos, Vector3 normal)
+    {
+        Damage = damage;
+        HitPoint = pos;
+        HitNormal = normal;
+    }
+
     private IEnumerator LifeTime()
     {
         yield return new WaitForSeconds(AutomaticDestroySec);
@@ -38,18 +47,10 @@ public class ProjectileControl : MonoBehaviour
         }
         StopCoroutine(LifeTime());
 
-        ContactPoint contact = co.contacts[0];
-        Quaternion rot = Quaternion.FromToRotation(Vector3.up, contact.normal);
-        Vector3 pos = contact.point;
-
-        if (hitPrefab != null)
+        if (hitPrefab != null && HitNormal != Vector3.zero)
         {
-            GameObject hitVFX = Instantiate(hitPrefab, pos, rot);
-            ParticleSystem particle = hitVFX.GetComponent<ParticleSystem>();
-            if (particle != null)
-            {
-                Destroy(hitVFX, particle.main.duration);
-            }
+            GameObject hitVFX = Instantiate(hitPrefab, HitPoint, Quaternion.LookRotation(HitNormal));
+            Destroy(hitVFX, 1.0f);
         }
         Destroy(gameObject);
     }

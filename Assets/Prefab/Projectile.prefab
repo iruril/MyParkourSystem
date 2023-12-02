@@ -4967,7 +4967,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 1
+  m_CollisionDetection: 2
 --- !u!65 &9158471403767026866
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4979,7 +4979,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.15, y: 0.15, z: 1.5}
+  m_Size: {x: 0.1, y: 0.1, z: 1.5}
   m_Center: {x: 0, y: 0, z: 0.75}
 --- !u!114 &9158471403767026864
 MonoBehaviour:
@@ -4993,8 +4993,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8304324df58b6dd488025e9666096660, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hitPrefab: {fileID: 1370874438154576190, guid: c02083b1627cc40449e4e7c3ed1f2a65,
+  hitPrefab: {fileID: 3156595384672232508, guid: 071491648a41fa74aad1cd3934b85c48,
     type: 3}
+  HitNormal: {x: 0, y: 0, z: 0}
+  HitPoint: {x: 0, y: 0, z: 0}
   AutomaticDestroySec: 5
-  Speed: 75
+  Speed: 100
   Damage: 25

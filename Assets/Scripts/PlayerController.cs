@@ -58,6 +58,9 @@ public class PlayerController : MonoBehaviour
     private float _fireRate;
     private bool _isShooting = false;
     private WaitForSeconds _fireRateWFS = null;
+
+    private Vector3 _aimPosition;
+    private Vector3 _aimNormal;
     #endregion
 
     private void Awake()
@@ -430,10 +433,14 @@ public class PlayerController : MonoBehaviour
             if (Vector3.Distance(hitInfo.point, this.transform.position) < 1.5f)
             {
                 aimPos = aimPointRay.origin + aimPointRay.direction * 15f;
+                _aimPosition = Vector3.zero;
+                _aimNormal = Vector3.zero;
             }
             else
             {
                 aimPos = hitInfo.point;
+                _aimPosition = aimPos;
+                _aimNormal = hitInfo.normal;
             }
             _aimPoint.position = Vector3.SmoothDamp(_aimPoint.position, aimPos, ref _refVelocity, AimSpeed);
         }
@@ -492,7 +499,8 @@ public class PlayerController : MonoBehaviour
     {
         _isShooting = true;
         MuzzleFlash.Play();
-        Instantiate(Bullet, Muzzle.position, Muzzle.rotation).GetComponent<ProjectileControl>().Damage = _playerStat.WeaponDamage;
+        GameObject bullet = Instantiate(Bullet, Muzzle.position, Muzzle.rotation);
+        bullet.GetComponent<ProjectileControl>().Initailize(_playerStat.WeaponDamage, _aimPosition, _aimNormal);
         yield return _fireRateWFS;
         _isShooting = false;
     }
