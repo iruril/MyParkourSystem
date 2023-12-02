@@ -7,7 +7,7 @@ public class PlayerAnimationController : MonoBehaviour
 {
     public float TransitionTime = 0.5f;
 
-    [SerializeField] private Animator _animator;
+    public Animator MyAnimator;
     [SerializeField] private Rig _myRig;
     private PlayerController _player;
     private PlayerStatus _playerStat;
@@ -41,7 +41,7 @@ public class PlayerAnimationController : MonoBehaviour
         _targetWeight = (_player.CurrentMode == PlayerController.MoveMode.Aim) ? 1.0f : 0.0f;
         _currentWeight = Mathf.Lerp(_currentWeight, _targetWeight, Time.deltaTime / TransitionTime);
 
-        _animator.SetLayerWeight(1, _currentWeight);
+        MyAnimator.SetLayerWeight(1, _currentWeight);
         _myRig.weight = _currentWeight;
 
         switch (_player.CurrentMode)
@@ -63,7 +63,7 @@ public class PlayerAnimationController : MonoBehaviour
                         case PlayerParkour.JumpState.Vault:
                             if (!_player.IsOnDynamicMove && !_isOnAction)
                             {
-                                _animator.SetFloat("Speed", _mySpeed);
+                                MyAnimator.SetFloat("Speed", _mySpeed);
                                 SetVaultType();
                                 _animCoroutine = StartCoroutine(VaultCoroutine());
                             }
@@ -71,7 +71,7 @@ public class PlayerAnimationController : MonoBehaviour
                         case PlayerParkour.JumpState.JumpClimb:
                             if (!_player.IsOnDynamicMove && !_isOnAction)
                             {
-                                _animator.SetFloat("Speed", _mySpeed);
+                                MyAnimator.SetFloat("Speed", _mySpeed);
                                 SetJumpClimbType();
                                 _animCoroutine = StartCoroutine(JumpClimbCoroutine());
                             }
@@ -91,13 +91,13 @@ public class PlayerAnimationController : MonoBehaviour
     {
         Vector3 zxPlaneConvertVec = new Vector3(_player.PlayerVelocity.x, 0f, _player.PlayerVelocity.z);
         _mySpeed = zxPlaneConvertVec.magnitude / _playerStat.Speed;
-        _animator.SetFloat("Speed", _mySpeed);
+        MyAnimator.SetFloat("Speed", _mySpeed);
     }
 
     private void GetPlayerActionBoolean()
     {
-        _animator.SetBool("IsGrounded", _player.MyGroundChecker.IsGrounded());
-        _animator.SetBool("IsOnDynamic", _player.IsOnDynamicMove);
+        MyAnimator.SetBool("IsGrounded", _player.MyGroundChecker.IsGrounded());
+        MyAnimator.SetBool("IsOnDynamic", _player.IsOnDynamicMove);
     }
 
     private void SetJumpClimbType()
@@ -105,13 +105,13 @@ public class PlayerAnimationController : MonoBehaviour
         switch (_playerParkour.StepMode)
         {
             case PlayerParkour.StepState.Lowest:
-                _animator.SetFloat("ClimbType", 0f);
+                MyAnimator.SetFloat("ClimbType", 0f);
                 break;
             case PlayerParkour.StepState.Middle:
-                _animator.SetFloat("ClimbType", 0.5f);
+                MyAnimator.SetFloat("ClimbType", 0.5f);
                 break;
             case PlayerParkour.StepState.Highest:
-                _animator.SetFloat("ClimbType", 1f);
+                MyAnimator.SetFloat("ClimbType", 1f);
                 break;
         }
     }
@@ -119,42 +119,42 @@ public class PlayerAnimationController : MonoBehaviour
     private void SetVaultType()
     {
         _vaultType = Random.Range(0, 2);
-        _animator.SetFloat("VaultType", _vaultType);
+        MyAnimator.SetFloat("VaultType", _vaultType);
     }
 
     private IEnumerator DefaultJumpCoroutine()
     {
         _isOnAction = true;
-        _animator.SetTrigger("Jump");
+        MyAnimator.SetTrigger("Jump");
         yield return _triggerResetTime;
         _isOnAction = false;
-        _animator.ResetTrigger("Jump");
+        MyAnimator.ResetTrigger("Jump");
     }
 
     private IEnumerator VaultCoroutine()
     {
         _isOnAction = true;
-        _animator.SetTrigger("Vault"); 
+        MyAnimator.SetTrigger("Vault"); 
         yield return _triggerResetTime; 
         _isOnAction = false;
-        _animator.ResetTrigger("Vault");
+        MyAnimator.ResetTrigger("Vault");
     }
 
     private IEnumerator JumpClimbCoroutine()
     {
         _isOnAction = true;
-        _animator.SetTrigger("JumpClimb");
+        MyAnimator.SetTrigger("JumpClimb");
         yield return _triggerResetTime;
         _isOnAction = false;
-        _animator.ResetTrigger("JumpClimb");
+        MyAnimator.ResetTrigger("JumpClimb");
     }
     #endregion
 
     #region 'Aim Layer' Animator Value Set Fields
     private void GetPlayerSpeedOnAim()
     {
-        _animator.SetFloat("SpeedForward", _player.PlayerVelocityOnAim.z / (_playerStat.Speed / 2f));
-        _animator.SetFloat("SpeedRight", _player.PlayerVelocityOnAim.x / (_playerStat.Speed / 2f));
+        MyAnimator.SetFloat("SpeedForward", _player.PlayerVelocityOnAim.z / (_playerStat.Speed / 2f));
+        MyAnimator.SetFloat("SpeedRight", _player.PlayerVelocityOnAim.x / (_playerStat.Speed / 2f));
     }
     #endregion
 }

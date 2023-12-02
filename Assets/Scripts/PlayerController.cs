@@ -8,7 +8,8 @@ public class PlayerController : MonoBehaviour
     public Camera MyCamera { get; private set; }
     public GameObject Weapon = null;
     public Transform Muzzle = null;
-    public GameObject MuzzleFlash = null;
+    public ParticleSystem MuzzleFlash = null;
+    public GameObject Bullet = null;
     private Transform _aimPoint = null;
 
     private CharacterController _player;
@@ -17,7 +18,6 @@ public class PlayerController : MonoBehaviour
     public GroundChecker MyGroundChecker { get; private set; }
     private TPSCamController _myTPSCam;
     [SerializeField] private LayerMask _IgnoreRaycast;
-    [SerializeField] private GameObject _bloodEffect = null;
 
     public Vector3 PlayerVelocity { get; private set; } = Vector3.zero;
     public Vector3 PlayerVelocityOnAim { get; private set; } = Vector3.zero;
@@ -54,10 +54,10 @@ public class PlayerController : MonoBehaviour
     #region Shooting Variables
     public float AimSpeed = 0.2f;
     private Vector3 _refVelocity = Vector3.zero;
-    public float FireRate = 0.1f;
-    private float _fireTime = 0f;
-    private LineRenderer _projectileLine;
-    private WaitForSeconds shotDuration = new WaitForSeconds(0.02f);
+    public float WeaponRPM = 850;
+    private float _fireRate;
+    private bool _isShooting = false;
+    private WaitForSeconds _fireRateWFS = null;
     #endregion
 
     private void Awake()
@@ -67,20 +67,18 @@ public class PlayerController : MonoBehaviour
         Cursor.visible = false;
 
         _aimPoint = GameObject.FindWithTag("AimPoint").transform;
+        _fireRate = 1 / (WeaponRPM / 60);
+        _fireRateWFS = new WaitForSeconds(_fireRate);
     }
 
     void Start()
     {
+        MuzzleFlash.Stop();
         _player = this.GetComponent<CharacterController>();
         _playerStat = this.GetComponent<PlayerStatus>();
         _playerParkour = this.GetComponent<PlayerParkour>();
         MyGroundChecker = this.GetComponent<GroundChecker>();
         _myTPSCam = this.GetComponent<TPSCamController>();
-
-        _projectileLine = this.GetComponent<LineRenderer>();
-        _projectileLine.enabled = false;
-        MuzzleFlash = Muzzle.GetChild(0).gameObject;
-        MuzzleFlash.SetActive(false);
     }
 
     void Update()
@@ -111,7 +109,6 @@ public class PlayerController : MonoBehaviour
         {
             case MoveMode.Default:
                 #region Default Player Update
-                if (MuzzleFlash.activeSelf) MuzzleFlash.SetActive(false);
                 if (Weapon.activeSelf) Weapon.SetActive(false);
                 GetInput();
                 CalculatePlayerTransformByInput(); //Calculated PlayerVelocity is based on 'FixedTime', so we smooth this with 'Time'.
@@ -146,6 +143,8 @@ public class PlayerController : MonoBehaviour
                         PlayerRotate();
                     }
                     PlayerMove();
+
+                    _aimPoint.transform.position = this.transform.position + Vector3.up +  this.transform.forward;
                 }
                 #endregion
                 break;
@@ -485,65 +484,17 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetMouseButton(0))
         {
-            Shoot();
-            if (_fireTime < FireRate)
-            {
-                _fireTime += Time.deltaTime;
-            }
-        }
-
-        if (Input.GetMouseButton(0))
-        {
-            if (!MuzzleFlash.activeSelf) MuzzleFlash.SetActive(true);
-        }
-        else
-        {
-            if (MuzzleFlash.activeSelf) MuzzleFlash.SetActive(false);
+            if(_isShooting == false) StartCoroutine(Shoot());
         }
     }
 
-    private void Shoot()
+    private IEnumerator Shoot()
     {
-        if (_fireTime < FireRate) return;
-        RaycastHit hitInfo;
-        _projectileLine.SetPosition(0, Muzzle.position);
-        if (Physics.Raycast(Muzzle.position, Muzzle.forward, out hitInfo, 100f))
-        {
-            _projectileLine.SetPosition(1, hitInfo.point);
-            if (hitInfo.transform.CompareTag("Enemy"))
-            {
-                Vector3 direction = hitInfo.normal;
-                float angle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + 180;
-                StartCoroutine(BloodEffect(hitInfo.point, angle));
-                if (hitInfo.transform.GetComponent<IDamageable>() != null)
-                {
-                    hitInfo.transform.GetComponent<IDamageable>().TakeHit(_playerStat.WeaponDamage, Muzzle.forward);
-                }
-                if (hitInfo.transform.GetComponent<Rigidbody>() != null)
-                {
-                    hitInfo.transform.GetComponent<Rigidbody>().AddForce(Muzzle.forward * 20f, ForceMode.Impulse);
-                }
-            }
-        }
-        else
-        {
-            _projectileLine.SetPosition(1, Muzzle.position + Muzzle.forward * 100f);
-        }
-        StartCoroutine(ShootEffect());
-        _fireTime = 0.0f;
-    }
-    private IEnumerator ShootEffect()
-    {
-        _projectileLine.enabled = true;
-        yield return shotDuration;
-        _projectileLine.enabled = false;
-    }
-    private IEnumerator BloodEffect(Vector3 position, float angle)
-    {
-        GameObject effect = Instantiate(_bloodEffect, position, Quaternion.Euler(new Vector3(0, angle + 90, 0)));
-        effect.GetComponent<BFX_BloodSettings>().GroundHeight = this.transform.position.y;
-        yield return new WaitForSeconds(10.0f);
-        Destroy(effect);
+        _isShooting = true;
+        MuzzleFlash.Play();
+        Instantiate(Bullet, Muzzle.position, Muzzle.rotation).GetComponent<ProjectileControl>().Damage = _playerStat.WeaponDamage;
+        yield return _fireRateWFS;
+        _isShooting = false;
     }
     #endregion
 }

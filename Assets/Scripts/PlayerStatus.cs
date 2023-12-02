@@ -16,13 +16,7 @@ public class PlayerStatus : MonoBehaviour, IDamageable
     public bool Dead = false;
     public float DealtDamage;
 
-    #region Player Death Effect Gameobjects
-    public GameObject MyHead = null;
-    public GameObject MyWeaponGO = null;
-    #endregion
-
     #region Player Movement Management Componenets
-    private Animator _animator;
     private PlayerController _player;
     private CharacterController _playerCharacter;
     private PlayerAnimationController _playerAnimation;
@@ -32,7 +26,6 @@ public class PlayerStatus : MonoBehaviour, IDamageable
 
     void Start()
     {
-        _animator = this.GetComponent<Animator>();
         _player = this.GetComponent<PlayerController>();
         _playerAnimation = this.GetComponent<PlayerAnimationController>();
         _playerCharacter = this.GetComponent<CharacterController>();
@@ -64,17 +57,11 @@ public class PlayerStatus : MonoBehaviour, IDamageable
 
     private void Die()
     {
-        MyHead.SetActive(false);
-        MyWeaponGO.GetComponent<BoxCollider>().enabled = true;
-        MyWeaponGO.GetComponent<Rigidbody>().isKinematic = false;
-        MyWeaponGO.transform.SetParent(null);
-
-        _player.MuzzleFlash.SetActive(false);
         _player.enabled = false;
-        _playerAnimation.enabled = false;
         _myRagdoll.SetMyRagdollState(kinematicState: false);
         _myRagdoll.SetMyRagdollCollisionState(collisionRecieveState: true);
         _playerCharacter.enabled = false;
-        _animator.enabled = false;
+        _playerAnimation.MyAnimator.enabled = false;
+        _playerAnimation.enabled = false;
     }
 }
