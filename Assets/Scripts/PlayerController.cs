@@ -71,7 +71,7 @@ public class PlayerController : MonoBehaviour
 
         _aimPoint = GameObject.FindWithTag("AimPoint").transform;
         _fireRate = 1 / (WeaponRPM / 60);
-        _fireRateWFS = new WaitForSeconds(_fireRate);
+        _fireRateWFS = YieldCache.WaitForSeconds(_fireRate);
     }
 
     void Start()
@@ -464,7 +464,7 @@ public class PlayerController : MonoBehaviour
         Vector3 moveVel = _playerMoveOrientedForward * _verticalInput + _playerMoveOrientedRight * _horizontalInput;
         Vector3 moveDir = moveVel.normalized;
 
-        float moveSpeed = Mathf.Min(moveVel.magnitude, 1.0f) * (_playerStat.MyCurrentSpeed / 2f);
+        float moveSpeed = Mathf.Min(moveVel.magnitude, 1.0f) * (_playerStat.MyCurrentSpeed * _playerStat.SpeedMultiplyOnAim);
 
         return moveDir * moveSpeed;
     }

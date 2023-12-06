@@ -33,7 +33,7 @@ public class PlayerAnimationController : MonoBehaviour
 
     private void Start()
     {
-        _triggerResetTime = new WaitForSeconds(_playerParkour.ParkourJumpTime);
+        _triggerResetTime = YieldCache.WaitForSeconds(_playerParkour.ParkourJumpTime);
     }
 
     void LateUpdate()
@@ -153,8 +153,11 @@ public class PlayerAnimationController : MonoBehaviour
     #region 'Aim Layer' Animator Value Set Fields
     private void GetPlayerSpeedOnAim()
     {
-        MyAnimator.SetFloat("SpeedForward", _player.PlayerVelocityOnAim.z / (_playerStat.Speed / 2f));
-        MyAnimator.SetFloat("SpeedRight", _player.PlayerVelocityOnAim.x / (_playerStat.Speed / 2f));
+        Vector2 playerVelocityonAim = new Vector2(_player.PlayerVelocityOnAim.z, _player.PlayerVelocityOnAim.x);
+        playerVelocityonAim = playerVelocityonAim.normalized;
+
+        MyAnimator.SetFloat("SpeedForward", playerVelocityonAim.x);
+        MyAnimator.SetFloat("SpeedRight", playerVelocityonAim.y);
     }
     #endregion
 }

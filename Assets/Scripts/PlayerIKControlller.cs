@@ -36,13 +36,16 @@ public class PlayerIKControlller : MonoBehaviour
 
                 _animator.SetIKPosition(AvatarIKGoal.LeftHand, _playerParkour.LeftStepPoint);
             }
-            else if (_player.JumpMode == PlayerParkour.JumpState.JumpClimb && _playerParkour.StepHeight > 1.5f)
+            else if (_player.JumpMode == PlayerParkour.JumpState.JumpClimb)
             {
-                _animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, _animIKWeight);
-                _animator.SetIKPositionWeight(AvatarIKGoal.RightHand, _animIKWeight);
+                if (_playerParkour.StepMode == PlayerParkour.StepState.Middle || _playerParkour.StepMode == PlayerParkour.StepState.Highest)
+                {
+                    _animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, _animIKWeight);
+                    _animator.SetIKPositionWeight(AvatarIKGoal.RightHand, _animIKWeight);
 
-                _animator.SetIKPosition(AvatarIKGoal.LeftHand, _playerParkour.LeftStepPoint);
-                _animator.SetIKPosition(AvatarIKGoal.RightHand, _playerParkour.RightStepPoint);
+                    _animator.SetIKPosition(AvatarIKGoal.LeftHand, _playerParkour.LeftStepPoint);
+                    _animator.SetIKPosition(AvatarIKGoal.RightHand, _playerParkour.RightStepPoint);
+                }
             }
         }
         else

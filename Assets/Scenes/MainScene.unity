@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 6e00f8b39315691449f256740a5cb862, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.17757827, g: 0.222323, b: 0.30451876, a: 1}
+  m_IndirectSpecularColor: {r: 0.4045151, g: 0.2276314, b: 0.09670438, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2441,7 +2441,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 642993687}
-  m_LocalRotation: {x: 0.22844571, y: 0.000000027115613, z: -0.000000012366163, w: 0.9735567}
+  m_LocalRotation: {x: 0.22844574, y: -2.1986566e-15, z: -3.0542203e-16, w: 0.9735567}
   m_LocalPosition: {x: 0, y: 1.8631034, z: -1.3924246}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2519,7 +2519,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 654118391}
-  m_LocalRotation: {x: 0.2461164, y: 0.000000021952482, z: -0.00000001049797, w: 0.9692403}
+  m_LocalRotation: {x: 0.2461164, y: -0.000000021952488, z: 0.000000010497972, w: 0.9692403}
   m_LocalPosition: {x: 0, y: 1.8631034, z: -1.3924246}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -4501,6 +4501,7 @@ MonoBehaviour:
   _retainShadows: 1
   _targetPositionOffset: {x: 0, y: 1, z: 0}
   _fadeSpeed: 3
+  _detectionDelay: 0.02
   _objectsBlockingView: []
 --- !u!114 &1455499949
 MonoBehaviour:
@@ -6476,6 +6477,11 @@ PrefabInstance:
       propertyPath: _aimPointUI
       value: 
       objectReference: {fileID: 1554956532}
+    - target: {fileID: 9217131784068431571, guid: ab767081d6392d4408ea66b53acf9c4a,
+        type: 3}
+      propertyPath: Speed
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 9217131784068431577, guid: ab767081d6392d4408ea66b53acf9c4a,
         type: 3}
       propertyPath: m_Name

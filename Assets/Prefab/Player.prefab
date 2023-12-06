@@ -4138,7 +4138,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1910ca6f3d577432396177461ecad4ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Speed: 6
+  Speed: 5
   JumpPower: 3
   GravityForce: 9.8
   RotateSpeed: 10
@@ -4165,8 +4165,6 @@ MonoBehaviour:
   _IgnoreRaycast:
     serializedVersion: 2
     m_Bits: 166
-  _bloodEffect: {fileID: 5170585893340993107, guid: 7b88f11816abaa34c9e02cbaa8485321,
-    type: 3}
   InputAxisSensitivity: 2
   AimSpeed: 0.1
   WeaponRPM: 800

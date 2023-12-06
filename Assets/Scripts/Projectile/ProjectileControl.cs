@@ -34,7 +34,7 @@ public class ProjectileControl : MonoBehaviour
 
     private IEnumerator LifeTime()
     {
-        yield return new WaitForSeconds(AutomaticDestroySec);
+        yield return YieldCache.WaitForSeconds(AutomaticDestroySec);
         Destroy(gameObject);
     } 
 

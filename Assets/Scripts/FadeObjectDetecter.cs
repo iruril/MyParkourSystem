@@ -7,10 +7,11 @@ public class FadeObjectDetecter : MonoBehaviour
     [SerializeField] private LayerMask _layerMask;
     [SerializeField] private Transform _refTarget;
     [SerializeField] private Camera _camera;
-    [SerializeField][Range(0, 1.0f)] private float _fadedAlpha = 0.33f;
+    [SerializeField] [Range(0, 1.0f)] private float _fadedAlpha = 0.33f;
     [SerializeField] private bool _retainShadows = true;
     [SerializeField] private Vector3 _targetPositionOffset = Vector3.up;
     [SerializeField] private float _fadeSpeed = 1f;
+    [SerializeField] private float _detectionDelay = 0.02f;
 
     [Header("Read Only Data")]
     [SerializeField] private List<FadingObject> _objectsBlockingView = new();
@@ -60,7 +61,7 @@ public class FadeObjectDetecter : MonoBehaviour
             FadeObjectsNoLongerBeingHit();
             ClearHits();
 
-            yield return new WaitForSeconds(0.02f);
+            yield return YieldCache.WaitForSeconds(_detectionDelay);
         }
     }
 
