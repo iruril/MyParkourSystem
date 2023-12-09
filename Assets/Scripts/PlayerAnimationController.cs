@@ -57,6 +57,7 @@ public class PlayerAnimationController : MonoBehaviour
                         case PlayerParkour.JumpState.DefaultJump:
                             if (!_isOnAction)
                             {
+                                if(_animCoroutine != null) StopCoroutine(_animCoroutine);
                                 _animCoroutine = StartCoroutine(DefaultJumpCoroutine());
                             }
                             return;
@@ -65,6 +66,7 @@ public class PlayerAnimationController : MonoBehaviour
                             {
                                 MyAnimator.SetFloat("Speed", _mySpeed);
                                 SetVaultType();
+                                if (_animCoroutine != null) StopCoroutine(_animCoroutine);
                                 _animCoroutine = StartCoroutine(VaultCoroutine());
                             }
                             return;
@@ -73,6 +75,7 @@ public class PlayerAnimationController : MonoBehaviour
                             {
                                 MyAnimator.SetFloat("Speed", _mySpeed);
                                 SetJumpClimbType();
+                                if (_animCoroutine != null) StopCoroutine(_animCoroutine);
                                 _animCoroutine = StartCoroutine(JumpClimbCoroutine());
                             }
                             return;
@@ -153,11 +156,8 @@ public class PlayerAnimationController : MonoBehaviour
     #region 'Aim Layer' Animator Value Set Fields
     private void GetPlayerSpeedOnAim()
     {
-        Vector2 playerVelocityonAim = new Vector2(_player.PlayerVelocityOnAim.z, _player.PlayerVelocityOnAim.x);
-        playerVelocityonAim = playerVelocityonAim.normalized;
-
-        MyAnimator.SetFloat("SpeedForward", playerVelocityonAim.x);
-        MyAnimator.SetFloat("SpeedRight", playerVelocityonAim.y);
+        MyAnimator.SetFloat("SpeedForward", _player.VerticalInput);
+        MyAnimator.SetFloat("SpeedRight", _player.HorizontalInput);
     }
     #endregion
 }

@@ -5,6 +5,7 @@ public class PlayerStatus : MonoBehaviour, IDamageable
 {
     public float Speed = 5f;
     public float MyCurrentSpeed { get; set; } = 0;
+    public float MyCurrentSpeedOnAim { get; set; } = 0;
     public float SpeedMultiplyOnAim = 0.4f;
     public float JumpPower = 5f;
     public float GravityForce = 9.8f;
@@ -33,6 +34,7 @@ public class PlayerStatus : MonoBehaviour, IDamageable
         _myRagdoll = this.GetComponent<RagdollController>();
 
         MyCurrentSpeed = Speed;
+        MyCurrentSpeedOnAim = MyCurrentSpeed * SpeedMultiplyOnAim;
         Health = MyStartingHealth;
     }
 

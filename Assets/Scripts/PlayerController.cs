@@ -24,8 +24,8 @@ public class PlayerController : MonoBehaviour
 
     #region Input Varibales
     public float InputAxisSensitivity = 0.5f;
-    private float _horizontalInput;
-    private float _verticalInput;
+    public float HorizontalInput { get; private set; }
+    public float VerticalInput { get; private set; }
     private float _rotationHorizontalInput;
     private float _rotationVerticalInput;
     #endregion
@@ -162,8 +162,8 @@ public class PlayerController : MonoBehaviour
     #region Player Input Fields
     private void GetInput()
     {
-        _horizontalInput = Input.GetAxis("Horizontal");
-        _verticalInput = Input.GetAxis("Vertical");
+        HorizontalInput = Input.GetAxis("Horizontal");
+        VerticalInput = Input.GetAxis("Vertical");
 
         if (numberOfKeysPressed < 3)
         {
@@ -198,7 +198,7 @@ public class PlayerController : MonoBehaviour
 
     private Vector3 PlayerXZPlaneVelocity() //Calculates XZ-Plane Velocity By Player's Input
     {
-        Vector3 moveVel = _playerMoveOrientedForward * _verticalInput + _playerMoveOrientedRight * _horizontalInput;
+        Vector3 moveVel = _playerMoveOrientedForward * VerticalInput + _playerMoveOrientedRight * HorizontalInput;
         Vector3 moveDir = moveVel.normalized; //Direction
 
         float moveSpeed = Mathf.Min(moveVel.magnitude, 1.0f) * _playerStat.MyCurrentSpeed;
@@ -417,8 +417,8 @@ public class PlayerController : MonoBehaviour
     #region Aim-Mode Player Control Fields
     private void AimModeInput()
     {
-        _horizontalInput = Input.GetAxis("Horizontal");
-        _verticalInput = Input.GetAxis("Vertical");
+        HorizontalInput = Input.GetAxis("Horizontal");
+        VerticalInput = Input.GetAxis("Vertical");
     }
     private void RotatePlayerOnAimMode()
     {
@@ -461,10 +461,10 @@ public class PlayerController : MonoBehaviour
     }
     private Vector3 PlayerXZPlaneVelocityOnAim()
     {
-        Vector3 moveVel = _playerMoveOrientedForward * _verticalInput + _playerMoveOrientedRight * _horizontalInput;
+        Vector3 moveVel = _playerMoveOrientedForward * VerticalInput + _playerMoveOrientedRight * HorizontalInput;
         Vector3 moveDir = moveVel.normalized;
 
-        float moveSpeed = Mathf.Min(moveVel.magnitude, 1.0f) * (_playerStat.MyCurrentSpeed * _playerStat.SpeedMultiplyOnAim);
+        float moveSpeed = Mathf.Min(moveVel.magnitude, 1.0f) * _playerStat.MyCurrentSpeedOnAim;
 
         return moveDir * moveSpeed;
     }
