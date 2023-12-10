@@ -32,6 +32,7 @@ Material:
   - N_F_RELGI_ON
   - N_F_SS_ON
   - N_F_TRANSAFFSHA_ON
+  - N_F_TRANS_ON
   m_InvalidKeywords:
   - N_F_TRANSAFFSHA
   - _CUSTOMLIGHTDIRECTIONFOLLOWOBJECTROTATION_OFF
@@ -61,8 +62,9 @@ Material:
   m_LightmapFlags: 0
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
+  m_CustomRenderQueue: 3000
+  stringTagMap:
+    RenderType: Transparent
   disabledShaderPasses: []
   m_SavedProperties:
     serializedVersion: 3
@@ -220,8 +222,8 @@ Material:
     - _BacklightAmount: 0.5
     - _BacklightHardness: 0
     - _BacklightIntensity: 1
-    - _BleModDest: 0
-    - _BleModSour: 1
+    - _BleModDest: 10
+    - _BleModSour: 5
     - _Blend: 0
     - _BumpScale: 1
     - _ClearCoatMask: 0
@@ -260,7 +262,7 @@ Material:
     - _GlossTextureFollowObjectRotation: 0
     - _GlossTextureRotate: 0
     - _GlossTextureSoftness: 0
-    - _Glossiness: 0.45
+    - _Glossiness: 0.5
     - _GlossyReflections: 0
     - _Glow_Edge_Width: 1
     - _HalftoneEdgeOffset: 0.1
@@ -284,7 +286,7 @@ Material:
     - _MCIALO: 0
     - _MCapIntensity: 1
     - _MVCOL: 0
-    - _MaiColPo: 0.8
+    - _MaiColPo: 0
     - _MainLightIntesity: 1
     - _MaxFadDistance: 2
     - _MaxScaleDependingOnCamera: 1
@@ -326,7 +328,7 @@ Material:
     - _NormalMapIntensity: 1
     - _NormalMapStrength: 1
     - _OcclusionStrength: 1
-    - _Opacity: 1
+    - _Opacity: 0.8
     - _Oper: 0
     - _OutlineDynamicSpeed: 0
     - _OutlineExtrudeMethod: 0
@@ -412,7 +414,7 @@ Material:
     - _Strength: 0
     - _Surface: 0
     - _TEXMCOLINT: 1
-    - _TRANSMODE: 0
+    - _TRANSMODE: 1
     - _TexturePatternStyle: 0
     - _Thicnkess: 0.1
     - _TransAffSha: 1
