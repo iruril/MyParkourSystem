@@ -18,6 +18,7 @@ Material:
   - N_F_O_ON
   - N_F_RDC_ON
   - N_F_RELGI_ON
+  - N_F_RL_ON
   - N_F_SS_ON
   - N_F_TRANSAFFSHA_ON
   - _NORMALMAP
@@ -338,7 +339,7 @@ Material:
     - _N_F_PT: 0
     - _N_F_R: 0
     - _N_F_RDC: 1
-    - _N_F_RL: 0
+    - _N_F_RL: 1
     - _N_F_SCT: 0
     - _N_F_SL: 0
     - _N_F_SON: 0
@@ -382,11 +383,11 @@ Material:
     - _RefVal: 0
     - _ReflectionIntensity: 0
     - _ReflectionRoughtness: 0
-    - _RimLigInt: 1
+    - _RimLigInt: 0.03
     - _RimLightColorPower: 10
     - _RimLightInLight: 1
-    - _RimLightSoftness: 1
-    - _RimLightUnfill: 1.5
+    - _RimLightSoftness: 0.5
+    - _RimLightUnfill: 2
     - _RimPower: 2
     - _RimSmoothness: 0.219
     - _RimSplitColor: 0
