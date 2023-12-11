@@ -25,6 +25,7 @@ Material:
   m_ValidKeywords:
   - N_F_EAL_ON
   - N_F_GLO_ON
+  - N_F_NFD_ON
   - N_F_O_ON
   - N_F_RDC_ON
   - N_F_RELGI_ON
@@ -229,7 +230,7 @@ Material:
     - _MCapIntensity: 1
     - _MVCOL: 0
     - _MaiColPo: 0.8
-    - _MaxFadDistance: 2
+    - _MaxFadDistance: 1
     - _Metallic: 0
     - _MinFadDistance: 0
     - _MixMainTexToOutline: 0
@@ -249,7 +250,7 @@ Material:
     - _N_F_HPSS: 0
     - _N_F_MC: 0
     - _N_F_MSSOLTFO: 0
-    - _N_F_NFD: 0
+    - _N_F_NFD: 1
     - _N_F_NLASOBF: 0
     - _N_F_NM: 0
     - _N_F_O: 1

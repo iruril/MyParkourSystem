@@ -24,6 +24,7 @@ Material:
   m_Shader: {fileID: 4800000, guid: 6459b2db96a08ca41b0f9b39dc7ad59e, type: 3}
   m_ValidKeywords:
   - N_F_EAL_ON
+  - N_F_NFD_ON
   - N_F_O_ON
   - N_F_RDC_ON
   - N_F_RELGI_ON
@@ -39,7 +40,6 @@ Material:
   - _LIGHTAFFECTOUTLINECOLOR_OFF
   - _LIGHTAFFECTSHADOW_OFF
   - _LIGHTFALLOFFAFFECTSHADOWT_OFF
-  - _LIGIGNOYNORDIR_OFF
   - _MCIALO_OFF
   - _MIXMAINTEXTOOUTLINE_OFF
   - _MVCOL_OFF
@@ -219,7 +219,7 @@ Material:
     - _GlossyReflections: 1
     - _Glow_Edge_Width: 1
     - _HighlightColorPower: 1
-    - _LigIgnoYNorDir: 0
+    - _LigIgnoYNorDir: 1
     - _LightAffectOutlineColor: 0
     - _LightAffectRimLightColor: 1
     - _LightAffectShadow: 0
@@ -230,7 +230,7 @@ Material:
     - _MCapIntensity: 1
     - _MVCOL: 0
     - _MaiColPo: 0.8
-    - _MaxFadDistance: 2
+    - _MaxFadDistance: 1
     - _Metallic: 0
     - _MinFadDistance: 0
     - _MixMainTexToOutline: 0
@@ -250,7 +250,7 @@ Material:
     - _N_F_HPSS: 0
     - _N_F_MC: 0
     - _N_F_MSSOLTFO: 0
-    - _N_F_NFD: 0
+    - _N_F_NFD: 1
     - _N_F_NLASOBF: 0
     - _N_F_NM: 0
     - _N_F_O: 1
@@ -303,7 +303,7 @@ Material:
     - _SelfShadowAffectedByLightShadowStrength: 0
     - _SelfShadowHardness: 1
     - _SelfShadowRealTimeShadowColorPower: 1
-    - _SelfShadowRealtimeShadowIntensity: 1
+    - _SelfShadowRealtimeShadowIntensity: 0.8
     - _SelfShadowShadowTAtViewDirection: 0
     - _SelfShadowThreshold: 0.93
     - _ShadowColorTexturePower: 0
