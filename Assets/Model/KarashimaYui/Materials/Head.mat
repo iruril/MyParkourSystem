@@ -253,7 +253,7 @@ Material:
     - _FarDistanceMaxWidth: 10
     - _GIFlatShade: 0
     - _GIShadeThreshold: 0
-    - _GlossColorPower: 10
+    - _GlossColorPower: 0
     - _GlossIntensity: 0
     - _GlossMapScale: 0
     - _GlossSoftness: 0
