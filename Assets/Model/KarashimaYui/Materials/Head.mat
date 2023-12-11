@@ -254,14 +254,14 @@ Material:
     - _GIFlatShade: 0
     - _GIShadeThreshold: 0
     - _GlossColorPower: 10
-    - _GlossIntensity: 1
+    - _GlossIntensity: 0
     - _GlossMapScale: 0
-    - _GlossSoftness: 0.5
+    - _GlossSoftness: 0
     - _GlossTextureFollowLight: 0
     - _GlossTextureFollowObjectRotation: 0
     - _GlossTextureRotate: 0
     - _GlossTextureSoftness: 0
-    - _Glossiness: 0.8
+    - _Glossiness: 0
     - _GlossyReflections: 0
     - _Glow_Edge_Width: 1
     - _HalftoneEdgeOffset: 0.1
