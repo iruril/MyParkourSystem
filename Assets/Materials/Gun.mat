@@ -12,6 +12,7 @@ Material:
   m_ValidKeywords:
   - N_F_CA_ON
   - N_F_EAL_ON
+  - N_F_GLO_ON
   - N_F_MC_ON
   - N_F_O_ON
   - N_F_RDC_ON
@@ -34,7 +35,6 @@ Material:
   - _PSGLOTEX_OFF
   - _SELFSHADOWAFFECTEDBYLIGHTSHADOWSTRENGTH_OFF
   - _SHOWNORMAL_OFF
-  - _SPECMODE_OFF
   - _STIL_OFF
   - _TEXTUREPATTERNSTYLE_OFF
   - _USESECONDARYCUTOUT_OFF
@@ -194,14 +194,14 @@ Material:
     - _GIFlatShade: 0
     - _GIShadeThreshold: 0
     - _GlossColorPower: 10
-    - _GlossIntensity: 0
+    - _GlossIntensity: 0.2
     - _GlossMapScale: 0
-    - _GlossSoftness: 0.538
+    - _GlossSoftness: 0.2
     - _GlossTextureFollowLight: 0
     - _GlossTextureFollowObjectRotation: 0
     - _GlossTextureRotate: 0
     - _GlossTextureSoftness: 0
-    - _Glossiness: 0.562
+    - _Glossiness: 0.6
     - _GlossyReflections: 0
     - _Glow_Edge_Width: 1
     - _HighlightColorPower: 1
@@ -213,7 +213,7 @@ Material:
     - _LightFalloffSoftness: 1
     - _LightIntensity: 1
     - _MCIALO: 0
-    - _MCapIntensity: 1
+    - _MCapIntensity: 0.5
     - _MVCOL: 0
     - _MaiColPo: 0.8
     - _MaxFadDistance: 2
@@ -229,7 +229,7 @@ Material:
     - _N_F_EAL: 1
     - _N_F_ESSAO: 0
     - _N_F_FR: 0
-    - _N_F_GLO: 0
+    - _N_F_GLO: 1
     - _N_F_GLOT: 0
     - _N_F_HDLS: 0
     - _N_F_HPSS: 0
@@ -278,8 +278,8 @@ Material:
     - _RimLightInLight: 1
     - _RimLightSoftness: 1
     - _RimLightUnfill: 1.5
-    - _SPECIN: 1
-    - _SPECMODE: 0
+    - _SPECIN: 0.1
+    - _SPECMODE: 1
     - _STIL: 0
     - _Saturation: 1
     - _SelfLitHighContrast: 1
@@ -329,7 +329,7 @@ Material:
     - _GlossColor: {r: 1, g: 1, b: 1, a: 1}
     - _Glow_Color: {r: 1, g: 1, b: 1, a: 1}
     - _HighlightColor: {r: 1, g: 1, b: 1, a: 1}
-    - _MainColor: {r: 0.033333335, g: 0.033333335, b: 0.033333335, a: 1}
+    - _MainColor: {r: 0.0019607844, g: 0.0019607844, b: 0.0019607844, a: 1}
     - _OutlineColor: {r: 0, g: 0, b: 0, a: 1}
     - _OutlineOffset: {r: 0, g: 0, b: 0, a: 1}
     - _OverallShadowColor: {r: 0, g: 0, b: 0, a: 1}

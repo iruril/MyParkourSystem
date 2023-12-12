@@ -27,7 +27,6 @@ Material:
   - N_F_GLO_ON
   - N_F_NFD_ON
   - N_F_NM_ON
-  - N_F_O_ON
   - N_F_RDC_ON
   - N_F_RELGI_ON
   - N_F_RL_ON
@@ -63,7 +62,8 @@ Material:
   m_CustomRenderQueue: -1
   stringTagMap:
     RenderType: Opaque
-  disabledShaderPasses: []
+  disabledShaderPasses:
+  - SRPDEFAULTUNLIT
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -255,7 +255,7 @@ Material:
     - _N_F_NFD: 1
     - _N_F_NLASOBF: 0
     - _N_F_NM: 1
-    - _N_F_O: 1
+    - _N_F_O: 0
     - _N_F_OFLMB: 0
     - _N_F_PT: 0
     - _N_F_R: 0
@@ -305,11 +305,11 @@ Material:
     - _SelfShadowAffectedByLightShadowStrength: 0
     - _SelfShadowHardness: 1
     - _SelfShadowRealTimeShadowColorPower: 1
-    - _SelfShadowRealtimeShadowIntensity: 1
+    - _SelfShadowRealtimeShadowIntensity: 0.8
     - _SelfShadowShadowTAtViewDirection: 0
     - _SelfShadowThreshold: 0.93
     - _ShadowColorTexturePower: 0
-    - _ShadowHardness: 0
+    - _ShadowHardness: 0.5
     - _ShadowTColorPower: 1
     - _ShadowTHardness: 1
     - _ShadowTIntensity: 1
@@ -320,7 +320,7 @@ Material:
     - _ShowNormal: 0
     - _SimTrans: 0
     - _SkinMatrixIndex: 0
-    - _SmoothObjectNormal: 0
+    - _SmoothObjectNormal: 0.464
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1

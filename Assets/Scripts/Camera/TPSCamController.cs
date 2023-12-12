@@ -15,7 +15,7 @@ public class TPSCamController : MonoBehaviour
     {
         CamTarget = GameObject.FindWithTag("CamTarget").transform;
     }
-    private void Update()
+    private void LateUpdate()
     {
         CamTarget.position = this.transform.position + Vector3.up * 1.4f;
         CamTarget.Rotate(0f, Input.GetAxis("Mouse X") * _mouseRotateSpeed, 0f, Space.World);
