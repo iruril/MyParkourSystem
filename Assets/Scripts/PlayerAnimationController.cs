@@ -107,7 +107,7 @@ public class PlayerAnimationController : MonoBehaviour
         _myHeadAimIK.weight = _currentWeight;
         _myLeftArmIK.weight = _currentWeight;
 
-        _targetLookAtWeight = _myTPSCam.IsCamInSight ? 0.6f : 0f;
+        _targetLookAtWeight = _myTPSCam.IsCamInSight ? 0.75f : 0f;
         _currentLookAtWeight = Mathf.Lerp(_currentLookAtWeight, _targetLookAtWeight, Time.deltaTime / _lookAtTransitionTime);
 
         _myHeadLookAtIK.weight = _currentLookAtWeight;

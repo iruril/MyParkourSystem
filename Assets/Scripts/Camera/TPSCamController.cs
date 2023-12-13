@@ -40,15 +40,19 @@ public class TPSCamController : MonoBehaviour
     private void LateUpdate()
     {
         CamTarget.position = this.transform.position + Vector3.up * 1.4f;
+        CamTargetRotate();
+    }
 
-        _yAngleRotationEuler = Input.GetAxis("Mouse X") * Time.deltaTime * _mouseRotateSpeed;
-        _xAngleRotationEuler = -Input.GetAxis("Mouse Y") * Time.deltaTime * _mouseRotateSpeed;
+    private void CamTargetRotate()
+    {
+        _yAngleRotationEuler = Input.GetAxis("Mouse X") * _mouseRotateSpeed;
+        _xAngleRotationEuler = -Input.GetAxis("Mouse Y") * _mouseRotateSpeed;
 
         _yRotation = CamTarget.transform.eulerAngles.y + _yAngleRotationEuler;
         _xRotation = _xRotation + _xAngleRotationEuler;
         _xRotation = Mathf.Clamp(_xRotation, -60, 60);
 
-        CamTarget.transform.rotation = Quaternion.Euler(_xRotation, _yRotation, 0); 
+        CamTarget.transform.rotation = Quaternion.Euler(_xRotation, _yRotation, 0);
     }
 
     public void ActivateAimModeCam()
