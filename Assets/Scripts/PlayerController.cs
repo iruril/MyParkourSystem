@@ -353,7 +353,6 @@ public class PlayerController : MonoBehaviour
                 {
                     currentTime += Time.deltaTime;
                     this.transform.position = Vector3.Slerp(startPoint, climbPoint, currentTime / lerpTime);
-
                     yield return null;
                 }
 
@@ -364,7 +363,6 @@ public class PlayerController : MonoBehaviour
                 {
                     currentTime += Time.deltaTime;
                     this.transform.position = Vector3.Slerp(climbPoint, endPoint, currentTime / lerpTime);
-
                     yield return null;
                 }
                 break;
@@ -379,7 +377,6 @@ public class PlayerController : MonoBehaviour
                 {
                     currentTime += Time.deltaTime;
                     this.transform.position = Vector3.Slerp(startPoint, climbPoint, currentTime / lerpTime);
-
                     yield return null;
                 }
 
@@ -390,7 +387,6 @@ public class PlayerController : MonoBehaviour
                 {
                     currentTime += Time.deltaTime;
                     this.transform.position = Vector3.Lerp(climbPoint, secondClimbPoint, currentTime / lerpTime);
-
                     yield return null;
                 }
 
@@ -401,7 +397,6 @@ public class PlayerController : MonoBehaviour
                 {
                     currentTime += Time.deltaTime;
                     this.transform.position = Vector3.Lerp(secondClimbPoint, endPoint, currentTime / lerpTime);
-
                     yield return null;
                 }
                 break;

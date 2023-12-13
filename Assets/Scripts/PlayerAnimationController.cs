@@ -6,18 +6,28 @@ using UnityEngine.Animations.Rigging;
 public class PlayerAnimationController : MonoBehaviour
 {
     public float TransitionTime = 0.5f;
+    private float _lookAtTransitionTime = 0.1f;
 
     public Animator MyAnimator;
-    [SerializeField] private Rig _myRig;
+    [SerializeField] private MultiAimConstraint _myBodyAimIK;
+    [SerializeField] private MultiAimConstraint _myAimIK;
+    [SerializeField] private MultiAimConstraint _myHeadAimIK;
+    [SerializeField] private TwoBoneIKConstraint _myLeftArmIK;
+    [SerializeField] private MultiAimConstraint _myHeadLookAtIK;
+
     private PlayerController _player;
     private PlayerStatus _playerStat;
     private PlayerParkour _playerParkour;
+    private TPSCamController _myTPSCam;
 
     private int _vaultType = 0;
     private float _mySpeed = 0f;
 
     private float _currentWeight = 0.0f;
     private float _targetWeight = 0.0f;
+
+    private float _currentLookAtWeight = 0.0f;
+    private float _targetLookAtWeight = 0.0f;
 
     private WaitForSeconds _triggerResetTime;
     private bool _isOnAction = false;
@@ -29,6 +39,7 @@ public class PlayerAnimationController : MonoBehaviour
         _player = this.GetComponent<PlayerController>();
         _playerStat = this.GetComponent<PlayerStatus>();
         _playerParkour = this.GetComponent<PlayerParkour>();
+        _myTPSCam = this.GetComponent<TPSCamController>();
     }
 
     private void Start()
@@ -38,11 +49,7 @@ public class PlayerAnimationController : MonoBehaviour
 
     void LateUpdate()
     {
-        _targetWeight = (_player.CurrentMode == PlayerController.MoveMode.Aim) ? 1.0f : 0.0f;
-        _currentWeight = Mathf.Lerp(_currentWeight, _targetWeight, Time.deltaTime / TransitionTime);
-
-        MyAnimator.SetLayerWeight(1, _currentWeight);
-        _myRig.weight = _currentWeight;
+        ObserveIKState();
 
         switch (_player.CurrentMode)
         {
@@ -86,8 +93,26 @@ public class PlayerAnimationController : MonoBehaviour
                 GetPlayerSpeedOnAim();
                 break;
         }
-       
     }
+
+    #region Basic IK-Control Fields
+    private void ObserveIKState()
+    {
+        _targetWeight = (_player.CurrentMode == PlayerController.MoveMode.Aim) ? 1.0f : 0.0f;
+        _currentWeight = Mathf.Lerp(_currentWeight, _targetWeight, Time.deltaTime / TransitionTime);
+
+        MyAnimator.SetLayerWeight(1, _currentWeight);
+        _myBodyAimIK.weight = _currentWeight;
+        _myAimIK.weight = _currentWeight;
+        _myHeadAimIK.weight = _currentWeight;
+        _myLeftArmIK.weight = _currentWeight;
+
+        _targetLookAtWeight = _myTPSCam.IsCamInSight ? 0.6f : 0f;
+        _currentLookAtWeight = Mathf.Lerp(_currentLookAtWeight, _targetLookAtWeight, Time.deltaTime / _lookAtTransitionTime);
+
+        _myHeadLookAtIK.weight = _currentLookAtWeight;
+    }
+    #endregion
 
     #region 'Run Layer' Animator Value Set Fields
     private void GetPlayerSpeed()

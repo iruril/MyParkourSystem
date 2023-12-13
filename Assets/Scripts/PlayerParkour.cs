@@ -26,6 +26,10 @@ public class PlayerParkour : MonoBehaviour
     public Vector3 LeftStepPoint { get; set; } = Vector3.zero;
     public Vector3 RightStepPoint { get; set; } = Vector3.zero;
 
+    private Vector3 _refRayhitNormalVector = Vector3.zero;
+    Dictionary<JumpState, float> _rayHitsDictionary = new();
+    Dictionary<JumpState, Vector3> _rayHitNormals = new();
+
     public enum JumpState
     {
         None,
@@ -59,7 +63,7 @@ public class PlayerParkour : MonoBehaviour
         }
     }
 
-    private float RayCasting(Transform ray, float range) //Return Distance between rayPoint to HitPoint. 
+    private float RayCasting(Transform ray, float range, out Vector3 normal) //Return Distance between rayPoint to HitPoint. 
     {
         RaycastHit hit;
         if (Physics.Raycast(ray.position, this.transform.forward, out hit, range, _layerMask))
@@ -69,15 +73,19 @@ public class PlayerParkour : MonoBehaviour
             {
                 float distance = hit.distance * 100;
                 distance = Mathf.Floor(distance);
+                Vector3 normalXZ = hit.normal;
+                normalXZ.y = 0;
+                normal = -normalXZ.normalized;
                 return distance / 100;
             }
         }
+        normal = this.transform.forward;
         return 0;
     }
 
     private JumpState ShouldClimbAfterJumpOver(Transform ray)// Check if there's sufficient space for 'Vaulting-Run'
     {
-        float step = RayCasting(ray, _vaultLimit);
+        float step = RayCasting(ray, _vaultLimit, out _refRayhitNormalVector);
         if (step < _vaultLimit && step != 0)
         {
             return JumpState.JumpClimb; // if it's not, returns JumpState.JumpClimb
@@ -98,26 +106,43 @@ public class PlayerParkour : MonoBehaviour
     public JumpState CheckRay() //Shoot's ray, and return current JumpMode
     {
         //Create Dictionary, and Save Data(RayName, RayHitDistance) in Dictionary
-        Dictionary<JumpState, float> temp = new();
+        _rayHitsDictionary.Clear();
+
         float dist = 0;
-        dist = RayCasting(_jumpBottomRay, _rayDistance);
-        if (dist != 0) temp.Add(JumpState.DefaultJump, dist);
+        dist = RayCasting(_jumpBottomRay, _rayDistance, out _refRayhitNormalVector);
+        if (dist != 0)
+        {
+            _rayHitsDictionary[JumpState.DefaultJump] = dist;
+            _rayHitNormals[JumpState.DefaultJump] = _refRayhitNormalVector;
+        }
 
-        dist = RayCasting(_jumpMiddleRay, _rayDistance);
-        if (dist != 0) temp.Add(JumpState.Vault, dist);
+        dist = RayCasting(_jumpMiddleRay, _rayDistance, out _refRayhitNormalVector);
+        if (dist != 0)
+        {
+            _rayHitsDictionary[JumpState.Vault] = dist;
+            _rayHitNormals[JumpState.Vault] = _refRayhitNormalVector;
+        }
 
-        dist = RayCasting(_jumpTopRay, _rayDistance);
-        if (dist != 0) temp.Add(JumpState.JumpClimb, dist);
+        dist = RayCasting(_jumpTopRay, _rayDistance, out _refRayhitNormalVector);
+        if (dist != 0)
+        {
+            _rayHitsDictionary[JumpState.JumpClimb] = dist;
+            _rayHitNormals[JumpState.JumpClimb] = _refRayhitNormalVector;
+        }
 
-        dist = RayCasting(_maxHeightRay, _rayDistance);
-        if (dist != 0) temp.Add(JumpState.Climb, dist);
+        dist = RayCasting(_maxHeightRay, _rayDistance, out _refRayhitNormalVector);
+        if (dist != 0)
+        {
+            _rayHitsDictionary[JumpState.Climb] = dist;
+            _rayHitNormals[JumpState.Climb] = _refRayhitNormalVector;
+        }
 
         //if there's data in Dictionary, get HashKey(JumpState) which has 'Closeast Distance' Data
-        if (temp.Count > 0)
+        if (_rayHitsDictionary.Count > 0)
         {
-            JumpMode = temp.Aggregate((x, y) => x.Value < y.Value ? x : y).Key; //Get HashKey(JumpState) which has 'Closeast Distance' Data
-            CalculateStepHeight(temp[JumpMode]); //Calculates StepHight, and StepPosition
-            temp.Remove(JumpMode);
+            JumpMode = _rayHitsDictionary.Aggregate((x, y) => x.Value < y.Value ? x : y).Key; //Get HashKey(JumpState) which has 'Closeast Distance' Data
+            CalculateStepHeight(_rayHitsDictionary[JumpMode], JumpMode); //Calculates StepHight, and StepPosition
+            _rayHitsDictionary.Remove(JumpMode);
         }
         else // if there's no, then just set to JumpState.DefaultJump
         {
@@ -132,7 +157,7 @@ public class PlayerParkour : MonoBehaviour
         return JumpMode;
     }
 
-    private void CalculateStepHeight(float rayDist) //Calculates StepHight, and StepPosition
+    private void CalculateStepHeight(float rayDist, JumpState jumpState) //Calculates StepHight, and StepPosition
     {
         RaycastHit hit;
         if (Physics.Raycast(_maxHeightRay.position + _maxHeightRay.forward * (rayDist + 0.01f),
@@ -140,8 +165,9 @@ public class PlayerParkour : MonoBehaviour
         {
             StepPoint = hit.point;
             StepHeight = StepPoint.y - this.transform.position.y;
-            RightStepPoint = StepPoint + this.transform.right * 0.1f;
-            LeftStepPoint = StepPoint - this.transform.right * 0.1f;
+            Vector3 normalVec = Quaternion.Euler(0, 90, 0) * _rayHitNormals[jumpState];
+            RightStepPoint = StepPoint + normalVec * 0.15f;
+            LeftStepPoint = StepPoint - normalVec * 0.15f;
         }
 
         if(StepHeight <= 1.2f)
@@ -156,5 +182,10 @@ public class PlayerParkour : MonoBehaviour
         {
             StepMode = StepState.Highest;
         }
+    }
+
+    public Vector2 GetNormal(JumpState jumpState)
+    {
+        return _rayHitNormals[jumpState];
     }
 }
