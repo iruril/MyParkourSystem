@@ -824,7 +824,7 @@ MonoBehaviour:
   _aimCam: {fileID: 0}
   _mouseRotateSpeed: 1
   _viewAngleY: 180
-  _viewAngleX: 140
+  _viewAngleX: 160
   _viewAngleYOffset: 20
 --- !u!114 &738481078
 MonoBehaviour:
