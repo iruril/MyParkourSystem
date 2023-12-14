@@ -47,7 +47,7 @@ public class PlayerAnimationController : MonoBehaviour
         _triggerResetTime = YieldCache.WaitForSeconds(_playerParkour.ParkourJumpTime);
     }
 
-    void LateUpdate()
+    private void LateUpdate()
     {
         ObserveIKState();
 
@@ -55,44 +55,50 @@ public class PlayerAnimationController : MonoBehaviour
         {
             case PlayerController.MoveMode.Default:
                 GetPlayerActionBoolean();
-                if (!_player.IsOnDynamicMove) GetPlayerSpeed();
-
-                if (_player.IsJumping)
-                {
-                    switch (_player.JumpMode)
-                    {
-                        case PlayerParkour.JumpState.DefaultJump:
-                            if (!_isOnAction)
-                            {
-                                if(_animCoroutine != null) StopCoroutine(_animCoroutine);
-                                _animCoroutine = StartCoroutine(DefaultJumpCoroutine());
-                            }
-                            return;
-                        case PlayerParkour.JumpState.Vault:
-                            if (!_player.IsOnDynamicMove && !_isOnAction)
-                            {
-                                MyAnimator.SetFloat("Speed", _mySpeed);
-                                SetVaultType();
-                                if (_animCoroutine != null) StopCoroutine(_animCoroutine);
-                                _animCoroutine = StartCoroutine(VaultCoroutine());
-                            }
-                            return;
-                        case PlayerParkour.JumpState.JumpClimb:
-                            if (!_player.IsOnDynamicMove && !_isOnAction)
-                            {
-                                MyAnimator.SetFloat("Speed", _mySpeed);
-                                SetJumpClimbType();
-                                if (_animCoroutine != null) StopCoroutine(_animCoroutine);
-                                _animCoroutine = StartCoroutine(JumpClimbCoroutine());
-                            }
-                            return;
-                    }
-                }
+                PlayDefaultAnimation();
                 break;
             case PlayerController.MoveMode.Aim:
                 GetPlayerSpeedOnAim();
                 break;
         }
+    }
+
+    private void PlayDefaultAnimation()
+    {
+        if (!_player.IsOnDynamicMove) GetPlayerSpeed();
+
+        if (_player.IsJumping)
+        {
+            switch (_player.JumpMode)
+            {
+                case PlayerParkour.JumpState.DefaultJump:
+                    if (!_isOnAction)
+                    {
+                        DoAction(DefaultJumpCoroutine());
+                    }
+                    return;
+                case PlayerParkour.JumpState.Vault:
+                    if (!_player.IsOnDynamicMove && !_isOnAction)
+                    {
+                        MyAnimator.SetFloat("Speed", _mySpeed);
+                        DoAction(VaultCoroutine());
+                    }
+                    return;
+                case PlayerParkour.JumpState.JumpClimb:
+                    if (!_player.IsOnDynamicMove && !_isOnAction)
+                    {
+                        MyAnimator.SetFloat("Speed", _mySpeed);
+                        DoAction(JumpClimbCoroutine());
+                    }
+                    return;
+            }
+        }
+    }
+
+    private void DoAction(IEnumerator action)
+    {
+        if (_animCoroutine != null) StopCoroutine(_animCoroutine);
+        _animCoroutine = StartCoroutine(action);
     }
 
     #region Basic IK-Control Fields
@@ -124,7 +130,7 @@ public class PlayerAnimationController : MonoBehaviour
 
     private void GetPlayerActionBoolean()
     {
-        MyAnimator.SetBool("IsGrounded", _player.MyGroundChecker.IsGrounded());
+        MyAnimator.SetBool("IsGrounded", _player.MyGroundChecker.IsGround);
         MyAnimator.SetBool("IsOnDynamic", _player.IsOnDynamicMove);
     }
 
@@ -161,6 +167,7 @@ public class PlayerAnimationController : MonoBehaviour
 
     private IEnumerator VaultCoroutine()
     {
+        SetVaultType();
         _isOnAction = true;
         MyAnimator.SetTrigger("Vault"); 
         yield return _triggerResetTime; 
@@ -170,6 +177,7 @@ public class PlayerAnimationController : MonoBehaviour
 
     private IEnumerator JumpClimbCoroutine()
     {
+        SetJumpClimbType();
         _isOnAction = true;
         MyAnimator.SetTrigger("JumpClimb");
         yield return _triggerResetTime;

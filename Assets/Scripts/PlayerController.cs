@@ -19,6 +19,7 @@ public class PlayerController : MonoBehaviour
     private TPSCamController _myTPSCam;
     [SerializeField] private LayerMask _IgnoreRaycast;
 
+    private Vector3 _snapGroundForce = Vector3.zero;
     public Vector3 PlayerVelocity { get; private set; } = Vector3.zero;
     public Vector3 PlayerVelocityOnAim { get; private set; } = Vector3.zero;
 
@@ -86,6 +87,11 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if(IsJumping)
+        {
+            _snapGroundForce = Vector3.zero;
+        }
+
         _playerMoveOrientedForward = new Vector3(_myTPSCam.CamTarget.forward.x, 0, _myTPSCam.CamTarget.forward.z).normalized;
         _playerMoveOrientedRight = new Vector3(_myTPSCam.CamTarget.right.x, 0, _myTPSCam.CamTarget.right.z).normalized;
 
@@ -136,7 +142,7 @@ public class PlayerController : MonoBehaviour
                 #region Default Player FixedUpdate
                 if (!IsOnDynamicMove) //While Isn't on Parkour Action
                 {
-                    if (MyGroundChecker.IsGrounded())
+                    if (MyGroundChecker.IsGround)
                     {
                         JumpMode = _playerParkour.CheckRay(); //Predicts Next JumpMode
                     }
@@ -156,7 +162,7 @@ public class PlayerController : MonoBehaviour
                 PlayerAimModeMove();
                 #endregion
                 break;
-        }     
+        }
     }
     #region Default Player Control Fields
     #region Player Input Fields
@@ -179,12 +185,21 @@ public class PlayerController : MonoBehaviour
 
     private void CalculatePlayerTransformByInput()
     {
+        _snapGroundForce = Vector3.zero;
         if (_rotationHorizontalInput != 0 || _rotationVerticalInput != 0)
         {
             _playerRotation = Quaternion.Euler(0, CalculateRotationAngle(_rotationHorizontalInput, _rotationVerticalInput), 0);
             _isRotating = true;
         }
-        _player.Move(PlayerVelocity * Time.deltaTime);
+
+        if (!IsJumping)
+        {
+            if (MyGroundChecker.IsSnapGround && MyGroundChecker.IsGround)
+            {
+                _snapGroundForce = Vector3.down;
+            }
+        }
+        _player.Move(PlayerVelocity * Time.deltaTime + _snapGroundForce);
     }
     #endregion
 
@@ -208,7 +223,7 @@ public class PlayerController : MonoBehaviour
 
     private float PlayerYAxisVelocity() //Calculates Y-Axis Velocity By Player's Input
     {
-        if (!MyGroundChecker.IsGrounded()) // If isn't on ground, then apply Gravity force
+        if (!MyGroundChecker.IsGround) // If isn't on ground, then apply Gravity force
         {
             return PlayerVelocity.y - _playerStat.GravityForce * Time.fixedDeltaTime;
         }
@@ -269,7 +284,7 @@ public class PlayerController : MonoBehaviour
     #region Parkour Actions Fields
     private IEnumerator DoVault()
     {
-        if (JumpMode != PlayerParkour.JumpState.Vault || !MyGroundChecker.IsGrounded())
+        if (JumpMode != PlayerParkour.JumpState.Vault || !MyGroundChecker.IsGround)
         {
             IsJumping = false;
             yield break;
@@ -314,7 +329,7 @@ public class PlayerController : MonoBehaviour
 
     private IEnumerator DoHopClimb()
     {
-        if (JumpMode != PlayerParkour.JumpState.JumpClimb || !MyGroundChecker.IsGrounded())
+        if (JumpMode != PlayerParkour.JumpState.JumpClimb || !MyGroundChecker.IsGround)
         {
             IsJumping = false;
             yield break;
@@ -466,7 +481,7 @@ public class PlayerController : MonoBehaviour
 
     private float PlayerYAxisVelocityOnAim()
     {
-        if (!MyGroundChecker.IsGrounded()) // If isn't on ground, then apply Gravity force
+        if (!MyGroundChecker.IsGround) // If isn't on ground, then apply Gravity force
         {
             return PlayerVelocity.y - _playerStat.GravityForce * Time.fixedDeltaTime;
         }
@@ -476,8 +491,17 @@ public class PlayerController : MonoBehaviour
 
     private void CalculatePlayerTransformByInputOnAim()
     {
+        _snapGroundForce = Vector3.zero;
         PlayerVelocityOnAim = transform.InverseTransformDirection(_player.velocity);
-        _player.Move(PlayerVelocity * Time.deltaTime);
+
+        if (!IsJumping)
+        {
+            if (MyGroundChecker.IsSnapGround && MyGroundChecker.IsGround)
+            {
+                _snapGroundForce = Vector3.down;
+            }
+        }
+        _player.Move(PlayerVelocity * Time.deltaTime + _snapGroundForce);
     }
     #endregion
 
