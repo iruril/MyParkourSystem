@@ -18,6 +18,7 @@ public class PlayerController : MonoBehaviour
     public GroundChecker MyGroundChecker { get; private set; }
     private TPSCamController _myTPSCam;
     [SerializeField] private LayerMask _IgnoreRaycast;
+    [SerializeField] private float _jumpCoolDown = 1.0f;
 
     private Vector3 _snapGroundForce = Vector3.zero;
     public Vector3 PlayerVelocity { get; private set; } = Vector3.zero;
@@ -40,7 +41,8 @@ public class PlayerController : MonoBehaviour
     private HashSet<KeyCode> keysToCheck = new HashSet<KeyCode>{ KeyCode.W, KeyCode.A, KeyCode.S, KeyCode.D };
     int numberOfKeysPressed;
     public bool IsOnDynamicMove { get; private set; } = false;
-    public bool IsJumping { get; private set; } = false;
+    public bool IsSpaceKeyAction { get; private set; } = false;
+    private bool _isJumping = false;
     public PlayerParkour.JumpState JumpMode { get; private set; } = PlayerParkour.JumpState.None;
 
     public enum MoveMode{
@@ -87,16 +89,15 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        if(IsJumping)
+        if (_isJumping)
         {
             _snapGroundForce = Vector3.zero;
         }
-
         _playerMoveOrientedForward = new Vector3(_myTPSCam.CamTarget.forward.x, 0, _myTPSCam.CamTarget.forward.z).normalized;
         _playerMoveOrientedRight = new Vector3(_myTPSCam.CamTarget.right.x, 0, _myTPSCam.CamTarget.right.z).normalized;
 
         numberOfKeysPressed = keysToCheck.Count(key => Input.GetKey(key));
-        if (Input.GetMouseButton(1) && !IsJumping && !IsOnDynamicMove)
+        if (Input.GetMouseButton(1) && !IsSpaceKeyAction && !IsOnDynamicMove)
         {
             if (CurrentMode != MoveMode.Aim)
             {
@@ -179,7 +180,9 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            IsJumping = true;
+            _snapGroundForce = Vector3.zero;
+            IsSpaceKeyAction = true;
+            _isJumping = true;
         }
     }
 
@@ -192,7 +195,7 @@ public class PlayerController : MonoBehaviour
             _isRotating = true;
         }
 
-        if (!IsJumping)
+        if (!_isJumping)
         {
             if (MyGroundChecker.IsSnapGround && MyGroundChecker.IsGround)
             {
@@ -228,12 +231,13 @@ public class PlayerController : MonoBehaviour
             return PlayerVelocity.y - _playerStat.GravityForce * Time.fixedDeltaTime;
         }
 
-        if (IsJumping) //while get input 'Jump'
+        if (IsSpaceKeyAction) //while get input 'Jump'
         {
             switch (JumpMode)
             {
                 case PlayerParkour.JumpState.DefaultJump: //Do Default Jump
-                    IsJumping = false;
+                    IsSpaceKeyAction = false; 
+                    StartCoroutine(DefaultJump());
                     return PlayerVelocity.y + _playerStat.JumpPower;
                 case PlayerParkour.JumpState.Vault: //Do Vault Action
                     if (!IsOnDynamicMove && _myCoroutine == null)
@@ -250,10 +254,10 @@ public class PlayerController : MonoBehaviour
                     }
                     return Mathf.Max(0.0f, PlayerVelocity.y); //Do Climb Action
                 case PlayerParkour.JumpState.Climb:
-                    IsJumping = false;
+                    IsSpaceKeyAction = false;
                     return PlayerVelocity.y + _playerStat.JumpPower;
                 default:
-                    IsJumping = false;
+                    IsSpaceKeyAction = false;
                     return Mathf.Max(0.0f, PlayerVelocity.y); //If There's no condition
             }
         }
@@ -282,11 +286,16 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region Parkour Actions Fields
+    private IEnumerator DefaultJump()
+    {
+        yield return YieldCache.WaitForSeconds(_jumpCoolDown);
+        _isJumping = false;
+    }
     private IEnumerator DoVault()
     {
         if (JumpMode != PlayerParkour.JumpState.Vault || !MyGroundChecker.IsGround)
         {
-            IsJumping = false;
+            IsSpaceKeyAction = false;
             yield break;
         }
 
@@ -294,7 +303,7 @@ public class PlayerController : MonoBehaviour
         PlayerVelocity = Vector3.zero;
         Vector3 startPoint = this.transform.position;
         Vector3 vaultPoint = _playerParkour.StepPoint;
-        IsJumping = false;
+        IsSpaceKeyAction = false;
 
         //First Step Action (Move to Step Point)
         float lerpTime = _playerParkour.ParkourJumpTime;
@@ -331,7 +340,7 @@ public class PlayerController : MonoBehaviour
     {
         if (JumpMode != PlayerParkour.JumpState.JumpClimb || !MyGroundChecker.IsGround)
         {
-            IsJumping = false;
+            IsSpaceKeyAction = false;
             yield break;
         }
 
@@ -342,7 +351,7 @@ public class PlayerController : MonoBehaviour
         Vector3 endPointXZ = new Vector3(endPoint.x, 0, endPoint.z);
         Vector3 startPointXZ = new Vector3(startPoint.x, 0, startPoint.z);
         Vector3 climbPoint = _playerParkour.StepPoint - (endPointXZ - startPointXZ).normalized * 0.3f;
-        IsJumping = false;
+        IsSpaceKeyAction = false;
 
         float lerpTime;
         float currentTime;
@@ -494,7 +503,7 @@ public class PlayerController : MonoBehaviour
         _snapGroundForce = Vector3.zero;
         PlayerVelocityOnAim = transform.InverseTransformDirection(_player.velocity);
 
-        if (!IsJumping)
+        if (!_isJumping)
         {
             if (MyGroundChecker.IsSnapGround && MyGroundChecker.IsGround)
             {

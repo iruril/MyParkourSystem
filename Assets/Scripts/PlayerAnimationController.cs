@@ -67,7 +67,7 @@ public class PlayerAnimationController : MonoBehaviour
     {
         if (!_player.IsOnDynamicMove) GetPlayerSpeed();
 
-        if (_player.IsJumping)
+        if (_player.IsSpaceKeyAction)
         {
             switch (_player.JumpMode)
             {
