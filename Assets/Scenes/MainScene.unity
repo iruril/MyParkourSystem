@@ -855,12 +855,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 107872105}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!4 &147010961 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 7021292208336376093, guid: 510b781ddaa88b94faa4c1faff8b5604,
-    type: 3}
-  m_PrefabInstance: {fileID: 7021292209267340731}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &164962754
 GameObject:
   m_ObjectHideFlags: 0
@@ -3509,6 +3503,12 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1126080420}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!4 &1215865268 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1104944236522003231, guid: 83f030578424a764daef3166fb2f9beb,
+    type: 3}
+  m_PrefabInstance: {fileID: 1104944236992006318}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1317747366
 GameObject:
   m_ObjectHideFlags: 0
@@ -5369,6 +5369,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 738481074, guid: 83f030578424a764daef3166fb2f9beb, type: 3}
+      propertyPath: _jumpCoolDown
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 738481074, guid: 83f030578424a764daef3166fb2f9beb, type: 3}
+      propertyPath: _parkourCoolDown
+      value: 0.2
+      objectReference: {fileID: 0}
     - target: {fileID: 738481077, guid: 83f030578424a764daef3166fb2f9beb, type: 3}
       propertyPath: _aimCam
       value: 
@@ -5393,6 +5401,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Succubus
+      objectReference: {fileID: 0}
+    - target: {fileID: 1104944236522003230, guid: 83f030578424a764daef3166fb2f9beb,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1104944236522003231, guid: 83f030578424a764daef3166fb2f9beb,
         type: 3}
@@ -5475,9 +5488,14 @@ PrefabInstance:
       objectReference: {fileID: 522383126}
     - target: {fileID: 6193233516060685417, guid: 31cae46994d30334987fe67e66b24260,
         type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6193233516060685417, guid: 31cae46994d30334987fe67e66b24260,
+        type: 3}
       propertyPath: _refTarget
       value: 
-      objectReference: {fileID: 147010961}
+      objectReference: {fileID: 1215865268}
     - target: {fileID: 6193233516060685422, guid: 31cae46994d30334987fe67e66b24260,
         type: 3}
       propertyPath: m_Name
@@ -5590,6 +5608,14 @@ PrefabInstance:
       propertyPath: _aimPointUI
       value: 
       objectReference: {fileID: 1554956532}
+    - target: {fileID: 2072208558, guid: 510b781ddaa88b94faa4c1faff8b5604, type: 3}
+      propertyPath: _jumpCoolDown
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2072208558, guid: 510b781ddaa88b94faa4c1faff8b5604, type: 3}
+      propertyPath: _parkourCoolDown
+      value: 0.2
+      objectReference: {fileID: 0}
     - target: {fileID: 7021292208336376093, guid: 510b781ddaa88b94faa4c1faff8b5604,
         type: 3}
       propertyPath: m_RootOrder
@@ -5649,6 +5675,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Sister
+      objectReference: {fileID: 0}
+    - target: {fileID: 7021292208336376094, guid: 510b781ddaa88b94faa4c1faff8b5604,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 510b781ddaa88b94faa4c1faff8b5604, type: 3}

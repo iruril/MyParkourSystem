@@ -30,7 +30,7 @@ public class PlayerAnimationController : MonoBehaviour
     private float _targetLookAtWeight = 0.0f;
 
     private WaitForSeconds _triggerResetTime;
-    private bool _isOnAction = false;
+    //private bool _isOnAction = false;
 
     private Coroutine _animCoroutine = null;
 
@@ -40,6 +40,10 @@ public class PlayerAnimationController : MonoBehaviour
         _playerStat = this.GetComponent<PlayerStatus>();
         _playerParkour = this.GetComponent<PlayerParkour>();
         _myTPSCam = this.GetComponent<TPSCamController>();
+
+        _player.JumpEvent += () => DoAction(DefaultJumpCoroutine());
+        _player.VaultEvent += () => DoAction(VaultCoroutine());
+        _player.JumpClimbEvent += () => DoAction(JumpClimbCoroutine());
     }
 
     private void Start()
@@ -55,43 +59,11 @@ public class PlayerAnimationController : MonoBehaviour
         {
             case PlayerController.MoveMode.Default:
                 GetPlayerActionBoolean();
-                PlayDefaultAnimation();
+                if (!_player.IsOnDynamicMove) GetPlayerSpeed();
                 break;
             case PlayerController.MoveMode.Aim:
                 GetPlayerSpeedOnAim();
                 break;
-        }
-    }
-
-    private void PlayDefaultAnimation()
-    {
-        if (!_player.IsOnDynamicMove) GetPlayerSpeed();
-
-        if (_player.IsSpaceKeyAction)
-        {
-            switch (_player.JumpMode)
-            {
-                case PlayerParkour.JumpState.DefaultJump:
-                    if (!_isOnAction)
-                    {
-                        DoAction(DefaultJumpCoroutine());
-                    }
-                    return;
-                case PlayerParkour.JumpState.Vault:
-                    if (!_player.IsOnDynamicMove && !_isOnAction)
-                    {
-                        MyAnimator.SetFloat("Speed", _mySpeed);
-                        DoAction(VaultCoroutine());
-                    }
-                    return;
-                case PlayerParkour.JumpState.JumpClimb:
-                    if (!_player.IsOnDynamicMove && !_isOnAction)
-                    {
-                        MyAnimator.SetFloat("Speed", _mySpeed);
-                        DoAction(JumpClimbCoroutine());
-                    }
-                    return;
-            }
         }
     }
 
@@ -149,7 +121,6 @@ public class PlayerAnimationController : MonoBehaviour
                 break;
         }
     }
-
     private void SetVaultType()
     {
         _vaultType = Random.Range(0, 2);
@@ -158,30 +129,24 @@ public class PlayerAnimationController : MonoBehaviour
 
     private IEnumerator DefaultJumpCoroutine()
     {
-        _isOnAction = true;
         MyAnimator.SetTrigger("Jump");
         yield return _triggerResetTime;
-        _isOnAction = false;
         MyAnimator.ResetTrigger("Jump");
     }
 
     private IEnumerator VaultCoroutine()
     {
         SetVaultType();
-        _isOnAction = true;
         MyAnimator.SetTrigger("Vault"); 
-        yield return _triggerResetTime; 
-        _isOnAction = false;
+        yield return _triggerResetTime;
         MyAnimator.ResetTrigger("Vault");
     }
 
     private IEnumerator JumpClimbCoroutine()
     {
         SetJumpClimbType();
-        _isOnAction = true;
         MyAnimator.SetTrigger("JumpClimb");
         yield return _triggerResetTime;
-        _isOnAction = false;
         MyAnimator.ResetTrigger("JumpClimb");
     }
     #endregion

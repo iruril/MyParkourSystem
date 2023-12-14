@@ -59,6 +59,7 @@ public class PlayerParkour : MonoBehaviour
         if(StepPoint != null)
         {
             Gizmos.color = Color.cyan;
+            Gizmos.DrawLine(StepPoint, StepPoint + Vector3.up * 7.5f);
             Gizmos.DrawWireSphere(StepPoint, 0.1f);
         }
     }

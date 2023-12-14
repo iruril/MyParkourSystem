@@ -5,6 +5,16 @@ using System.Linq;
 
 public class PlayerController : MonoBehaviour
 {
+    #region Delegate Event Variables
+    public delegate void DoJump();
+    public delegate void DoVault();
+    public delegate void DoJumpClimb();
+
+    public event DoJump JumpEvent;
+    public event DoVault VaultEvent;
+    public event DoJumpClimb JumpClimbEvent;
+    #endregion
+
     public Camera MyCamera { get; private set; }
     public GameObject Weapon = null;
     public Transform Muzzle = null;
@@ -75,6 +85,10 @@ public class PlayerController : MonoBehaviour
         _aimPoint = GameObject.FindWithTag("AimPoint").transform;
         _fireRate = 1 / (WeaponRPM / 60);
         _fireRateWFS = YieldCache.WaitForSeconds(_fireRate);
+
+        JumpEvent += () => StartCoroutine(DefaultJumpTask());
+        VaultEvent += () => DoAction(DoVaultTask());
+        JumpClimbEvent += () => DoAction(DoJumpClimbTask());
     }
 
     void Start()
@@ -236,21 +250,19 @@ public class PlayerController : MonoBehaviour
             switch (JumpMode)
             {
                 case PlayerParkour.JumpState.DefaultJump: //Do Default Jump
-                    IsSpaceKeyAction = false; 
-                    StartCoroutine(DefaultJump());
+                    IsSpaceKeyAction = false;
+                    JumpEvent?.Invoke();
                     return PlayerVelocity.y + _playerStat.JumpPower;
                 case PlayerParkour.JumpState.Vault: //Do Vault Action
                     if (!IsOnDynamicMove && _myCoroutine == null)
                     {
-                        IsOnDynamicMove = true;
-                        _myCoroutine = StartCoroutine(DoVault());
+                        VaultEvent?.Invoke();
                     }
                     return Mathf.Max(0.0f, PlayerVelocity.y);
                 case PlayerParkour.JumpState.JumpClimb: //Do JumpClimb Action
                     if (!IsOnDynamicMove && _myCoroutine == null)
                     {
-                        IsOnDynamicMove = true;
-                        _myCoroutine = StartCoroutine(DoHopClimb());
+                        JumpClimbEvent?.Invoke();
                     }
                     return Mathf.Max(0.0f, PlayerVelocity.y); //Do Climb Action
                 case PlayerParkour.JumpState.Climb:
@@ -286,12 +298,18 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region Parkour Actions Fields
-    private IEnumerator DefaultJump()
+    public void DoAction(IEnumerator task)
+    {
+        IsOnDynamicMove = true;
+        _myCoroutine = StartCoroutine(task);
+    }
+
+    private IEnumerator DefaultJumpTask()
     {
         yield return YieldCache.WaitForSeconds(_jumpCoolDown);
         _isJumping = false;
     }
-    private IEnumerator DoVault()
+    private IEnumerator DoVaultTask()
     {
         if (JumpMode != PlayerParkour.JumpState.Vault || !MyGroundChecker.IsGround)
         {
@@ -331,12 +349,13 @@ public class PlayerController : MonoBehaviour
         }
 
         IsOnDynamicMove = false;
-        _myCoroutine = null;
+        _myCoroutine = null; 
+        _isJumping = false;
         JumpMode = PlayerParkour.JumpState.None;
         yield break;
     }
 
-    private IEnumerator DoHopClimb()
+    private IEnumerator DoJumpClimbTask()
     {
         if (JumpMode != PlayerParkour.JumpState.JumpClimb || !MyGroundChecker.IsGround)
         {
@@ -427,6 +446,7 @@ public class PlayerController : MonoBehaviour
         }
         IsOnDynamicMove = false;
         _myCoroutine = null;
+        _isJumping = false;
         JumpMode = PlayerParkour.JumpState.None;
         yield break;
     }
@@ -442,7 +462,7 @@ public class PlayerController : MonoBehaviour
     private void RotatePlayerOnAimMode()
     {
         this.transform.rotation = Quaternion.Euler(0, _myTPSCam.CamTarget.rotation.eulerAngles.y, 0);
-        Vector2 screenCenter = new Vector2(Screen.width / 2f, Screen.height / 2f);
+        Vector2 screenCenter = new Vector2(Screen.width * 0.5f, Screen.height * 0.5f);
 
         Ray aimPointRay = MyCamera.ScreenPointToRay(Input.mousePosition);
         RaycastHit hitInfo;
