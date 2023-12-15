@@ -16,10 +16,19 @@ public class PlayerIKControlller : MonoBehaviour
     private float _animIKWeightLerpTime = 0.35f;
     private bool _ikWeightSet = false;
 
+    private float _hipHeight = 0;
+
+    private Vector3 _leftFootIKPosition = Vector3.zero;
+    private Vector3 _rightFootIKPosition = Vector3.zero;
+
+    private const string LeftFootIKWeight = "LeftFootIKWeight";
+    private const string RightFootIKWeight = "RightFootIKWeight";
+
     private void Awake()
     {
         _animator = this.GetComponent<Animator>();
         _layerMask = _myGroundChecker.GroundLayer;
+        _hipHeight = _animator.GetBoneTransform(HumanBodyBones.Hips).position.y;
     }
 
     private void OnAnimatorIK(int layerIndex)
@@ -58,36 +67,49 @@ public class PlayerIKControlller : MonoBehaviour
 
     private void FootIK()
     {
-        _animator.SetIKPositionWeight(AvatarIKGoal.LeftFoot, 1);
-        _animator.SetIKRotationWeight(AvatarIKGoal.LeftFoot, 1);
+        CalculateIKState(AvatarIKGoal.LeftFoot, ref _leftFootIKPosition);
+        CalculateIKState(AvatarIKGoal.RightFoot, ref _rightFootIKPosition);
+        CalculateHipHeight();
+    }
 
-        Ray leftRay = new Ray(_animator.GetIKPosition(AvatarIKGoal.LeftFoot) + Vector3.up * KneeHeight, Vector3.down);
-        Debug.DrawRay(_animator.GetIKPosition(AvatarIKGoal.LeftFoot) + Vector3.up * KneeHeight, Vector3.down * (KneeHeight + DistanceGround), Color.red);
+    private void CalculateIKState(AvatarIKGoal goal, ref Vector3 IKPosition)
+    {
+        if (goal == AvatarIKGoal.LeftFoot)
+        {
+            _animator.SetIKPositionWeight(goal, _animator.GetFloat(LeftFootIKWeight));
+        }
+        else
+        {
+            _animator.SetIKPositionWeight(goal, _animator.GetFloat(RightFootIKWeight));
+        }
+        _animator.SetIKRotationWeight(goal, 1);
+
+        Ray leftRay = new Ray(_animator.GetIKPosition(goal) + Vector3.up * KneeHeight, Vector3.down);
+        Debug.DrawRay(_animator.GetIKPosition(goal) + Vector3.up * KneeHeight, Vector3.down * (KneeHeight + DistanceGround), Color.red);
         if (Physics.Raycast(leftRay, out RaycastHit leftHitinfo, DistanceGround + KneeHeight, _layerMask))
         {
             if (leftHitinfo.transform.tag == "Walkable")
             {
-                Vector3 footPos = leftHitinfo.point;
-                footPos.y += DistanceGround;
+                IKPosition = leftHitinfo.point;
+                IKPosition.y += DistanceGround;
 
-                _animator.SetIKPosition(AvatarIKGoal.LeftFoot, footPos);
+                Quaternion footIKRotation = Quaternion.FromToRotation(this.transform.up, leftHitinfo.normal) * this.transform.rotation;
+                _animator.SetIKPosition(goal, IKPosition);
+                _animator.SetIKRotation(goal, footIKRotation);
             }
         }
-
-        _animator.SetIKPositionWeight(AvatarIKGoal.RightFoot, 1);
-        _animator.SetIKRotationWeight(AvatarIKGoal.RightFoot, 1);
-
-        Ray rightRay = new Ray(_animator.GetIKPosition(AvatarIKGoal.RightFoot) + Vector3.up * 0.5f, Vector3.down);
-        Debug.DrawRay(_animator.GetIKPosition(AvatarIKGoal.RightFoot) + Vector3.up * KneeHeight, Vector3.down * (KneeHeight + DistanceGround), Color.red);
-        if (Physics.Raycast(rightRay, out RaycastHit rightHitinfo, DistanceGround + KneeHeight, _layerMask))
+        else
         {
-            if (rightHitinfo.transform.tag == "Walkable")
-            {
-                Vector3 footPos = rightHitinfo.point;
-                footPos.y += DistanceGround;
+            IKPosition = Vector3.zero;
+        }
+    }
 
-                _animator.SetIKPosition(AvatarIKGoal.RightFoot, footPos);
-            }
+    private void CalculateHipHeight()
+    {
+        if (_leftFootIKPosition == Vector3.zero || _rightFootIKPosition == Vector3.zero)
+        {
+            this.transform.position = new Vector3(transform.position.x, _animator.bodyPosition.y, transform.position.z);
+            return;
         }
     }
 
