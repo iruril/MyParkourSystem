@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerIKControlller : MonoBehaviour
 {
     public float DistanceGround = 0.5f;
-    public float KneeHight = 0.5f;
+    public float KneeHeight = 0.5f;
     private Animator _animator;
     [SerializeField] private GroundChecker _myGroundChecker;
     [SerializeField] private PlayerController _player;
@@ -61,9 +61,9 @@ public class PlayerIKControlller : MonoBehaviour
         _animator.SetIKPositionWeight(AvatarIKGoal.LeftFoot, 1);
         _animator.SetIKRotationWeight(AvatarIKGoal.LeftFoot, 1);
 
-        Ray leftRay = new Ray(_animator.GetIKPosition(AvatarIKGoal.LeftFoot) + Vector3.up * KneeHight, Vector3.down);
-        Debug.DrawRay(_animator.GetIKPosition(AvatarIKGoal.LeftFoot) + Vector3.up * KneeHight, Vector3.down * (KneeHight + DistanceGround), Color.red);
-        if (Physics.Raycast(leftRay, out RaycastHit leftHitinfo, DistanceGround + KneeHight, _layerMask))
+        Ray leftRay = new Ray(_animator.GetIKPosition(AvatarIKGoal.LeftFoot) + Vector3.up * KneeHeight, Vector3.down);
+        Debug.DrawRay(_animator.GetIKPosition(AvatarIKGoal.LeftFoot) + Vector3.up * KneeHeight, Vector3.down * (KneeHeight + DistanceGround), Color.red);
+        if (Physics.Raycast(leftRay, out RaycastHit leftHitinfo, DistanceGround + KneeHeight, _layerMask))
         {
             if (leftHitinfo.transform.tag == "Walkable")
             {
@@ -78,8 +78,8 @@ public class PlayerIKControlller : MonoBehaviour
         _animator.SetIKRotationWeight(AvatarIKGoal.RightFoot, 1);
 
         Ray rightRay = new Ray(_animator.GetIKPosition(AvatarIKGoal.RightFoot) + Vector3.up * 0.5f, Vector3.down);
-        Debug.DrawRay(_animator.GetIKPosition(AvatarIKGoal.RightFoot) + Vector3.up * KneeHight, Vector3.down * (KneeHight + DistanceGround), Color.red);
-        if (Physics.Raycast(rightRay, out RaycastHit rightHitinfo, DistanceGround + KneeHight, _layerMask))
+        Debug.DrawRay(_animator.GetIKPosition(AvatarIKGoal.RightFoot) + Vector3.up * KneeHeight, Vector3.down * (KneeHeight + DistanceGround), Color.red);
+        if (Physics.Raycast(rightRay, out RaycastHit rightHitinfo, DistanceGround + KneeHeight, _layerMask))
         {
             if (rightHitinfo.transform.tag == "Walkable")
             {

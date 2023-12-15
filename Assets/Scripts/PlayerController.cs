@@ -132,19 +132,15 @@ public class PlayerController : MonoBehaviour
         switch (CurrentMode)
         {
             case MoveMode.Default:
-                #region Default Player Update
                 if (Weapon.activeSelf) Weapon.SetActive(false);
                 GetInput();
                 CalculatePlayerTransformByInput(); //Calculated PlayerVelocity is based on 'FixedTime', so we smooth this with 'Time'.
-                #endregion
                 break;
             case MoveMode.Aim:
-                #region Aim-Mode Player Update
                 if (!Weapon.activeSelf) Weapon.SetActive(true);
                 AimModeInput(); 
                 ShootingInput();
                 CalculatePlayerTransformByInputOnAim();
-                #endregion
                 break;
         }
     }
@@ -154,7 +150,6 @@ public class PlayerController : MonoBehaviour
         switch (CurrentMode)
         {
             case MoveMode.Default:
-                #region Default Player FixedUpdate
                 if (!IsOnDynamicMove) //While Isn't on Parkour Action
                 {
                     if (MyGroundChecker.IsGround)
@@ -170,12 +165,9 @@ public class PlayerController : MonoBehaviour
 
                     _aimPoint.transform.position = this.transform.position + Vector3.up +  this.transform.forward;
                 }
-                #endregion
                 break;
             case MoveMode.Aim:
-                #region Aim-Mode Player FixedUpdate
                 PlayerAimModeMove();
-                #endregion
                 break;
         }
     }
