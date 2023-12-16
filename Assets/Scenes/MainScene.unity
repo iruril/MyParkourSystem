@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.17757791, g: 0.22232242, b: 0.30451778, a: 1}
+  m_IndirectSpecularColor: {r: 0.17757827, g: 0.222323, b: 0.30451876, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -5393,6 +5393,10 @@ PrefabInstance:
       propertyPath: m_Data.m_SourceObjects.m_Item0.transform
       value: 
       objectReference: {fileID: 1387840838}
+    - target: {fileID: 1466976168, guid: 83f030578424a764daef3166fb2f9beb, type: 3}
+      propertyPath: DistanceGround
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1967907797, guid: 83f030578424a764daef3166fb2f9beb, type: 3}
       propertyPath: m_Data.m_SourceObjects.m_Item0.transform
       value: 
@@ -5593,8 +5597,24 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1387840838}
     - target: {fileID: 386781226, guid: 510b781ddaa88b94faa4c1faff8b5604, type: 3}
+      propertyPath: StepHeight
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 386781226, guid: 510b781ddaa88b94faa4c1faff8b5604, type: 3}
+      propertyPath: _hipOffset
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 386781226, guid: 510b781ddaa88b94faa4c1faff8b5604, type: 3}
       propertyPath: DistanceGround
       value: 0.02
+      objectReference: {fileID: 0}
+    - target: {fileID: 386781226, guid: 510b781ddaa88b94faa4c1faff8b5604, type: 3}
+      propertyPath: RayDownDistance
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 386781226, guid: 510b781ddaa88b94faa4c1faff8b5604, type: 3}
+      propertyPath: _rayCheckDistance
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 1815701936, guid: 510b781ddaa88b94faa4c1faff8b5604, type: 3}
       propertyPath: m_Data.m_SourceObjects.m_Item0.transform
@@ -5612,6 +5632,10 @@ PrefabInstance:
       propertyPath: _aimPointUI
       value: 
       objectReference: {fileID: 1554956532}
+    - target: {fileID: 2072208557, guid: 510b781ddaa88b94faa4c1faff8b5604, type: 3}
+      propertyPath: m_Radius
+      value: 0.2
+      objectReference: {fileID: 0}
     - target: {fileID: 2072208558, guid: 510b781ddaa88b94faa4c1faff8b5604, type: 3}
       propertyPath: _jumpCoolDown
       value: 0.5

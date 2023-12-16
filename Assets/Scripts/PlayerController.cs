@@ -42,8 +42,8 @@ public class PlayerController : MonoBehaviour
     private float _rotationVerticalInput;
     #endregion
 
-    private Vector3 _playerMoveOrientedForward;
-    private Vector3 _playerMoveOrientedRight;
+    public Vector3 PlayerMoveForward { get; private set; }
+    public Vector3 PlayerMoveRight { get; private set; }
     private Quaternion _playerRotation;
     private bool _isRotating;
 
@@ -107,8 +107,8 @@ public class PlayerController : MonoBehaviour
         {
             _snapGroundForce = Vector3.zero;
         }
-        _playerMoveOrientedForward = new Vector3(_myTPSCam.CamTarget.forward.x, 0, _myTPSCam.CamTarget.forward.z).normalized;
-        _playerMoveOrientedRight = new Vector3(_myTPSCam.CamTarget.right.x, 0, _myTPSCam.CamTarget.right.z).normalized;
+        PlayerMoveForward = new Vector3(_myTPSCam.CamTarget.forward.x, 0, _myTPSCam.CamTarget.forward.z).normalized;
+        PlayerMoveRight = new Vector3(_myTPSCam.CamTarget.right.x, 0, _myTPSCam.CamTarget.right.z).normalized;
 
         numberOfKeysPressed = keysToCheck.Count(key => Input.GetKey(key));
         if (Input.GetMouseButton(1) && !IsSpaceKeyAction && !IsOnDynamicMove)
@@ -222,7 +222,7 @@ public class PlayerController : MonoBehaviour
 
     private Vector3 PlayerXZPlaneVelocity() //Calculates XZ-Plane Velocity By Player's Input
     {
-        Vector3 moveVel = _playerMoveOrientedForward * VerticalInput + _playerMoveOrientedRight * HorizontalInput;
+        Vector3 moveVel = PlayerMoveForward * VerticalInput + PlayerMoveRight * HorizontalInput;
         Vector3 moveDir = moveVel.normalized; //Direction
 
         float moveSpeed = Mathf.Min(moveVel.magnitude, 1.0f) * _playerStat.MyCurrentSpeed;
@@ -492,7 +492,7 @@ public class PlayerController : MonoBehaviour
     }
     private Vector3 PlayerXZPlaneVelocityOnAim()
     {
-        Vector3 moveVel = _playerMoveOrientedForward * VerticalInput + _playerMoveOrientedRight * HorizontalInput;
+        Vector3 moveVel = PlayerMoveForward * VerticalInput + PlayerMoveRight * HorizontalInput;
         Vector3 moveDir = moveVel.normalized;
 
         float moveSpeed = Mathf.Min(moveVel.magnitude, 1.0f) * _playerStat.MyCurrentSpeedOnAim;
