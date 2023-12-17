@@ -5369,14 +5369,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 738481074, guid: 83f030578424a764daef3166fb2f9beb, type: 3}
-      propertyPath: _jumpCoolDown
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 738481074, guid: 83f030578424a764daef3166fb2f9beb, type: 3}
-      propertyPath: _parkourCoolDown
-      value: 0.2
-      objectReference: {fileID: 0}
     - target: {fileID: 738481077, guid: 83f030578424a764daef3166fb2f9beb, type: 3}
       propertyPath: _aimCam
       value: 
@@ -5393,10 +5385,6 @@ PrefabInstance:
       propertyPath: m_Data.m_SourceObjects.m_Item0.transform
       value: 
       objectReference: {fileID: 1387840838}
-    - target: {fileID: 1466976168, guid: 83f030578424a764daef3166fb2f9beb, type: 3}
-      propertyPath: DistanceGround
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 1967907797, guid: 83f030578424a764daef3166fb2f9beb, type: 3}
       propertyPath: m_Data.m_SourceObjects.m_Item0.transform
       value: 
@@ -5405,11 +5393,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Succubus
-      objectReference: {fileID: 0}
-    - target: {fileID: 1104944236522003230, guid: 83f030578424a764daef3166fb2f9beb,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1104944236522003231, guid: 83f030578424a764daef3166fb2f9beb,
         type: 3}
@@ -5596,46 +5579,10 @@ PrefabInstance:
       propertyPath: m_Data.m_SourceObjects.m_Item0.transform
       value: 
       objectReference: {fileID: 1387840838}
-    - target: {fileID: 386781226, guid: 510b781ddaa88b94faa4c1faff8b5604, type: 3}
-      propertyPath: StepHeight
-      value: 0.3
-      objectReference: {fileID: 0}
-    - target: {fileID: 386781226, guid: 510b781ddaa88b94faa4c1faff8b5604, type: 3}
-      propertyPath: _hipOffset
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 386781226, guid: 510b781ddaa88b94faa4c1faff8b5604, type: 3}
-      propertyPath: _kneeHeight
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 386781226, guid: 510b781ddaa88b94faa4c1faff8b5604, type: 3}
-      propertyPath: AmatureOffset
-      value: 0.03
-      objectReference: {fileID: 0}
-    - target: {fileID: 386781226, guid: 510b781ddaa88b94faa4c1faff8b5604, type: 3}
-      propertyPath: DistanceGround
-      value: 0.02
-      objectReference: {fileID: 0}
-    - target: {fileID: 386781226, guid: 510b781ddaa88b94faa4c1faff8b5604, type: 3}
-      propertyPath: RayDownDistance
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 386781226, guid: 510b781ddaa88b94faa4c1faff8b5604, type: 3}
-      propertyPath: _rayCheckDistance
-      value: 0.8
-      objectReference: {fileID: 0}
     - target: {fileID: 1815701936, guid: 510b781ddaa88b94faa4c1faff8b5604, type: 3}
       propertyPath: m_Data.m_SourceObjects.m_Item0.transform
       value: 
       objectReference: {fileID: 1387840838}
-    - target: {fileID: 2072208551, guid: 510b781ddaa88b94faa4c1faff8b5604, type: 3}
-      propertyPath: _detectionDelay
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2072208551, guid: 510b781ddaa88b94faa4c1faff8b5604, type: 3}
-      propertyPath: _detectionMaxDist
-      value: 1.04
-      objectReference: {fileID: 0}
     - target: {fileID: 2072208554, guid: 510b781ddaa88b94faa4c1faff8b5604, type: 3}
       propertyPath: _aimCam
       value: 
@@ -5644,18 +5591,6 @@ PrefabInstance:
       propertyPath: _aimPointUI
       value: 
       objectReference: {fileID: 1554956532}
-    - target: {fileID: 2072208557, guid: 510b781ddaa88b94faa4c1faff8b5604, type: 3}
-      propertyPath: m_Radius
-      value: 0.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2072208558, guid: 510b781ddaa88b94faa4c1faff8b5604, type: 3}
-      propertyPath: _jumpCoolDown
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 2072208558, guid: 510b781ddaa88b94faa4c1faff8b5604, type: 3}
-      propertyPath: _parkourCoolDown
-      value: 0.2
-      objectReference: {fileID: 0}
     - target: {fileID: 7021292208336376093, guid: 510b781ddaa88b94faa4c1faff8b5604,
         type: 3}
       propertyPath: m_RootOrder
@@ -5715,11 +5650,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Sister
-      objectReference: {fileID: 0}
-    - target: {fileID: 7021292208336376094, guid: 510b781ddaa88b94faa4c1faff8b5604,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 510b781ddaa88b94faa4c1faff8b5604, type: 3}

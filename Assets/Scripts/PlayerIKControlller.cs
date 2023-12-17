@@ -6,8 +6,8 @@ public class PlayerIKControlller : MonoBehaviour
 {
     [SerializeField] private float _kneeHeight = 0.5f;
     [SerializeField] private float _rayCheckDistance = 1.0f;
-    [Range(0, 1)] public float HipUpDownSpeed = 0.28f;
-    [Range(0, 1)] public float FeetIKPositioningSpeed = 0.5f;
+    public float HipUpDownSpeed = 5.0f;
+    public float FeetIKPositioningSpeed = 5.0f;
 
     private Animator _animator;
     [SerializeField] private GroundChecker _myGroundChecker;
@@ -41,7 +41,7 @@ public class PlayerIKControlller : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        Gizmos.color = Color.magenta;
+        Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(_leftFootIKPosition, 0.05f);
         Gizmos.DrawWireSphere(_rightFootIKPosition, 0.05f);
     }
@@ -82,9 +82,9 @@ public class PlayerIKControlller : MonoBehaviour
 
     private void FootIK()
     {
+        CalculateHipHeight();
         CalculateIKState(AvatarIKGoal.LeftFoot, AvatarIKHint.LeftKnee, ref _leftFootIKPosition);
         CalculateIKState(AvatarIKGoal.RightFoot, AvatarIKHint.RightKnee, ref _rightFootIKPosition);
-        //CalculateHipHeight();
     }
 
     private void CalculateIKState(AvatarIKGoal goal, AvatarIKHint hint , ref Vector3 IKPosition)
@@ -106,8 +106,8 @@ public class PlayerIKControlller : MonoBehaviour
         _animator.SetIKHintPositionWeight(hint, weight);
 
         Ray Ray = new Ray(_animator.GetIKPosition(goal) + Vector3.up * _kneeHeight, Vector3.down);
-        Debug.DrawRay(_animator.GetIKPosition(goal) + Vector3.up * _kneeHeight, Vector3.down * _rayCheckDistance, Color.magenta);
-        if (Physics.Raycast(Ray, out RaycastHit hitInfo, _rayCheckDistance, _layerMask))
+        Debug.DrawRay(_animator.GetIKPosition(goal) + Vector3.up * _kneeHeight, Vector3.down * (_rayCheckDistance + _kneeHeight), Color.magenta);
+        if (Physics.Raycast(Ray, out RaycastHit hitInfo, _rayCheckDistance + _kneeHeight, _layerMask))
         {
             IKPosition = hitInfo.point;
 
@@ -148,13 +148,10 @@ public class PlayerIKControlller : MonoBehaviour
             return;
         }
 
-        float leftOffsetPos = _leftFootIKPosition.y - this.transform.position.y;
-        float rightOffsetPos = _rightFootIKPosition.y - this.transform.position.y;
+        float Offset = Mathf.Abs(_leftFootIKPosition.y - _rightFootIKPosition.y) * 0.5f;
 
-        float totalHipOffset = leftOffsetPos > rightOffsetPos ? rightOffsetPos : leftOffsetPos;
-
-        Vector3 newHipPosition = _animator.bodyPosition + Vector3.up * totalHipOffset;
-        newHipPosition.y = Mathf.Lerp(_lastHipPositionY, newHipPosition.y, HipUpDownSpeed);
+        Vector3 newHipPosition = _animator.bodyPosition + Vector3.down * Offset;
+        newHipPosition.y = Mathf.Lerp(_lastHipPositionY, newHipPosition.y, HipUpDownSpeed * Time.deltaTime);
 
         _animator.bodyPosition = newHipPosition;
         _lastHipPositionY = _animator.bodyPosition.y;

@@ -725,7 +725,7 @@ CharacterController:
   m_Enabled: 1
   serializedVersion: 2
   m_Height: 1.6
-  m_Radius: 0.1
+  m_Radius: 0.2
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
@@ -866,6 +866,7 @@ MonoBehaviour:
   _IgnoreRaycast:
     serializedVersion: 2
     m_Bits: 166
+  _jumpCoolDown: 0.5
   InputAxisSensitivity: 2
   AimSpeed: 0.1
   WeaponRPM: 800
@@ -2073,10 +2074,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc4ad0a6e16296245ae83926ce1135c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DistanceGround: 0.1
+  _kneeHeight: 0.5
+  _rayCheckDistance: 0.3
+  HipUpDownSpeed: 20
+  FeetIKPositioningSpeed: 20
   _myGroundChecker: {fileID: 2072208551}
   _player: {fileID: 2072208558}
   _playerParkour: {fileID: 2072208553}
+  _hipOffset: 0
 --- !u!114 &7021292208948323740
 MonoBehaviour:
   m_ObjectHideFlags: 0
