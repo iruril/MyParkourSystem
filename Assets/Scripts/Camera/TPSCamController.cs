@@ -21,7 +21,6 @@ public class TPSCamController : MonoBehaviour
     public Transform CamTarget { get; private set; }
     public bool IsCamInSight { get; private set; } = false;
 
-    private Transform _animaterHipPosition;
     private float _yAngleRotationEuler = 0;
     private float _xAngleRotationEuler = 0;
 
@@ -32,8 +31,6 @@ public class TPSCamController : MonoBehaviour
     {
         _myCamera = Camera.main;
         CamTarget = GameObject.FindWithTag("CamTarget").transform;
-        Animator animator = GetComponent<PlayerAnimationController>().MyAnimator;
-        _animaterHipPosition = animator.GetBoneTransform(HumanBodyBones.Hips);
     }
 
     private void FixedUpdate()
@@ -43,7 +40,7 @@ public class TPSCamController : MonoBehaviour
 
     private void LateUpdate()
     {
-        CamTarget.position = _animaterHipPosition.position + Vector3.up * _camOffsetY;
+        CamTarget.position = this.transform.position + Vector3.up * _camOffsetY;
         CamTargetRotate();
     }
 

@@ -8,7 +8,6 @@ public class PlayerIKControlller : MonoBehaviour
     [SerializeField] private float _heelHeight = 0.02f;
     [SerializeField] private float _rayCheckDistance = 1.0f;
     [SerializeField] private float _hipUpDownSpeed = 5.0f;
-    [SerializeField] private float _feetIKPositioningSpeed = 5.0f;
 
     [SerializeField] private float _defaultBodyPositionY = 0.85f;
     [SerializeField] private float _aimBodyPositionY = 0.6f;

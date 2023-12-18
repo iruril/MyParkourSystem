@@ -804,6 +804,7 @@ MonoBehaviour:
   _aimPointUI: {fileID: 0}
   _aimCam: {fileID: 0}
   _mouseRotateSpeed: 1
+  _camOffsetY: 1.2
   _viewAngleY: 180
   _viewAngleX: 160
   _viewAngleYOffset: 20
@@ -2077,14 +2078,12 @@ MonoBehaviour:
   _kneeHeight: 0.5
   _heelHeight: 0.02
   _rayCheckDistance: 0.3
-  HipUpDownSpeed: 10
-  FeetIKPositioningSpeed: 10
+  _hipUpDownSpeed: 3
   _defaultBodyPositionY: 0.7
   _aimBodyPositionY: 0.6
   _myGroundChecker: {fileID: 2072208551}
   _player: {fileID: 2072208558}
   _playerParkour: {fileID: 2072208553}
-  _hipOffset: 0
 --- !u!114 &7021292208948323740
 MonoBehaviour:
   m_ObjectHideFlags: 0
