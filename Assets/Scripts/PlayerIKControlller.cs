@@ -5,9 +5,13 @@ using UnityEngine;
 public class PlayerIKControlller : MonoBehaviour
 {
     [SerializeField] private float _kneeHeight = 0.5f;
+    [SerializeField] private float _heelHeight = 0.02f;
     [SerializeField] private float _rayCheckDistance = 1.0f;
     public float HipUpDownSpeed = 5.0f;
     public float FeetIKPositioningSpeed = 5.0f;
+
+    [SerializeField] private float _defaultBodyPositionY = 0.85f;
+    [SerializeField] private float _aimBodyPositionY = 0.6f;
 
     private Animator _animator;
     [SerializeField] private GroundChecker _myGroundChecker;
@@ -41,7 +45,7 @@ public class PlayerIKControlller : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        Gizmos.color = Color.yellow;
+        Gizmos.color = Color.magenta;
         Gizmos.DrawWireSphere(_leftFootIKPosition, 0.05f);
         Gizmos.DrawWireSphere(_rightFootIKPosition, 0.05f);
     }
@@ -83,60 +87,36 @@ public class PlayerIKControlller : MonoBehaviour
     private void FootIK()
     {
         CalculateHipHeight();
-        CalculateIKState(AvatarIKGoal.LeftFoot, AvatarIKHint.LeftKnee, ref _leftFootIKPosition);
-        CalculateIKState(AvatarIKGoal.RightFoot, AvatarIKHint.RightKnee, ref _rightFootIKPosition);
+        CalculateIKState(AvatarIKGoal.LeftFoot, HumanBodyBones.LeftFoot, ref _leftFootIKPosition, LeftFootIKWeight, _lefttFootUpDirection, HumanBodyBones.LeftLowerLeg);
+        CalculateIKState(AvatarIKGoal.RightFoot, HumanBodyBones.RightFoot, ref _rightFootIKPosition, RightFootIKWeight, _rightFootUpDirection, HumanBodyBones.RightLowerLeg);
     }
 
-    private void CalculateIKState(AvatarIKGoal goal, AvatarIKHint hint , ref Vector3 IKPosition)
+    private void CalculateIKState(AvatarIKGoal goal, HumanBodyBones foot, ref Vector3 footIKPosition, string weightName, Vector3 footUp, HumanBodyBones knee)
     {
         float weight;
-        Vector3 footUpVector;
-        if (goal == AvatarIKGoal.LeftFoot)
-        {
-            weight = _animator.GetFloat(LeftFootIKWeight);
-            footUpVector = _lefttFootUpDirection;
-        }
-        else
-        {
-            weight = _animator.GetFloat(RightFootIKWeight);
-            footUpVector = _rightFootUpDirection;
-        }
+        weight = _animator.GetFloat(weightName);
+
         _animator.SetIKPositionWeight(goal, weight);
         _animator.SetIKRotationWeight(goal, weight);
-        _animator.SetIKHintPositionWeight(hint, weight);
 
         Ray Ray = new Ray(_animator.GetIKPosition(goal) + Vector3.up * _kneeHeight, Vector3.down);
         Debug.DrawRay(_animator.GetIKPosition(goal) + Vector3.up * _kneeHeight, Vector3.down * (_rayCheckDistance + _kneeHeight), Color.magenta);
         if (Physics.Raycast(Ray, out RaycastHit hitInfo, _rayCheckDistance + _kneeHeight, _layerMask))
         {
-            IKPosition = hitInfo.point;
+            footIKPosition = hitInfo.point;
+            footIKPosition.y += _heelHeight;
 
             Quaternion footIKRotation;
-            if (goal == AvatarIKGoal.LeftFoot)
-            {
-                footIKRotation = Quaternion.FromToRotation(footUpVector, hitInfo.normal) * CalcutateFootRotation(HumanBodyBones.LeftLowerLeg);
-            }
-            else
-            {
-                footIKRotation = Quaternion.FromToRotation(footUpVector, hitInfo.normal) * CalcutateFootRotation(HumanBodyBones.RightLowerLeg);
-            }
-            _animator.SetIKPosition(goal, IKPosition);
+
+            footIKRotation = Quaternion.FromToRotation(footUp, hitInfo.normal) * CalcutateFootRotation(knee);
+            _animator.SetIKPosition(goal, footIKPosition);
             _animator.SetIKRotation(goal, footIKRotation);
         }
         else
         {
-            if (goal == AvatarIKGoal.LeftFoot)
-            {
-                IKPosition = _animator.GetBoneTransform(HumanBodyBones.LeftFoot).position;
-                IKPosition.y = this.transform.position.y - _kneeHeight;
-                _animator.SetIKPosition(goal, IKPosition);
-            }
-            else
-            {
-                IKPosition = _animator.GetBoneTransform(HumanBodyBones.RightFoot).position;
-                IKPosition.y = this.transform.position.y - _kneeHeight;
-                _animator.SetIKPosition(goal, IKPosition);
-            }
+            footIKPosition = _animator.GetBoneTransform(foot).position;
+            footIKPosition.y = this.transform.position.y - _kneeHeight;
+            _animator.SetIKPosition(goal, footIKPosition);
         }
     }
 
@@ -148,10 +128,29 @@ public class PlayerIKControlller : MonoBehaviour
             return;
         }
 
-        float Offset = Mathf.Abs(_leftFootIKPosition.y - _rightFootIKPosition.y) * 0.5f;
+        float Offset;
+        if (_animator.GetFloat(LeftFootIKWeight) == 1 && _animator.GetFloat(RightFootIKWeight) == 1)
+        {
+            Offset = Mathf.Abs(_leftFootIKPosition.y - _rightFootIKPosition.y) * 0.5f;
+        }
+        else
+        {
+            Offset = 0;
+        }
 
-        Vector3 newHipPosition = _animator.bodyPosition + Vector3.down * Offset;
-        newHipPosition.y = Mathf.Lerp(_lastHipPositionY, newHipPosition.y, HipUpDownSpeed * Time.deltaTime);
+        Vector3 bodyPosition = _animator.bodyPosition;
+        switch (_player.CurrentMode)
+        {
+            case PlayerController.MoveMode.Default:
+                bodyPosition.y = _player.transform.position.y + _defaultBodyPositionY;
+                break;
+            case PlayerController.MoveMode.Aim:
+                bodyPosition.y = _player.transform.position.y + _aimBodyPositionY;
+                break;
+        }
+
+        Vector3 newHipPosition = bodyPosition + Vector3.down * Offset;
+        newHipPosition.y = Mathf.Lerp(_lastHipPositionY, newHipPosition.y, HipUpDownSpeed * Time.fixedDeltaTime);
 
         _animator.bodyPosition = newHipPosition;
         _lastHipPositionY = _animator.bodyPosition.y;

@@ -707,7 +707,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1104944236522003231
 Transform:
   m_ObjectHideFlags: 0
@@ -800,7 +800,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1910ca6f3d577432396177461ecad4ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Speed: 6
+  Speed: 5
   SpeedMultiplyOnAim: 0.4
   JumpPower: 3
   GravityForce: 9.8
@@ -2010,9 +2010,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _kneeHeight: 0.5
+  _heelHeight: 0.02
   _rayCheckDistance: 0.3
-  HipUpDownSpeed: 20
-  FeetIKPositioningSpeed: 20
+  HipUpDownSpeed: 10
+  FeetIKPositioningSpeed: 10
+  _defaultBodyPositionY: 0.7
+  _aimBodyPositionY: 0.6
   _myGroundChecker: {fileID: 738481080}
   _player: {fileID: 738481074}
   _playerParkour: {fileID: 738481078}

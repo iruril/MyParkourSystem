@@ -12,7 +12,7 @@ public class GroundChecker : MonoBehaviour
 
     private float _stepMinDepth = 0.3f;
     private float _stepMaxHeight = 0.3f;
-    private float _stepHeightErrorRange = 0.2f;
+    private const float _stepHeightErrorRange = 0.2f;
 
     private Vector3 _rayOrigin;
     private Vector3 _rayEndPos;
@@ -45,10 +45,14 @@ public class GroundChecker : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        IsSnapGrounded();
+    }
+
     private void FixedUpdate()
     {
         IsGrounded();
-        IsSnapGrounded();
     }
 
     private void IsGrounded()
