@@ -7,8 +7,8 @@ public class PlayerIKControlller : MonoBehaviour
     [SerializeField] private float _kneeHeight = 0.5f;
     [SerializeField] private float _heelHeight = 0.02f;
     [SerializeField] private float _rayCheckDistance = 1.0f;
-    public float HipUpDownSpeed = 5.0f;
-    public float FeetIKPositioningSpeed = 5.0f;
+    [SerializeField] private float _hipUpDownSpeed = 5.0f;
+    [SerializeField] private float _feetIKPositioningSpeed = 5.0f;
 
     [SerializeField] private float _defaultBodyPositionY = 0.85f;
     [SerializeField] private float _aimBodyPositionY = 0.6f;
@@ -23,9 +23,7 @@ public class PlayerIKControlller : MonoBehaviour
     private float _animIKWeightLerpTime = 0.35f;
     private bool _ikWeightSet = false;
 
-    [SerializeField] private float _hipOffset = 0;
     private float _lastHipPositionY = 0;
-
     private Vector3 _leftFootIKPosition = Vector3.zero;
     private Vector3 _rightFootIKPosition = Vector3.zero;
     private Vector3 _lefttFootUpDirection;
@@ -150,7 +148,7 @@ public class PlayerIKControlller : MonoBehaviour
         }
 
         Vector3 newHipPosition = bodyPosition + Vector3.down * Offset;
-        newHipPosition.y = Mathf.Lerp(_lastHipPositionY, newHipPosition.y, HipUpDownSpeed * Time.fixedDeltaTime);
+        newHipPosition.y = Mathf.Lerp(_lastHipPositionY, newHipPosition.y, _hipUpDownSpeed * Time.fixedDeltaTime);
 
         _animator.bodyPosition = newHipPosition;
         _lastHipPositionY = _animator.bodyPosition.y;
