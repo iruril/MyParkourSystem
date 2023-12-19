@@ -11,6 +11,7 @@ public class PlayerIKControlller : MonoBehaviour
 
     [SerializeField] private float _defaultBodyPositionY = 0.85f;
     [SerializeField] private float _aimBodyPositionY = 0.6f;
+    [SerializeField] private float _dynamicMoveBodyPositionY = 0.45f;
 
     private Animator _animator;
     [SerializeField] private GroundChecker _myGroundChecker;
@@ -27,6 +28,8 @@ public class PlayerIKControlller : MonoBehaviour
     private Vector3 _rightFootIKPosition = Vector3.zero;
     private Vector3 _lefttFootUpDirection;
     private Vector3 _rightFootUpDirection;
+    private bool _isLeftFootPlaced = false;
+    private bool _isRightFootPlaced = false;
 
     private const string LeftFootIKWeight = "LeftFootIKWeight";
     private const string RightFootIKWeight = "RightFootIKWeight";
@@ -51,6 +54,7 @@ public class PlayerIKControlller : MonoBehaviour
     {
         if (_player.IsOnDynamicMove)
         {
+            SetDynamicMoveHipHeight();
             if (!_ikWeightSet)
             {
                 StartCoroutine(WeightLerp());
@@ -83,12 +87,20 @@ public class PlayerIKControlller : MonoBehaviour
 
     private void FootIK()
     {
-        CalculateHipHeight();
-        CalculateIKState(AvatarIKGoal.LeftFoot, HumanBodyBones.LeftFoot, ref _leftFootIKPosition, LeftFootIKWeight, _lefttFootUpDirection, HumanBodyBones.LeftLowerLeg);
-        CalculateIKState(AvatarIKGoal.RightFoot, HumanBodyBones.RightFoot, ref _rightFootIKPosition, RightFootIKWeight, _rightFootUpDirection, HumanBodyBones.RightLowerLeg);
+        if (!_isLeftFootPlaced && !_isRightFootPlaced)
+        {
+            SetDefaultHipHeight();
+        }
+        else
+        {
+            CalculateHipHeight();
+        }
+
+        _isLeftFootPlaced = CalculateIKState(AvatarIKGoal.LeftFoot, HumanBodyBones.LeftFoot, ref _leftFootIKPosition, LeftFootIKWeight, _lefttFootUpDirection, HumanBodyBones.LeftLowerLeg);
+        _isRightFootPlaced = CalculateIKState(AvatarIKGoal.RightFoot, HumanBodyBones.RightFoot, ref _rightFootIKPosition, RightFootIKWeight, _rightFootUpDirection, HumanBodyBones.RightLowerLeg);
     }
 
-    private void CalculateIKState(AvatarIKGoal goal, HumanBodyBones foot, ref Vector3 footIKPosition, string weightName, Vector3 footUp, HumanBodyBones knee)
+    private bool CalculateIKState(AvatarIKGoal goal, HumanBodyBones foot, ref Vector3 footIKPosition, string weightName, Vector3 footUp, HumanBodyBones knee)
     {
         float weight;
         weight = _animator.GetFloat(weightName);
@@ -108,27 +120,82 @@ public class PlayerIKControlller : MonoBehaviour
             footIKRotation = Quaternion.FromToRotation(footUp, hitInfo.normal) * CalcutateFootRotation(knee);
             _animator.SetIKPosition(goal, footIKPosition);
             _animator.SetIKRotation(goal, footIKRotation);
+            return true;
         }
         else
         {
             footIKPosition = _animator.GetBoneTransform(foot).position;
-            footIKPosition.y = this.transform.position.y - _kneeHeight;
+            if (_player.MyGroundChecker.IsGround)
+            {
+                footIKPosition.y = this.transform.position.y - _kneeHeight;
+            }
+            else
+            {
+                footIKPosition.y = this.transform.position.y;
+            }
             _animator.SetIKPosition(goal, footIKPosition);
+            return false;
         }
     }
 
     private void CalculateHipHeight()
     {
-        if (_leftFootIKPosition == Vector3.zero || _rightFootIKPosition == Vector3.zero || _lastHipPositionY == 0)
-        {
-            _lastHipPositionY = _animator.bodyPosition.y;
-            return;
-        }
-
         float Offset;
         if (_animator.GetFloat(LeftFootIKWeight) == 1 && _animator.GetFloat(RightFootIKWeight) == 1)
         {
             Offset = Mathf.Abs(_leftFootIKPosition.y - _rightFootIKPosition.y) * 0.5f;
+        }
+        else
+        {
+            Offset = 0;
+        }
+
+        Vector3 bodyPosition = _animator.bodyPosition;
+        switch (_player.CurrentMode)
+        {
+            case PlayerController.MoveMode.Default:
+                bodyPosition.y = _player.transform.position.y + _defaultBodyPositionY;
+                break;
+            case PlayerController.MoveMode.Aim:
+                bodyPosition.y = _player.transform.position.y + _aimBodyPositionY;
+                break;
+        }
+
+        Vector3 newHipPosition = bodyPosition + Vector3.down * Offset;
+        newHipPosition.y = Mathf.Lerp(_lastHipPositionY, newHipPosition.y, _hipUpDownSpeed * Time.fixedDeltaTime);
+
+        _animator.bodyPosition = newHipPosition;
+        _lastHipPositionY = _animator.bodyPosition.y;
+    }
+
+    private void SetDynamicMoveHipHeight()
+    {
+        float Offset;
+        if (_animator.GetFloat(LeftFootIKWeight) == 1 && _animator.GetFloat(RightFootIKWeight) == 1)
+        {
+            Offset = _player.transform.position.y - _leftFootIKPosition.y;
+        }
+        else
+        {
+            Offset = 0;
+        }
+
+        Vector3 bodyPosition = _animator.bodyPosition;
+        bodyPosition.y = _player.transform.position.y + _dynamicMoveBodyPositionY;
+
+        Vector3 newHipPosition = bodyPosition + Vector3.down * Offset;
+        newHipPosition.y = Mathf.Lerp(_lastHipPositionY, newHipPosition.y, _hipUpDownSpeed * Time.fixedDeltaTime);
+
+        _animator.bodyPosition = newHipPosition;
+        _lastHipPositionY = _animator.bodyPosition.y;
+    }
+
+    private void SetDefaultHipHeight()
+    {
+        float Offset;
+        if (_animator.GetFloat(LeftFootIKWeight) == 1 && _animator.GetFloat(RightFootIKWeight) == 1)
+        {
+            Offset = _player.transform.position.y - _leftFootIKPosition.y;
         }
         else
         {

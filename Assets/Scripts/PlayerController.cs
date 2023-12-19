@@ -344,7 +344,6 @@ public class PlayerController : MonoBehaviour
         _myCoroutine = null; 
         _isJumping = false;
         JumpMode = PlayerParkour.JumpState.None;
-        yield break;
     }
 
     private IEnumerator DoJumpClimbTask()
@@ -440,7 +439,6 @@ public class PlayerController : MonoBehaviour
         _myCoroutine = null;
         _isJumping = false;
         JumpMode = PlayerParkour.JumpState.None;
-        yield break;
     }
     #endregion
     #endregion
