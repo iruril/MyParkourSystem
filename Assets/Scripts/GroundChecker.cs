@@ -20,8 +20,11 @@ public class GroundChecker : MonoBehaviour
     [SerializeField] private bool drawGizmo;
     [SerializeField] private Vector3 boxSize = new Vector3(0.5f, 0.3f, 0.5f);
 
+    private PlayerController _player = null;
+
     private void Start()
     {
+        _player = GetComponent<PlayerController>();
         CharacterController characterController = GetComponent<CharacterController>();
         _stepMaxHeight = characterController.stepOffset + _stepHeightErrorRange;
         _stepMinDepth = characterController.stepOffset;
@@ -36,12 +39,15 @@ public class GroundChecker : MonoBehaviour
 
         Gizmos.color = Color.red;
 
-        _rayOrigin = transform.position + (transform.forward * _stepMinDepth) + (Vector3.up * _stepMaxHeight);
-        _rayEndPos = _rayOrigin + Vector3.down * _stepMaxHeight * 2;
-        Gizmos.DrawLine(_rayOrigin, _rayEndPos);
-        if (Physics.Linecast(_rayOrigin, _rayEndPos, out RaycastHit hitInfo ,GroundLayer))
+        if (_player != null)
         {
-            Gizmos.DrawWireSphere(hitInfo.point, 0.1f);
+            _rayOrigin = transform.position + (_player.PlayerVelocity.normalized * _stepMinDepth) + (Vector3.up * _stepMaxHeight);
+            _rayEndPos = _rayOrigin + Vector3.down * _stepMaxHeight * 2;
+            Gizmos.DrawLine(_rayOrigin, _rayEndPos);
+            if (Physics.Linecast(_rayOrigin, _rayEndPos, out RaycastHit hitInfo, GroundLayer))
+            {
+                Gizmos.DrawWireSphere(hitInfo.point, 0.1f);
+            }
         }
     }
 
@@ -62,7 +68,8 @@ public class GroundChecker : MonoBehaviour
 
     private void IsSnapGrounded()
     {
-        _rayOrigin = transform.position + (transform.forward * _stepMinDepth) + (Vector3.up * _stepMaxHeight);
+        //_rayOrigin = transform.position + (transform.forward * _stepMinDepth) + (Vector3.up * _stepMaxHeight);
+        _rayOrigin = transform.position + (_player.PlayerVelocity.normalized * _stepMinDepth) + (Vector3.up * _stepMaxHeight);
         _rayEndPos = _rayOrigin + Vector3.down * _stepMaxHeight * 2;
         if (Physics.Linecast(_rayOrigin, _rayEndPos, GroundLayer))
         {

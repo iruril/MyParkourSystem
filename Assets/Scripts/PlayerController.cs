@@ -32,7 +32,6 @@ public class PlayerController : MonoBehaviour
 
     private Vector3 _snapGroundForce = Vector3.zero;
     public Vector3 PlayerVelocity { get; private set; } = Vector3.zero;
-    public Vector3 PlayerVelocityOnAim { get; private set; } = Vector3.zero;
 
     #region Input Varibales
     public float InputAxisSensitivity = 0.5f;
@@ -511,7 +510,6 @@ public class PlayerController : MonoBehaviour
     private void CalculatePlayerTransformByInputOnAim()
     {
         _snapGroundForce = Vector3.zero;
-        PlayerVelocityOnAim = transform.InverseTransformDirection(_player.velocity);
 
         if (!_isJumping)
         {
