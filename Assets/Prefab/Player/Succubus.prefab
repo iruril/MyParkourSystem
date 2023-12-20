@@ -740,7 +740,7 @@ CharacterController:
   m_Enabled: 1
   serializedVersion: 2
   m_Height: 1.6
-  m_Radius: 0.2
+  m_Radius: 0.1
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
@@ -2016,6 +2016,7 @@ MonoBehaviour:
   _hipUpDownSpeed: 3
   _defaultBodyPositionY: 0.7
   _aimBodyPositionY: 0.6
+  _dynamicMoveBodyPositionY: 0.45
   _myGroundChecker: {fileID: 738481080}
   _player: {fileID: 738481074}
   _playerParkour: {fileID: 738481078}
