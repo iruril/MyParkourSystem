@@ -44,6 +44,7 @@ public class PlayerAnimationController : MonoBehaviour
         _player.JumpEvent += () => DoAction(DefaultJumpCoroutine());
         _player.VaultEvent += () => DoAction(VaultCoroutine());
         _player.JumpClimbEvent += () => DoAction(JumpClimbCoroutine());
+        _player.ReloadEvent += () => DoAction(Reload());
     }
 
     private void Start()
@@ -83,7 +84,7 @@ public class PlayerAnimationController : MonoBehaviour
         _myBodyAimIK.weight = _currentWeight;
         _myAimIK.weight = _currentWeight;
         _myHeadAimIK.weight = _currentWeight;
-        _myLeftArmIK.weight = _currentWeight;
+        _myLeftArmIK.weight = _currentWeight - MyAnimator.GetFloat(Constants.LeftHandIKWeight);
 
         _targetLookAtWeight = (_myTPSCam.IsCamInSight && _mySpeed == 0) ? 0.75f : 0f;
         _currentLookAtWeight = Mathf.Lerp(_currentLookAtWeight, _targetLookAtWeight, Time.deltaTime / _lookAtTransitionTime);
@@ -156,6 +157,15 @@ public class PlayerAnimationController : MonoBehaviour
     {
         MyAnimator.SetFloat("SpeedForward", _player.VerticalInput);
         MyAnimator.SetFloat("SpeedRight", _player.HorizontalInput);
+    }
+
+    private IEnumerator Reload()
+    {
+        MyAnimator.SetLayerWeight(2, 1);
+        MyAnimator.Play("Reloading");
+        yield return YieldCache.WaitForSeconds(3.0f); //Reload Time
+
+        MyAnimator.SetLayerWeight(2, 0);
     }
     #endregion
 }

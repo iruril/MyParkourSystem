@@ -9,10 +9,12 @@ public class PlayerController : MonoBehaviour
     public delegate void DoJump();
     public delegate void DoVault();
     public delegate void DoJumpClimb();
+    public delegate void DoReload();
 
     public event DoJump JumpEvent;
     public event DoVault VaultEvent;
     public event DoJumpClimb JumpClimbEvent;
+    public event DoReload ReloadEvent;
     #endregion
 
     public Camera MyCamera { get; private set; }
@@ -66,6 +68,7 @@ public class PlayerController : MonoBehaviour
     #region Shooting Variables
     private Vector3 _refVelocity = Vector3.zero;
     private bool _isShooting = false;
+    private bool _isReloading = false;
 
     private Vector3 _aimPosition;
     private Vector3 _aimNormal;
@@ -120,6 +123,21 @@ public class PlayerController : MonoBehaviour
                 CurrentMode = MoveMode.Default;
                 _myTPSCam.DeactivateAimModeCam();
             }
+        }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            StartCoroutine(Reload());
+        }
+
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            _playerStat.WeaponSwap(0);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            _playerStat.WeaponSwap(1);
         }
 
         switch (CurrentMode)
@@ -534,6 +552,25 @@ public class PlayerController : MonoBehaviour
         bullet.GetComponent<ProjectileControl>().Initailize(_playerStat.AttackStatus.RoundDamage, _aimPosition, _aimNormal);
         yield return _playerStat.AttackStatus.FireRateWFS;
         _isShooting = false;
+    }
+
+    private IEnumerator Reload()
+    {
+        if (_isReloading) yield break;
+        if (_playerStat.AttackStatus.CurrentRound == _playerStat.AttackStatus.MagazineCapacity + 1) yield break;
+
+        _isReloading = true;
+        ReloadEvent?.Invoke();
+        yield return YieldCache.WaitForSeconds(3.0f);
+        if(_playerStat.AttackStatus.CurrentRound == 0)
+        {
+            _playerStat.AttackStatus.CurrentRound = _playerStat.AttackStatus.MagazineCapacity;
+        }
+        else
+        {
+            _playerStat.AttackStatus.CurrentRound = _playerStat.AttackStatus.MagazineCapacity + 1;
+        }
+        _isReloading = false;
     }
     #endregion
 }

@@ -17,8 +17,13 @@ public class AttackStatus
 
     public WaitForSeconds FireRateWFS { get; private set; } = null;
 
+    private Dictionary<string, int> _weaponHistory = new();
+
     public void SwapStat(Weapon weapon)
     {
+        if (CurrentWeapon == weapon.WeaponName) return;
+        _weaponHistory[CurrentWeapon] = CurrentRound;
+
         CurrentWeapon = weapon.WeaponName;
 
         AimSpeed = weapon.WeaponStat.AimSpeed;
@@ -29,6 +34,13 @@ public class AttackStatus
         ShootingModes = weapon.WeaponStat.ShootingModes;
         FireRateWFS = weapon.WeaponStat.FireRateWFS;
 
-        CurrentRound = MagazineCapacity;
+        if (_weaponHistory.ContainsKey(CurrentWeapon))
+        {
+            CurrentRound = _weaponHistory[CurrentWeapon];
+        }
+        else
+        {
+            CurrentRound = MagazineCapacity;
+        }
     }
 }

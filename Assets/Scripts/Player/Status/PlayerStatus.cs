@@ -48,6 +48,19 @@ public class PlayerStatus : MonoBehaviour, IDamageable
         AttackStatus.SwapStat(GameManager.Instance.WeaponList[0]);
     }
 
+    public void WeaponSwap(int weaponIndex)
+    {
+        if (!GameManager.Instance.IsWeaponListLoaded) return;
+        if (GameManager.Instance.WeaponList[weaponIndex] != null)
+        {
+            AttackStatus.SwapStat(GameManager.Instance.WeaponList[weaponIndex]);
+        }
+        else
+        {
+            Debug.Log("해당 인덱스를 가진 무기가 없습니다!!");
+        }
+    }
+
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Backspace))
