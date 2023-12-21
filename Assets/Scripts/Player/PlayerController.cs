@@ -527,11 +527,11 @@ public class PlayerController : MonoBehaviour
     private IEnumerator Shoot()
     {
         if (_playerStat.AttackStatus.CurrentRound <= 0) yield break;
+        _playerStat.AttackStatus.CurrentRound--;
         _isShooting = true;
         MuzzleFlash.Play();
         GameObject bullet = Instantiate(Bullet, Muzzle.position, Muzzle.rotation);
         bullet.GetComponent<ProjectileControl>().Initailize(_playerStat.AttackStatus.RoundDamage, _aimPosition, _aimNormal);
-        _playerStat.AttackStatus.CurrentRound--;
         yield return _playerStat.AttackStatus.FireRateWFS;
         _isShooting = false;
     }
