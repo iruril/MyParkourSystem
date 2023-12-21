@@ -34,7 +34,7 @@ public class WeaponStat
             this.ShootingModes = ShootingModes;
         }
 
-        _fireRate = 1 / (this.RoundsPerMinute / 60);
+        _fireRate = 1 / (float)(this.RoundsPerMinute / 60);
         FireRateWFS = YieldCache.WaitForSeconds(_fireRate);
     }
 }

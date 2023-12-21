@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerStatus : MonoBehaviour, IDamageable
@@ -10,7 +12,8 @@ public class PlayerStatus : MonoBehaviour, IDamageable
     public float JumpPower = 5f;
     public float GravityForce = 9.8f;
     public float RotateSpeed = 30.0f;
-    public float WeaponDamage = 30.0f;
+
+    public AttackStatus AttackStatus = new();
 
     public float MyStartingHealth = 100.0f;
     public float Health { get; set; }
@@ -36,6 +39,13 @@ public class PlayerStatus : MonoBehaviour, IDamageable
         MyCurrentSpeed = Speed;
         MyCurrentSpeedOnAim = MyCurrentSpeed * SpeedMultiplyOnAim;
         Health = MyStartingHealth;
+        StartCoroutine(WeaponInitialize());
+    }
+
+    private IEnumerator WeaponInitialize()
+    {
+        yield return new WaitUntil(() => GameManager.Instance.IsWeaponListLoaded);
+        AttackStatus.SwapStat(GameManager.Instance.WeaponList[0]);
     }
 
     private void Update()

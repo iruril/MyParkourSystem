@@ -64,12 +64,8 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region Shooting Variables
-    public float AimSpeed = 0.2f;
     private Vector3 _refVelocity = Vector3.zero;
-    public float WeaponRPM = 850;
-    private float _fireRate;
     private bool _isShooting = false;
-    private WaitForSeconds _fireRateWFS = null;
 
     private Vector3 _aimPosition;
     private Vector3 _aimNormal;
@@ -82,8 +78,6 @@ public class PlayerController : MonoBehaviour
         Cursor.visible = false;
 
         _aimPoint = GameObject.FindWithTag("AimPoint").transform;
-        _fireRate = 1 / (WeaponRPM / 60);
-        _fireRateWFS = YieldCache.WaitForSeconds(_fireRate);
 
         JumpEvent += () => StartCoroutine(DefaultJumpTask());
         VaultEvent += () => DoAction(DoVaultTask());
@@ -451,7 +445,6 @@ public class PlayerController : MonoBehaviour
     private void RotatePlayerOnAimMode()
     {
         this.transform.rotation = Quaternion.Euler(0, _myTPSCam.CamTarget.rotation.eulerAngles.y, 0);
-        Vector2 screenCenter = new Vector2(Screen.width * 0.5f, Screen.height * 0.5f);
 
         Ray aimPointRay = MyCamera.ScreenPointToRay(Input.mousePosition);
         RaycastHit hitInfo;
@@ -470,12 +463,12 @@ public class PlayerController : MonoBehaviour
                 _aimPosition = aimPos;
                 _aimNormal = hitInfo.normal;
             }
-            _aimPoint.position = Vector3.SmoothDamp(_aimPoint.position, aimPos, ref _refVelocity, AimSpeed);
+            _aimPoint.position = Vector3.SmoothDamp(_aimPoint.position, aimPos, ref _refVelocity, _playerStat.AttackStatus.AimSpeed);
         }
         else
         {
             Vector3 aimPos = aimPointRay.origin + aimPointRay.direction * 15f;
-            _aimPoint.position = Vector3.SmoothDamp(_aimPoint.position, aimPos, ref _refVelocity, AimSpeed);
+            _aimPoint.position = Vector3.SmoothDamp(_aimPoint.position, aimPos, ref _refVelocity, _playerStat.AttackStatus.AimSpeed);
         }
     }
 
@@ -533,11 +526,13 @@ public class PlayerController : MonoBehaviour
 
     private IEnumerator Shoot()
     {
+        if (_playerStat.AttackStatus.CurrentRound <= 0) yield break;
         _isShooting = true;
         MuzzleFlash.Play();
         GameObject bullet = Instantiate(Bullet, Muzzle.position, Muzzle.rotation);
-        bullet.GetComponent<ProjectileControl>().Initailize(_playerStat.WeaponDamage, _aimPosition, _aimNormal);
-        yield return _fireRateWFS;
+        bullet.GetComponent<ProjectileControl>().Initailize(_playerStat.AttackStatus.RoundDamage, _aimPosition, _aimNormal);
+        _playerStat.AttackStatus.CurrentRound--;
+        yield return _playerStat.AttackStatus.FireRateWFS;
         _isShooting = false;
     }
     #endregion

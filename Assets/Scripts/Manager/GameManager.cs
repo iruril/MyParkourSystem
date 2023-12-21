@@ -26,30 +26,33 @@ public class GameManager : MonoBehaviour
 
     public GameObject MyPlayer { get; set; }
 
-    public Dictionary<string, Weapon> WeaponDictionary = new();
-#if UNITY_EDITOR
     public List<Weapon> WeaponList = new(); //For Debug
-#endif
+
+    public bool IsWeaponListLoaded = false;
+
     private void Awake()
     {
         if (_instance == null)
         {
             _instance = this;
-
-            string jsonData = File.ReadAllText(Application.dataPath + "/Resources/Json/Items/WeaponList.json");
-            Dictionary<string, List<Weapon>> weaponList = JsonConvert.DeserializeObject<Dictionary<string, List<Weapon>>>(jsonData);
-            foreach (var item in weaponList[Constants.WeaponList])
-            {
-                this.WeaponDictionary.Add(item.WeaponID, item);
-#if UNITY_EDITOR
-                this.WeaponList.Add(item);
-#endif
-            }
+            WeaponDataLoad();
+            
             DontDestroyOnLoad(gameObject);
         }
         else
         {
             Destroy(gameObject);
         }
+    }
+
+    private void WeaponDataLoad()
+    {
+        string jsonData = File.ReadAllText(Application.dataPath + "/Resources/Json/Items/WeaponList.json");
+        Dictionary<string, List<Weapon>> weaponList = JsonConvert.DeserializeObject<Dictionary<string, List<Weapon>>>(jsonData);
+        foreach (var item in weaponList[Constants.WeaponList])
+        {
+            this.WeaponList.Add(item);
+        }
+        IsWeaponListLoaded = true;
     }
 }
