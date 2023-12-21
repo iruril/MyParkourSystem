@@ -1,0 +1,34 @@
+{
+  "WeaponList": [
+    {
+      "WeaponID": "weapon_smg_mpx",
+      "WeaponName": "MPX",
+      "WeaponStat": {
+        "AimSpeed": 0.2,
+        "RoundDamage": 20,
+        "MagazineCapacity": 40,
+        "RoundsPerMinute": 850,
+        "MuzzleVelocity": 600,
+        "ShootingModes": [
+          0,
+          2
+        ]
+      }
+    },
+    {
+      "WeaponID": "weapon_ar_ak74m",
+      "WeaponName": "AK-74M",
+      "WeaponStat": {
+        "AimSpeed": 0.3,
+        "RoundDamage": 35,
+        "MagazineCapacity": 30,
+        "RoundsPerMinute": 650,
+        "MuzzleVelocity": 600,
+        "ShootingModes": [
+          0,
+          2
+        ]
+      }
+    }
+  ]
+}

@@ -31,9 +31,6 @@ public class PlayerIKControlller : MonoBehaviour
     private bool _isLeftFootPlaced = false;
     private bool _isRightFootPlaced = false;
 
-    private const string LeftFootIKWeight = "LeftFootIKWeight";
-    private const string RightFootIKWeight = "RightFootIKWeight";
-
     private void Awake()
     {
         _animator = this.GetComponent<Animator>();
@@ -96,8 +93,8 @@ public class PlayerIKControlller : MonoBehaviour
             CalculateHipHeight();
         }
 
-        _isLeftFootPlaced = CalculateIKState(AvatarIKGoal.LeftFoot, HumanBodyBones.LeftFoot, ref _leftFootIKPosition, LeftFootIKWeight, _lefttFootUpDirection, HumanBodyBones.LeftLowerLeg);
-        _isRightFootPlaced = CalculateIKState(AvatarIKGoal.RightFoot, HumanBodyBones.RightFoot, ref _rightFootIKPosition, RightFootIKWeight, _rightFootUpDirection, HumanBodyBones.RightLowerLeg);
+        _isLeftFootPlaced = CalculateIKState(AvatarIKGoal.LeftFoot, HumanBodyBones.LeftFoot, ref _leftFootIKPosition, Constants.LeftFootIKWeight, _lefttFootUpDirection, HumanBodyBones.LeftLowerLeg);
+        _isRightFootPlaced = CalculateIKState(AvatarIKGoal.RightFoot, HumanBodyBones.RightFoot, ref _rightFootIKPosition, Constants.RightFootIKWeight, _rightFootUpDirection, HumanBodyBones.RightLowerLeg);
     }
 
     private bool CalculateIKState(AvatarIKGoal goal, HumanBodyBones foot, ref Vector3 footIKPosition, string weightName, Vector3 footUp, HumanBodyBones knee)
@@ -141,7 +138,7 @@ public class PlayerIKControlller : MonoBehaviour
     private void CalculateHipHeight()
     {
         float Offset;
-        if (_animator.GetFloat(LeftFootIKWeight) == 1 && _animator.GetFloat(RightFootIKWeight) == 1)
+        if (_animator.GetFloat(Constants.LeftFootIKWeight) == 1 && _animator.GetFloat(Constants.RightFootIKWeight) == 1)
         {
             Offset = Mathf.Abs(_leftFootIKPosition.y - _rightFootIKPosition.y) * 0.5f;
         }
@@ -171,7 +168,7 @@ public class PlayerIKControlller : MonoBehaviour
     private void SetDynamicMoveHipHeight()
     {
         float Offset;
-        if (_animator.GetFloat(LeftFootIKWeight) == 1 && _animator.GetFloat(RightFootIKWeight) == 1)
+        if (_animator.GetFloat(Constants.LeftFootIKWeight) == 1 && _animator.GetFloat(Constants.RightFootIKWeight) == 1)
         {
             Offset = _player.transform.position.y - _leftFootIKPosition.y;
         }
@@ -193,7 +190,7 @@ public class PlayerIKControlller : MonoBehaviour
     private void SetDefaultHipHeight()
     {
         float Offset;
-        if (_animator.GetFloat(LeftFootIKWeight) == 1 && _animator.GetFloat(RightFootIKWeight) == 1)
+        if (_animator.GetFloat(Constants.LeftFootIKWeight) == 1 && _animator.GetFloat(Constants.RightFootIKWeight) == 1)
         {
             Offset = _player.transform.position.y - _leftFootIKPosition.y;
         }
