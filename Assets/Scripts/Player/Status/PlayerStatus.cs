@@ -51,13 +51,14 @@ public class PlayerStatus : MonoBehaviour, IDamageable
     public void WeaponSwap(int weaponIndex)
     {
         if (!GameManager.Instance.IsWeaponListLoaded) return;
+        if (_player.IsReloading) return;
         if (GameManager.Instance.WeaponList[weaponIndex] != null)
         {
             AttackStatus.SwapStat(GameManager.Instance.WeaponList[weaponIndex]);
         }
         else
         {
-            Debug.Log("ÇØ´ç ÀÎµ¦½º¸¦ °¡Áø ¹«±â°¡ ¾ø½À´Ï´Ù!!");
+            Debug.Log("ï¿½Ø´ï¿½ ï¿½Îµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½â°¡ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½!!");
         }
     }
 

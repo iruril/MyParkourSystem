@@ -68,7 +68,7 @@ public class PlayerController : MonoBehaviour
     #region Shooting Variables
     private Vector3 _refVelocity = Vector3.zero;
     private bool _isShooting = false;
-    private bool _isReloading = false;
+    public bool IsReloading { get; private set; } = false;
 
     private Vector3 _aimPosition;
     private Vector3 _aimNormal;
@@ -107,13 +107,16 @@ public class PlayerController : MonoBehaviour
         PlayerMoveRight = new Vector3(_myTPSCam.CamTarget.right.x, 0, _myTPSCam.CamTarget.right.z).normalized;
 
         numberOfKeysPressed = keysToCheck.Count(key => Input.GetKey(key));
-        if (Input.GetMouseButton(1) && !IsSpaceKeyAction && !IsOnDynamicMove)
+        if (Input.GetMouseButton(1) || IsReloading)
         {
-            if (CurrentMode != MoveMode.Aim)
+            if (!(IsSpaceKeyAction || IsOnDynamicMove))
             {
-                CurrentMode = MoveMode.Aim;
-                this.transform.rotation = _myTPSCam.CamTarget.rotation;
-                _myTPSCam.ActivateAimModeCam();
+                if (CurrentMode != MoveMode.Aim)
+                {
+                    CurrentMode = MoveMode.Aim;
+                    this.transform.rotation = _myTPSCam.CamTarget.rotation;
+                    _myTPSCam.ActivateAimModeCam();
+                }
             }
         }
         else
@@ -556,10 +559,10 @@ public class PlayerController : MonoBehaviour
 
     private IEnumerator Reload()
     {
-        if (_isReloading) yield break;
+        if (IsReloading) yield break;
         if (_playerStat.AttackStatus.CurrentRound == _playerStat.AttackStatus.MagazineCapacity + 1) yield break;
 
-        _isReloading = true;
+        IsReloading = true;
         ReloadEvent?.Invoke();
         yield return YieldCache.WaitForSeconds(3.0f);
         if(_playerStat.AttackStatus.CurrentRound == 0)
@@ -570,7 +573,7 @@ public class PlayerController : MonoBehaviour
         {
             _playerStat.AttackStatus.CurrentRound = _playerStat.AttackStatus.MagazineCapacity + 1;
         }
-        _isReloading = false;
+        IsReloading = false;
     }
     #endregion
 }
