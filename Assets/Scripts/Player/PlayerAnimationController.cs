@@ -79,12 +79,12 @@ public class PlayerAnimationController : MonoBehaviour
     {
         _targetWeight = (_player.CurrentMode == PlayerController.MoveMode.Aim) ? 1.0f : 0.0f;
         _currentWeight = Mathf.Lerp(_currentWeight, _targetWeight, Time.deltaTime / TransitionTime);
-
+        float reloadIKWeight = MyAnimator.GetFloat(Constants.LeftHandIKWeight);
         MyAnimator.SetLayerWeight(1, _currentWeight);
-        _myBodyAimIK.weight = _currentWeight;
-        _myAimIK.weight = _currentWeight;
-        _myHeadAimIK.weight = _currentWeight;
-        _myLeftArmIK.weight = _currentWeight - MyAnimator.GetFloat(Constants.LeftHandIKWeight);
+        _myBodyAimIK.weight = _currentWeight - reloadIKWeight;
+        _myAimIK.weight = _currentWeight - reloadIKWeight;
+        _myHeadAimIK.weight = _currentWeight - reloadIKWeight;
+        _myLeftArmIK.weight = _currentWeight - reloadIKWeight;
 
         _targetLookAtWeight = (_myTPSCam.IsCamInSight && _mySpeed == 0) ? 0.75f : 0f;
         _currentLookAtWeight = Mathf.Lerp(_currentLookAtWeight, _targetLookAtWeight, Time.deltaTime / _lookAtTransitionTime);

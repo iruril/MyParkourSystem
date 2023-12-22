@@ -58,7 +58,7 @@ public class PlayerStatus : MonoBehaviour, IDamageable
         }
         else
         {
-            Debug.Log("�ش� �ε����� ���� ���Ⱑ �����ϴ�!!");
+            Debug.Log("[Cannat Load Weapon] Weapon Not Found!!");
         }
     }
 
