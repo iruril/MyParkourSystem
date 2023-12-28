@@ -72,6 +72,7 @@ public class PlayerController : MonoBehaviour
 
     private Vector3 _aimPosition;
     private Vector3 _aimNormal;
+    private const float _aimDragSpeed = 0.1f;
     #endregion
 
     private void Awake()
@@ -484,12 +485,12 @@ public class PlayerController : MonoBehaviour
                 _aimPosition = aimPos;
                 _aimNormal = hitInfo.normal;
             }
-            _aimPoint.position = Vector3.SmoothDamp(_aimPoint.position, aimPos, ref _refVelocity, _playerStat.AttackStatus.AimSpeed);
+            _aimPoint.position = Vector3.SmoothDamp(_aimPoint.position, aimPos, ref _refVelocity, _aimDragSpeed);
         }
         else
         {
             Vector3 aimPos = aimPointRay.origin + aimPointRay.direction * 15f;
-            _aimPoint.position = Vector3.SmoothDamp(_aimPoint.position, aimPos, ref _refVelocity, _playerStat.AttackStatus.AimSpeed);
+            _aimPoint.position = Vector3.SmoothDamp(_aimPoint.position, aimPos, ref _refVelocity, _aimDragSpeed);
         }
     }
 

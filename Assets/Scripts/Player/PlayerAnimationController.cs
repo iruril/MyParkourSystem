@@ -5,7 +5,6 @@ using UnityEngine.Animations.Rigging;
 
 public class PlayerAnimationController : MonoBehaviour
 {
-    public float TransitionTime = 0.5f;
     private float _lookAtTransitionTime = 0.1f;
 
     public Animator MyAnimator;
@@ -25,6 +24,7 @@ public class PlayerAnimationController : MonoBehaviour
 
     private float _currentWeight = 0.0f;
     private float _targetWeight = 0.0f;
+    private float _refTargetWeight = 0;
 
     private float _currentLookAtWeight = 0.0f;
     private float _targetLookAtWeight = 0.0f;
@@ -78,7 +78,7 @@ public class PlayerAnimationController : MonoBehaviour
     private void ObserveIKState()
     {
         _targetWeight = (_player.CurrentMode == PlayerController.MoveMode.Aim) ? 1.0f : 0.0f;
-        _currentWeight = Mathf.Lerp(_currentWeight, _targetWeight, Time.deltaTime / TransitionTime);
+        _currentWeight = Mathf.SmoothDamp(_currentWeight, _targetWeight, ref _refTargetWeight, _playerStat.AttackStatus.AimSpeed);
         float reloadIKWeight = MyAnimator.GetFloat(Constants.LeftHandIKWeight);
         MyAnimator.SetLayerWeight(1, _currentWeight);
         _myBodyAimIK.weight = _currentWeight - reloadIKWeight;
