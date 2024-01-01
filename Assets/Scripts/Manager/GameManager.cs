@@ -30,6 +30,8 @@ public class GameManager : MonoBehaviour
 
     public bool IsWeaponListLoaded = false;
 
+    private const string weaponDataPath = "Json/Items/WeaponList";
+
     private void Awake()
     {
         if (_instance == null)
@@ -47,8 +49,9 @@ public class GameManager : MonoBehaviour
 
     private void WeaponDataLoad()
     {
-        string jsonData = File.ReadAllText(Application.dataPath + "/Resources/Json/Items/WeaponList.json");
-        Dictionary<string, List<Weapon>> weaponList = JsonConvert.DeserializeObject<Dictionary<string, List<Weapon>>>(jsonData);
+        //string jsonData = File.ReadAllText(Application.dataPath + "/Resources/Json/Items/WeaponList.json");
+        var jsonData = Resources.Load<TextAsset>(weaponDataPath);
+        Dictionary<string, List<Weapon>> weaponList = JsonConvert.DeserializeObject<Dictionary<string, List<Weapon>>>(jsonData.ToString());
         foreach (var item in weaponList[Constants.WeaponList])
         {
             this.WeaponList.Add(item);
