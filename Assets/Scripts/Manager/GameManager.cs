@@ -30,32 +30,37 @@ public class GameManager : MonoBehaviour
 
     public bool IsWeaponListLoaded = false;
 
-    private const string weaponDataPath = "Json/Items/WeaponList";
+    private const string _weaponDataPath = "WeaponDataList/WeaponList.json";
 
     private void Awake()
     {
         if (_instance == null)
         {
             _instance = this;
-            WeaponDataLoad();
-            
             DontDestroyOnLoad(gameObject);
         }
         else
         {
             Destroy(gameObject);
         }
+        BetterStreamingAssets.Initialize();
+    }
+
+    private void Start()
+    {
+        WeaponDataLoad();
     }
 
     private void WeaponDataLoad()
     {
-        //string jsonData = File.ReadAllText(Application.dataPath + "/Resources/Json/Items/WeaponList.json");
-        var jsonData = Resources.Load<TextAsset>(weaponDataPath);
-        Dictionary<string, List<Weapon>> weaponList = JsonConvert.DeserializeObject<Dictionary<string, List<Weapon>>>(jsonData.ToString());
+        string jsonData = FileUtility.LoadFile(_weaponDataPath);
+        Dictionary<string, List<Weapon>> weaponList = JsonConvert.DeserializeObject<Dictionary<string, List<Weapon>>>(jsonData);
         foreach (var item in weaponList[Constants.WeaponList])
         {
             this.WeaponList.Add(item);
         }
         IsWeaponListLoaded = true;
     }
+
+    
 }
