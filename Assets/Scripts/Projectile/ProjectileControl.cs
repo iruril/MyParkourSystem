@@ -40,10 +40,10 @@ public class ProjectileControl : MonoBehaviour
 
     void OnCollisionEnter(Collision co)
     {
-        IDamageable damageble = co.transform.GetComponent<IDamageable>();
+        EntityHitBounds damageble = co.transform.GetComponent<EntityHitBounds>();
         if (damageble != null)
         {
-            damageble.TakeHit(Damage, this.transform.forward);
+            damageble.OnDamaged(Damage, this.transform.forward);
         }
         StopCoroutine(LifeTime());
 

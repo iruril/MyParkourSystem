@@ -5,8 +5,8 @@ using UnityEngine;
 public class RagdollController : MonoBehaviour
 {
     public GameObject MySkeleton;
-    private List<Rigidbody> _myRigids = new();
-    private Rigidbody _myHead;
+    [SerializeField] private List<Rigidbody> _myRigids = new();
+    [SerializeField] private Rigidbody _myHead;
 
     void Start()
     {
@@ -22,11 +22,20 @@ public class RagdollController : MonoBehaviour
                 _myHead = item;
             }
         }
-        SetMyRagdollState(true);
-        SetMyRagdollCollisionState(false);
+        SetMyRagdoll(kinematicState : true);
     }
 
-    public void SetMyRagdollState(bool kinematicState)
+    public void SetMyRagdoll(bool kinematicState)
+    {
+        foreach (Rigidbody rigid in _myRigids)
+        {
+            rigid.isKinematic = kinematicState;
+            EntityHitBounds tempEntity = rigid.transform.gameObject.AddComponent<EntityHitBounds>();
+            tempEntity.MyDamagableEntity = this.GetComponent<IDamageable>();
+        }
+    }
+
+    public void SetMyRagdollKinemeticState(bool kinematicState)
     {
         foreach (Rigidbody rigid in _myRigids)
         {

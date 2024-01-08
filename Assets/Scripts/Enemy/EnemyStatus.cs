@@ -54,7 +54,7 @@ public class EnemyStatus : MonoBehaviour, IDamageable
         }
 
         _myCollider.enabled = false;
-        _myRagdoll.SetMyRagdollState(kinematicState: false);
+        _myRagdoll.SetMyRagdollKinemeticState(kinematicState: false);
         _myRagdoll.SetMyRagdollCollisionState(collisionRecieveState: true);
         _animator.enabled = false;
     }

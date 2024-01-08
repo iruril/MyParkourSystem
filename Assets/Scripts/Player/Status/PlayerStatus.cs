@@ -16,8 +16,8 @@ public class PlayerStatus : MonoBehaviour, IDamageable
     public AttackStatus AttackStatus = new();
 
     public float MyStartingHealth = 100.0f;
-    public float Health { get; set; }
-
+    [SerializeField] public float Health { get; set; }
+ 
     public bool Dead = false;
     public float DealtDamage;
 
@@ -85,7 +85,7 @@ public class PlayerStatus : MonoBehaviour, IDamageable
     private void Die()
     {
         _player.enabled = false;
-        _myRagdoll.SetMyRagdollState(kinematicState: false);
+        _myRagdoll.SetMyRagdollKinemeticState(kinematicState: false);
         _myRagdoll.SetMyRagdollCollisionState(collisionRecieveState: true);
         _playerCharacter.enabled = false;
         _playerAnimation.MyAnimator.enabled = false;

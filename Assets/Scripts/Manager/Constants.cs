@@ -7,4 +7,7 @@ public static class Constants
     public static string LeftFootIKWeight = "LeftFootIKWeight";
     public static string RightFootIKWeight = "RightFootIKWeight";
     public static string LeftHandIKWeight = "LeftHandIKWeight";
+
+    public static string EntityHitBound = "EntityHitBound";
+    public static string EntityHitLayer = "DamageDealer";
 }
